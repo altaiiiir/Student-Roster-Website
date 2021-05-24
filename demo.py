@@ -4,7 +4,7 @@ import psycopg2
 con = psycopg2.connect (
 database = "exam1",
 user = "postgres",
-password = "11012202"
+password = ""
 )
 
 #cursor
