@@ -4,7 +4,7 @@ import psycopg2
 con = psycopg2.connect (
 database = "webdb.sql",
 user = "postgres",
-password = "bigballz4()$loveUUUIII"
+password = ""
 )
 
 #cursor
