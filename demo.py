@@ -2,9 +2,9 @@ import psycopg2
 
 #connect to the db
 con = psycopg2.connect (
-database = "exam1",
+database = "webdb.sql",
 user = "postgres",
-password = ""
+password = "bigballz4()$loveUUUIII"
 )
 
 #cursor
