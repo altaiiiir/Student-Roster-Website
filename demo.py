@@ -1,22 +1,23 @@
 import psycopg2
 
-#connect to the db
+#connect to the local host db
 con = psycopg2.connect (
-database = "exam1",
+host = "database-finalproject.cwap51qwtcts.us-west-2.rds.amazonaws.com",
+database = "webdb",
 user = "postgres",
-password = ""
+password = "2fD9vPoMU6HAfMM"
 )
 
 #cursor
 cur = con.cursor()
 
 #execute query
-cur.execute("select id, name from employee")
+cur.execute('SELECT * FROM Administrator')
 
 rows = cur.fetchall()
 
 for r in rows:
-   print(f"id {r[0]} name {r[1]}")
+   print(f"ID {r[0]} name {r[1]}")
 
 # close cursor
 cur.close()
