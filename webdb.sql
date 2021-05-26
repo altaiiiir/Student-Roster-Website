@@ -508,14 +508,6 @@ ALTER TABLE ONLY public.quarter
 
 
 --
--- Name: student student_adminid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.student
-    ADD CONSTRAINT student_adminid_key UNIQUE (adminid);
-
-
---
 -- Name: student_notes student_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -529,6 +521,14 @@ ALTER TABLE ONLY public.student_notes
 
 ALTER TABLE ONLY public.student
     ADD CONSTRAINT student_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: student student_studentid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.student
+    ADD CONSTRAINT student_studentid_key UNIQUE (studentid);
 
 
 --
