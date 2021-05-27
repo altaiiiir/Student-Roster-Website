@@ -13,7 +13,7 @@ cur = con.cursor()
 
 #execute query
 cur.execute('SELECT * FROM Administrator')
-
+cur.execute('Select * from Student')
 rows = cur.fetchall()
 
 for r in rows:
