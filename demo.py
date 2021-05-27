@@ -2,12 +2,8 @@ import psycopg2
 
 #connect to the local host db
 con = psycopg2.connect (
-<<<<<<< HEAD
 host = "database-finalproject.cwap51qwtcts.us-west-2.rds.amazonaws.com",
 database = "webdb",
-=======
-database = "webdb.sql",
->>>>>>> ad4614ad892441db141778e2f6d2d45622297d4b
 user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
