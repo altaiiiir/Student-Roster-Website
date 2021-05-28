@@ -1,26 +1,27 @@
 from flask import Flask, redirect, url_for, render_template, request
+
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-@app.route("/home")
+@app.route("/") 
 def home():
-    return "<h1> HELLO <h1>"
+    return render_template("index.html")
 
+# @app.route("/test")
+# def test():
+#     return render_template("new.html")
 
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        user = request.form["nm"]
+        return redirect(url_for("user", usr =user))
+    else:
+        return render_template("login.html")
 
-@app.route("/view", methods=["POST", "GET"])
-def contact():
-    if request.method == 'POST':
-        if request.form['submit_button'] == 'Do Something':
-            print ("view all students")
-        elif request.form['submit_button'] == 'Do Something Else':
-            print ("view specific student")
-        else:
-            pass # unknown
-    elif request.method == 'GET':
-        return render_template('login.html', form=form)
+@app.route("/<usr>")
+def user(usr):
+    return f"<h1>{usr} </h1>"
+    
 
-if __name__ == '__main__':
-    app.run()
+if __name__ == "__main__":
+     app.run(debug =True)
