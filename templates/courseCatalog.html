@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Course Catalog</h1>
+<p>For 5/29/2021</p>
+<table>
+   <tr><th>SLN</th><th>Name</th><th>Course Credits</th><th>Type</th></tr>
+   {% for thing in things %}
+   <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td></tr>
+   {% endfor %}
+</table>
+{% endblock %}

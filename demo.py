@@ -19,6 +19,9 @@ rows = cur.fetchall()
 for r in rows:
    print(f"ID {r[0]} name {r[1]}")
 
+#execute courses query
+cur.execute('Select * from Course_Catalog')
+courseRows = cur.fetchall()
 
 # close cursor
 cur.close()
@@ -35,6 +38,10 @@ def home():
 # @app.route("/test")
 # def test():
 #     return render_template("new.html")
+
+@app.route("/courseCatalog/")
+def courseCatalog():
+    return render_template("courseCatalog.html", things=courseRows) 
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
