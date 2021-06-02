@@ -26,6 +26,13 @@ courseRows = cur.fetchall()
 for r in courseRows:
    print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]}")
 
+#execute query
+cur.execute('Select * from Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)')
+courseInfoRows = cur.fetchall()
+
+#execute query
+cur.execute('SELECT * FROM Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN) JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) JOIN Student ON (Student.ID = Transcript.StudentID) WHERE Course_Info.SLN = 10000 AND Course_Info.RoomID = 5')
+courseAttendeesRows = cur.fetchall()
 
 # close cursor
 cur.close()
@@ -52,6 +59,15 @@ def login():
 @app.route("/courses") 
 def course():
     return render_template("coursePage.html", things = courseRows)
+
+@app.route("/courseInfo") 
+def courseInfo():
+    return render_template("courseInfoPage.html", things = courseInfoRows)
+
+@app.route("/courseAttendees") 
+def courseAttendees():
+    return render_template("courseAttendees.html", things = courseAttendeesRows)
+
 
     
 if __name__ == "__main__":

@@ -37,12 +37,12 @@
 	  </div>
 	</nav>
 	{% block content %}
-   <h1>Course Catalog</h1>
+   <h1>Course Info</h1>
    <p>For 6/1/2021</p>
    <table>
-      <tr><th>SLN</th><th>Name</th><th>Credits</th><th>Type</th></tr>
+      <tr><th>Name </th><th>SLN</th><th>Section</th><th>RoomID</th><th>Instructor</th><th>Time</th><th>Quarter</th></tr>
       {% for thing in things %}
-      <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td></tr>
+      <tr><td>{{thing[9]}}</td><td>{{thing[1]}}</td><td>{{thing[2]}}</td><td>{{thing[3]}}</td><td>{{thing[4]}}</td><td>{{thing[5]}}</td><td>{{thing[6]}}</td></tr>
       {% endfor %}
    </table>
 	{% endblock %}
