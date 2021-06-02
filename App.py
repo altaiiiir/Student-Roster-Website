@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/") 
 def home():
-    return render_template("index.html")
+    return render_template("Index.html")
 
 # @app.route("/test")
 # def test():
@@ -16,7 +16,7 @@ def login():
         user = request.form["nm"]
         return redirect(url_for("user", usr =user))
     else:
-        return render_template("login.html")
+        return render_template("Login.html")
 
 @app.route("/<usr>")
 def user(usr):
