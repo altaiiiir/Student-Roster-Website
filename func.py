@@ -9,11 +9,14 @@ user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
 
-def viewStudents():
-    result = ""
-    cur.execute('Select * from Student')
+def viewCourseCatalog():
+    cur = con.cursor()
+    cur.execute('Select * from course_catalog')
     rows = cur.fetchall()
 
-    for r in rows:
-        print(f"ID {r[0]} name {r[1]}")
-
+    #for r in rows:
+   #     print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]} ")
+    # close cursor
+    return rows
+viewCourseCatalog()
+#close the connection

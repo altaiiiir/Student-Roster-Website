@@ -1,3 +1,4 @@
+from func import viewCourseCatalog
 import psycopg2
 from flask import Flask, redirect, url_for, render_template, request
 
@@ -16,10 +17,7 @@ cur = con.cursor()
 cur.execute('Select * from Student')
 rows = cur.fetchall()
 
-for r in rows:
-   print(f"ID {r[0]} name {r[1]}")
-
-
+transRows = cur.fetchall()
 # close cursor
 cur.close()
 
@@ -30,23 +28,35 @@ app = Flask(__name__)
 
 @app.route("/") 
 def home():
-    return render_template("studentPage.html", things=rows)
+    return render_template("index.html")
 
-# @app.route("/test")
-# def test():
-#     return render_template("new.html")
+@app.route("/studentPage", methods =['GET', 'POST'])
+def students():
+    return render_template("studentPage.html", things = rows)
 
-@app.route("/login", methods=["POST", "GET"])
+@app.route("/courseCatalog")
+def courseCatalog():
+    courseCatalog = viewCourseCatalog()
+    return render_template("courseCatalog.html", things=courseCatalog)
+
+
+#@app.route("/login", methods=["POST", "GET"])
+#def login():
+ #   if request.method == "POST":
+  #      user = request.form["nm"]
+   #     return redirect(url_for("user", usr =user))
+    ##   return render_template("login.html")
+
+# Route for handling the login page logic
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "POST":
-        user = request.form["nm"]
-        return redirect(url_for("user", usr =user))
-    else:
-        return render_template("login.html")
-
-@app.route("/<usr>")
-def user(usr):
-    return f"<h1>{usr} </h1>"
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            return redirect(url_for('home'))
+    return render_template('login.html', error=error)
     
 if __name__ == "__main__":
      app.run(debug =True)
