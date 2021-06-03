@@ -34,10 +34,13 @@ def home():
 def students():
     return render_template("studentPage.html", things = rows)
 
-@app.route("/courseCatalog")
+@app.route("/courseCatalog", methods = ["POST", "GET"])
 def courseCatalog():
-    courseCatalog = viewCourseCatalog()
-    return render_template("courseCatalog.html", things=courseCatalog)
+    if request.method == "POST":
+        user = request.form["nm"]
+    else:
+        courseCatalog = viewCourseCatalog()
+        return render_template("courseCatalog.html", things=courseCatalog)
 
 
 #@app.route("/login", methods=["POST", "GET"])
@@ -57,6 +60,8 @@ def login():
         else:
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
-    
+
+cur.close()
+con.close()
 if __name__ == "__main__":
      app.run(debug =True)

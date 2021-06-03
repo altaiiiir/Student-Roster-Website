@@ -19,4 +19,5 @@ def viewCourseCatalog():
     # close cursor
     return rows
 viewCourseCatalog()
+
 #close the connection

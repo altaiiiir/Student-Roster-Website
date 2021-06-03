@@ -2,11 +2,13 @@
 {% block title%} Transcript Page {% endblock %}
 
 {% block content %}
-<h1>students</h1>
-<table>
-   <tr><th>SLN</th><th>Name</th><th>Credits</th><th>Type</th></tr>
-   {% for thing in things %}
-   <tr><td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> </tr>
-   {% endfor %}
-</table>
+<form action = "#" method = "get">
+   <h1>students</h1>
+   <table>
+      <tr><th>SLN</th><th>Name</th><th>Credits</th><th>Type</th></tr>
+      {% for thing in things %}
+      <tr><td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> </tr>
+      {% endfor %}
+   </table>
+</form>
 {% endblock %}
