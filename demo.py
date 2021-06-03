@@ -30,6 +30,13 @@ for r in rows:
 cur.execute('Select * from Course_Catalog')
 courseRows = cur.fetchall()
 
+#execute transcripts query
+cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_Catalog.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+FROM Transcript
+	JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+	JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)
+	JOIN Student ON (Transcript.StudentID = Student.ID)""")
+transcriptRows = cur.fetchall()
 
 
 app = Flask(__name__)
@@ -45,6 +52,7 @@ def studentPage():
     if request.method == "POST":
         session.permanant = True
         user = request.form["nm"]
+        # if user==''
         session["user"] = user
         return redirect(url_for("user"))
     else:
@@ -90,6 +98,44 @@ def logout():
     session.pop("user", None)
     flash("You have been logged out", "info")
     return redirect(url_for("studentPage"))
+
+@app.route("/Transcript", methods=["POST", "GET"])
+def Transcript():
+    if request.method == "POST":
+        if 'delete' in request.form:
+            studentID = int(request.form["studentID"])
+            SLN = request.form["SLN"]
+            section = request.form["section"]
+            cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s AND Section = %s', (SLN, section))
+            classIDs = cur.fetchall()
+            classID = classIDs[0][0]
+            cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
+            cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_Catalog.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+                            FROM Transcript
+                                JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+                                JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)
+                                JOIN Student ON (Transcript.StudentID = Student.ID)""")
+            updatedTranscriptRows = cur.fetchall()
+            return render_template("Transcripts.html", things=updatedTranscriptRows)
+        else:
+            studentID = int(request.form["studentID"])
+            SLN = request.form["SLN"]
+            section = request.form["section"]
+            grade = request.form["grade"]
+            cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s AND Section = %s', (SLN, section))
+            classIDs = cur.fetchall()
+            classID = classIDs[0][0]
+            cur.execute('''INSERT INTO Transcript (StudentID, ClassID, FinalGrade)
+                                Values(%s, %s, %s)''', (studentID, int(classID), grade))
+            cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_Catalog.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+                            FROM Transcript
+                                JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+                                JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)
+                                JOIN Student ON (Transcript.StudentID = Student.ID)""")
+            updatedTranscriptRows = cur.fetchall()
+            return render_template("Transcripts.html", things=updatedTranscriptRows)
+    else:        
+        return render_template("Transcripts.html", things=transcriptRows) 
 
 if __name__ == "__main__":
      app.run(debug =True)
