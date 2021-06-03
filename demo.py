@@ -56,9 +56,7 @@ def login():
         return render_template("login.html")
 
 
-@app.route("/courses") 
-def course():
-    return render_template("coursePage.html", things = courseRows)
+
 
 @app.route("/courseInfo") 
 def courseInfo():
@@ -72,16 +70,35 @@ def courseAttendees():
 def add():
     if request.method == "POST":
         sln = request.form["sln"]
+        section = request.form["section"]
+        roomid = request.form["roomid"]
+        instructor = request.form["ins"]
+        time = request.form["time"]
+        quarter = request.form["quarter"]
+        year = request.form["yr"]
         name = request.form["nm"]
         cc = request.form["creds"]
         type = request.form["type"]
-        cur.execute('INSERT INTO Course_Catalog (SLN, Name, CourseCredits, Type) VALUES (%s, %s, %s, %s)', (sln, name, cc, type))
+        cur.execute("""INSERT INTO Course_Catalog (SLN, Name, CourseCredits, Type) 
+                        VALUES (%s, %s, %s, %s)""", (sln, name, cc, type))
+        cur.execute("""INSERT INTO Course_Info (SLN, Section, RoomID, InstructorName, Time, Quarter, Year) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)""", (sln, section, roomid, instructor, time, quarter, year))
         con.commit()
-        return render_template("coursePage.html", things = courseRows)
+        # update table
+        cur.execute('Select * from Course_Catalog')
+        courseRows = cur.fetchall()
+        
+        # update table
+        cur.execute('Select * from Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)')
+        courseInfoRows = cur.fetchall()
+        
+        return render_template("courseInfoPage.html", things = courseInfoRows)
     else:
         return render_template("addCourse.html")
 
-
+@app.route("/courses") 
+def course():
+    return render_template("coursePage.html", things = courseRows)
 
 
 if __name__ == "__main__":
