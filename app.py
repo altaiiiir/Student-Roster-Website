@@ -39,7 +39,7 @@ def students():
     if request.method == "POST":
         user = request.form["nm"]
     else:
-        rows = func.viewCourseCatalog()
+        rows = func.viewAllStudents()
         return render_template("studentPage.html", things = rows)
 
 if __name__ == "__main__":

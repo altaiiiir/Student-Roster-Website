@@ -18,6 +18,13 @@ def viewCourseCatalog():
    #     print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]} ")
     # close cursor
     return rows
-viewCourseCatalog()
 
-#close the connection
+def viewAllStudents():
+    #cursor
+    cur = con.cursor()
+
+    #execute query
+    cur.execute('Select * from Student')
+    rows = cur.fetchall()
+    return rows
+
