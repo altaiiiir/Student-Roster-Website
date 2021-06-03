@@ -1,8 +1,8 @@
-from func import viewCourseCatalog
+from flask import Flask, render_template, redirect, url_for, request
 import psycopg2
-from flask import Flask, redirect, url_for, render_template, request
+import func
+app = Flask(__name__)
 
-#connect to the local host db
 con = psycopg2.connect (
 host = "database-finalproject.cwap51qwtcts.us-west-2.rds.amazonaws.com",
 database = "webdb",
@@ -10,48 +10,8 @@ user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
 
-#cursor
-cur = con.cursor()
-
-#execute query
-cur.execute('Select * from Student')
-rows = cur.fetchall()
-
-transRows = cur.fetchall()
-# close cursor
-cur.close()
-
-#close the connection
-con.close()
-
-app = Flask(__name__)
-
-@app.route("/") 
-def home():
-    return render_template("login.html")
-
-@app.route("/studentPage", methods =['GET', 'POST'])
-def students():
-    return render_template("studentPage.html", things = rows)
-
-@app.route("/courseCatalog", methods = ["POST", "GET"])
-def courseCatalog():
-    if request.method == "POST":
-        user = request.form["nm"]
-    else:
-        courseCatalog = viewCourseCatalog()
-        return render_template("courseCatalog.html", things=courseCatalog)
-
-
-#@app.route("/login", methods=["POST", "GET"])
-#def login():
- #   if request.method == "POST":
-  #      user = request.form["nm"]
-   #     return redirect(url_for("user", usr =user))
-    ##   return render_template("login.html")
-
 # Route for handling the login page logic
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
@@ -61,7 +21,26 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
-cur.close()
-con.close()
+
+@app.route("/home") 
+def home():
+    return render_template("home.html")
+
+@app.route("/courseCatalog", methods = ["POST", "GET"])
+def courseCatalog():
+    if request.method == "POST":
+        user = request.form["nm"]
+    else:
+        courseCatalog = func.viewCourseCatalog()
+        return render_template("courseCatalog.html", things=courseCatalog)
+
+@app.route("/studentPage", methods =['GET', 'POST'])
+def students():
+    if request.method == "POST":
+        user = request.form["nm"]
+    else:
+        rows = func.viewCourseCatalog()
+        return render_template("studentPage.html", things = rows)
+
 if __name__ == "__main__":
      app.run(debug =True)
