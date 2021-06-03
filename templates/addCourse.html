@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Add Courses
+{% endblock %}
+
+{% block content %}
+<h1>Add Course</h1>
+
+<form action ="#" method = "POST">
+    <p> SLN: </p>
+    <p><input type="number" name = "sln" /></p>
+    <p> Name: </p>
+    <p><input type="text" name = "nm" /></p>
+    <p> CourseCredits: </p>
+    <p><input type="number" name = "creds" /></p>
+    <p> Type: </p>
+    <p><input type="text" name = "type" /></p>
+    
+    <p><input type="submit" name = "submit" /></p>
+</form>
+
+{% endblock %}
+

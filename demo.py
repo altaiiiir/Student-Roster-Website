@@ -35,10 +35,10 @@ cur.execute('SELECT * FROM Course_Info JOIN Course_Catalog ON (Course_Info.SLN =
 courseAttendeesRows = cur.fetchall()
 
 # close cursor
-cur.close()
+#cur.close()
 
 #close the connection
-con.close()
+#con.close()
 
 app = Flask(__name__)
 
@@ -68,7 +68,29 @@ def courseInfo():
 def courseAttendees():
     return render_template("courseAttendees.html", things = courseAttendeesRows)
 
+@app.route("/addCourse", methods = ["POST", "GET"])
+def add():
+    if request.method == "POST":
+        sln = request.form["sln"]
+        name = request.form["nm"]
+        cc = request.form["creds"]
+        type = request.form["type"]
+        cur.execute('INSERT INTO Course_Catalog (SLN, Name, CourseCredits, Type) VALUES (%s, %s, %s, %s)', (sln, name, cc, type))
+        con.commit()
+        return render_template("coursePage.html", things = courseRows)
+    else:
+        return render_template("addCourse.html")
 
-    
+
+
+
 if __name__ == "__main__":
      app.run(debug =True)
+     
+     
+     
+# close cursor
+cur.close()
+
+#close the connection
+con.close()
