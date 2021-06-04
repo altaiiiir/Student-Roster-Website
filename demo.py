@@ -23,8 +23,6 @@ cur = con.cursor()
 cur.execute('Select * from Student')
 rows = cur.fetchall()
 
-for r in rows:
-   print(f"ID {r[0]} name {r[1]}")
 
 #execute courses query
 cur.execute('Select * from Course_Catalog')
@@ -54,10 +52,8 @@ def studentPage():
         user = request.form["nm"]
         # if user==''
         session["user"] = user
-        return redirect(url_for("user"))
+        return render_template("studentPage.html", things=rows)
     else:
-        if "user" in session:
-            return redirect(url_for("user"))
         return render_template("studentPage.html", things=rows)
     
 # @app.route("/test")
@@ -71,8 +67,7 @@ def courseCatalog():
         SLN = request.form["SLN"]
         cur.execute('Select * from Course_Catalog WHERE Type = %s AND SLN = %d', (creditType, SLN))
         creditRows = cur.fetchall()
-        for r in creditRows:
-            print(f"ID {r[0]} name {r[1]}")
+        
         return render_template("courseCatalog.html", things=creditRows)
     else:
         return render_template("courseCatalog.html", things=courseRows) 
@@ -85,13 +80,7 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route("/user")
-def user():
-    if "user" in session:
-        user = session["user"]
-        return f"<h1>{user} </h1>"
-    else:
-        return redirect(url_for("login"))
+
 
 @app.route("/logout")
 def logout():

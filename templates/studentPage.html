@@ -11,7 +11,9 @@
       <p> Name: </p>
       <p> <input type="text" name="nm" /></p>
       <p><input type="submit" value="submit" /></p>
-      
+      <p> Behavior Note: </p>
+      <p> <input type="text" name="notes" /></p>
+      <p><input type="submit" name="add" value="Add" /></p>
    </form>
    <!-- <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1">first Name</span>
@@ -35,6 +37,7 @@
       <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Alias</th><th>Gender</th><th>Super Power</th><th>Date of Birth</th><th>Enrolled</th></tr>
       {% for thing in things %}
       <tr><td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> <td>{{thing[7]}}</td> <td>{{thing[8]}}</td></tr>
+      
       {% endfor %}
    </table>
 	{% endblock %}
