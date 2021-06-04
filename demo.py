@@ -18,10 +18,12 @@ password = "2fD9vPoMU6HAfMM"
 
 #cursor
 cur = con.cursor()
-
+gettingIDQuery= "Select ID, firstname, lastname, alias from Student where firstname = %s"
 #execute query
-cur.execute('Select * from Student')
+cur.execute(gettingIDQuery, ("Evan",))
 rows = cur.fetchall()
+for i in rows: 
+    print (i)
 
 
 #execute courses query
@@ -50,8 +52,17 @@ def studentPage():
     if request.method == "POST":
         session.permanant = True
         user = request.form["nm"]
-        # if user==''
+
         session["user"] = user
+        if 'viewNotes' in request.form:
+            studentNotes = func.viewStudentNotes()
+            return render_template("studentNotes.html", things=studentNotes)
+        elif 'viewStudentName' in request.form:
+            specificStudent = "Select * from Student where Student.FirstName = %s" 
+            cur.execute(specificStudent, (user,))
+            studentNotes = cur.fetchall()
+            
+            return render_template("studentPage.html", things=studentNotes)
         return render_template("studentPage.html", things=rows)
     else:
         return render_template("studentPage.html", things=rows)
@@ -126,17 +137,20 @@ def Transcript():
     else:        
         return render_template("Transcripts.html", things=transcriptRows) 
 
-@app.route("/BehaviorNotes", methods=["POST", "GET"])
+@app.route("/studentNotes", methods=["POST", "GET"])
 def studentNotes():
+    studentNotes = func.viewStudentNotes()
+    return render_template("studentNotes.html", things=studentNotes)
     if request.method == "POST":
-        if 'viewNotes' in request.form:
-            render_template("BehaviorNotes.html")
+        if 'ViewNotes' in request.form:
+            studentNotes = func.viewStudentNotes()
+            return render_template("studentNotes.html", things=studentNotes)
         else:
-            print ("hi")
+            studentNotes = func.viewStudentNotes()
+            return render_template("studentNotes.html", things=studentNotes)
     else:
         studentNotes = func.viewStudentNotes()
-        return render_template("BehaviorNotes.html", things=studentNotes)
-    return render_template("BehaviorNotes.html")
+        return render_template("studentNotes.html", things=studentNotes)
 
 
 

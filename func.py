@@ -9,10 +9,16 @@ user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
 
-def viewStudents():
-    result = ""
-    cur.execute('Select * from Student')
-    rows = cur.fetchall()
+def viewStudents(name):
+  cur = con.cursor()
+  strname=str(name)
+  cur.execute('Select ID, FirstName, LastName, from Student where Student.FirstName = %s', (strname))
+  rows = cur.fetchall()
+  for i in rows:
+      print( i[0])
+
+  cur.close()
+  return rows
 
 def viewStudentNotes():
     cur = con.cursor()
