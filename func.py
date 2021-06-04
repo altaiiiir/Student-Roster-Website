@@ -20,6 +20,15 @@ def viewStudents(name):
   cur.close()
   return rows
 
+def viewAllStudents():
+    cur = con.cursor()
+    allStudentsQuery = "Select * from Student"
+    #execute query
+    cur.execute(allStudentsQuery)
+    rows = cur.fetchall()
+    cur.close()
+    return rows
+    
 def viewStudentNotes():
     cur = con.cursor()
     query = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type FROM Student_Notes
