@@ -19,11 +19,11 @@ password = "2fD9vPoMU6HAfMM"
 #cursor
 cur = con.cursor()
 gettingIDQuery= "Select ID, firstname, lastname, alias from Student where firstname = %s"
+allStudentsQuery = "Select * from Student"
 #execute query
-cur.execute(gettingIDQuery, ("Evan",))
+cur.execute(allStudentsQuery)
 rows = cur.fetchall()
-for i in rows: 
-    print (i)
+
 
 
 #execute courses query
@@ -63,6 +63,7 @@ def studentPage():
             studentNotes = cur.fetchall()
             
             return render_template("studentPage.html", things=studentNotes)
+        
         return render_template("studentPage.html", things=rows)
     else:
         return render_template("studentPage.html", things=rows)
