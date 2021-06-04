@@ -56,6 +56,8 @@ def addRemoveStudent():
             #TODO double check if value is legit
             studID = int(request.form["studID"])
             cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
+            # Find the noteID based on studentID, use that to delete notes
+            # cur.execute('DELETE FROM Notes WHERE Student_Notes.StudentID = %s',[studID])
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
             con.commit()
