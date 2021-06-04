@@ -36,7 +36,8 @@ def login():
 def addRemoveStudent():
     if request.method == "POST":
         if 'add' in request.form:
-            #need to double check data, protect against sql injections
+            #TODO double check data, protect against sql injections
+            #TODO double check if values are legit
             StuID = request.form["studentID"]
             Fname = request.form["first"]
             Lname = request.form["last"]
@@ -51,9 +52,9 @@ def addRemoveStudent():
             con.commit()
             return redirect(url_for("home"))
         else:
-            #need to double check data, protect against sql injections
+            #TODO to double check data, protect against sql injections
+            #TODO double check if value is legit
             studID = int(request.form["studID"])
-            # studID = request.form["studID"]
             cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
