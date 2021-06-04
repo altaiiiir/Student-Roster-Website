@@ -22,7 +22,10 @@ def viewStudents(name):
 
 def viewStudentNotes():
     cur = con.cursor()
-    cur.execute('SELECT * FROM Student_Notes')
+    query = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type FROM Student_Notes
+                   JOIN Note ON (Student_Notes.NoteID = Note.ID)
+    """
+    cur.execute(query)
     studentNotesRows = cur.fetchall()
     cur.close()
     return studentNotesRows
