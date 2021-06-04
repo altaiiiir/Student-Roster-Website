@@ -14,6 +14,9 @@ def viewStudents():
     cur.execute('Select * from Student')
     rows = cur.fetchall()
 
-    for r in rows:
-        print(f"ID {r[0]} name {r[1]}")
-
+def viewStudentNotes():
+    cur = con.cursor()
+    cur.execute('SELECT * FROM Student_Notes')
+    studentNotesRows = cur.fetchall()
+    cur.close()
+    return studentNotesRows

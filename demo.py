@@ -1,6 +1,6 @@
 import psycopg2
 from flask import Flask, redirect, url_for, render_template, request, session, flash
-
+import func
 from datetime import timedelta
 
 from datetime import date
@@ -125,6 +125,20 @@ def Transcript():
             return render_template("Transcripts.html", things=updatedTranscriptRows)
     else:        
         return render_template("Transcripts.html", things=transcriptRows) 
+
+@app.route("/BehaviorNotes", methods=["POST", "GET"])
+def studentNotes():
+    if request.method == "POST":
+        if 'viewNotes' in request.form:
+            render_template("BehaviorNotes.html")
+        else:
+            print ("hi")
+    else:
+        studentNotes = func.viewStudentNotes()
+        return render_template("BehaviorNotes.html", things=studentNotes)
+    return render_template("BehaviorNotes.html")
+
+
 
 if __name__ == "__main__":
      app.run(debug =True)
