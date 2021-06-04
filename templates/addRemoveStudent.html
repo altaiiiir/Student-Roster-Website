@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %} Add/Remove {% endblock %}
+
+
+{% block content %}
+<style>
+    add{
+        float: left;
+        margin-left: 2.5%;
+    }
+
+    delete{
+        float: right;
+        margin-right: 30%;
+     }
+</style>
+
+    <add>
+        <h1>Add Student</h1>
+        <form action="#" method = "POST" name = "insertStud">
+                <p> First name <input type="text" maxlength="100" name=first></p>
+                <p> Last name <input type="text"  maxlength="100" name=last></p>
+                <p> Student ID <input type="text"  maxlength="100" name=studentID></p>
+                <p> Gender <input type="text" maxlength="1" name= gender></p>
+                <p> SuperPowers <input type="text"maxlength="100" name =super></p>
+                <p> Alias <input type="text" maxlength="100" name = alias></p>
+                <p> DOB <input type="text" maxlength="10" name = dob></p>
+                <p><input type = "submit" name= "add" value = "Add"> </p>
+        </form>
+    </add>
+
+    <delete>
+        <h1>Remove Student </h1>
+        <form action="#" method = "POST" name = "deleteStud">
+            <p> StudentID <input type="text" maxlength="100" name = studID ></p>
+            <p><input type = "submit" name = "remove" value = "Remove"> </p>
+        </form>
+    </delete>
+
+{% endblock %}
