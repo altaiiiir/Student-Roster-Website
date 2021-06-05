@@ -34,10 +34,10 @@ cur.execute('Select * from Course_Catalog')
 courseRows = cur.fetchall()
 
 #execute transcripts query
-cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_Catalog.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_Catalog.ID, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
 FROM Transcript
 	JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
-	JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)
+	JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)
 	JOIN Student ON (Transcript.StudentID = Student.ID)""")
 transcriptRows = cur.fetchall()
 
@@ -90,9 +90,18 @@ def studentPage():
                                                   #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
             
             cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
-            con.commit()
+
+            query = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type, Note_Type.Name FROM Student_Notes
+                   JOIN Note ON (Student_Notes.NoteID = Note.ID)
+                   JOIN Note_Type ON (Note.Type = Note_Type.Type)
+                    """
+            cur.execute(query)
+            studentNotesRows = cur.fetchall()
+            print(studentNotesRows)
+            studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
-            return render_template("studentPage.html", things=allStudents)
+            return render_template("studentNotes.html", things=studentNotes)
+            #return render_template("studentPage.html", things=allStudents)
         return render_template("studentPage.html", things=rows)
     else:
         return render_template("studentPage.html", things=rows)
