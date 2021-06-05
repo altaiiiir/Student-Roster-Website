@@ -16,8 +16,14 @@ user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
 
+
 #cursor
 cur = con.cursor()
+
+queryToRestartSequence = """alter sequence Note_id_seq restart with 1"""
+cur.execute(queryToRestartSequence)
+con.commit()
+
 gettingIDQuery= "Select ID, firstname, lastname, alias from Student where firstname = %s"
 allStudentsQuery = "Select * from Student"
 #execute query
@@ -61,9 +67,13 @@ def studentPage():
         user = request.form["nm"]
         theStudentID = request.form["theirID"]
         note = request.form["notes"]
+        noteType = request.form["noteType"]
         session["user"] = user
         if 'viewNotes' in request.form:
             studentNotes = func.viewStudentNotes() #this calls method in func which just returns all student notes
+            queryToRestartSequence = """alter sequence Note restart with 1"""
+            cur.execute(queryToRestartSequence)
+            con.commit()
             return render_template("studentNotes.html", things=studentNotes) #renders studentNotes page
         elif 'viewStudentName' in request.form:
             specificStudent = "Select * from Student where Student.FirstName = %s AND Student.StudentID = %s" 
@@ -78,12 +88,13 @@ def studentPage():
             maxNotInForm = cur.fetchall()
             max = maxNotInForm[0][0] #get max note because idk how we are keeping track of noteID
             max = max + 1
+            adminID = 1
             currentDate = date.today()
             studentInsert = """INSERT INTO Note (NoteID, Note, Date, Type, AdminID)
                                 Values(%s, %s, %s, %s, %s)""" #OKAY so apparently I need to insert into Note first and then connect that to Student Notes
                                                   #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
             
-            cur.execute(studentInsert, (max, note, currentDate, )) #here trying to insert the studentID and notID into the student_notes table 
+            cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
             con.commit()
             allStudents = func.viewAllStudents()
             return render_template("studentPage.html", things=allStudents)
