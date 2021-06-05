@@ -7,15 +7,24 @@
             {% endfor %}
          {% endif %}
       {% endwith %}
-   <form action="#" method="post">
+   
+      <form action="#" method="post">
       <p> Name: </p> <p> <input type="text" name="nm" /></p> 
       <p> Student ID: </p> <p> <input type="text" name="theirID" /></p>
       <p><input type="submit" name="viewStudentName" value="View Student" /></p>
-      <p> Behavior Note: </p>
+      <p> Behavior Note Type: </p>   
+      <select class="form-control" id="noteType" name="noteType">
+         <option value="1">Accessibility </option>
+         <option value="2"selected>Disciplinary</option>
+     </select>
+      <p> Behavior Note: </p>    
       <p> <input type="text" name="notes" /></p>
       <p><input type="submit" name="add" value="Add Note" /></p>
+      
       <p> View Behavior Note: </p>
       <p><input type="submit" name="viewNotes" value="ViewNotes" /></p>
+
+
    </form>
    <!-- <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1">first Name</span>
