@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Add Class
+{% endblock %}
+
+{% block content %}
+<h1>Add Class</h1>
+
+<form action ="#" method = "POST">
+
+    <p> Name: </p>
+    <p><input type="text" name = "name" /></p>
+    <p> Section: </p>
+    <p><input type="text" name = "section" /></p>
+    <p> Room Number: </p>
+    <p><input type="number" name = "roomid" /></p>
+    <p> CourseCredits: </p>
+    <p><input type="number" name = "creds" /></p>
+    <p> Instructor Name: </p>
+    <p><input type="text" name = "ins" /></p>
+    <p> Time: </p>
+    <p><input type="time" name = "time" /></p>
+    <p> Quarter (F, W, S, SU): </p>
+    <p><input type="text" name = "quarter" /></p>
+    <p> Year: </p>
+    <p><input type="number" name = "yr" /></p>
+
+    <p><input type="submit" name="add" value="Add"/></p>
+    <p><input type="submit" name="remove" value="Remove"/></p>
+</form>
+
+{% endblock %}

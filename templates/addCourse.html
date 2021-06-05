@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Add Courses
+{% endblock %}
+
+{% block content %}
+<h1>Add Course</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p> {{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<form action ="#" method = "POST">
+
+    <p> Name: </p>
+    <p><input type="text" name = "nm" /></p>
+    <p> CourseCredits: </p>
+    <p><input type="number" name = "creds" /></p>
+    <p> Type: </p>
+    <p><input type="text" name = "type" /></p>
+
+    <p><input type="submit" name="add" value="Add"/></p>
+    <p><input type="submit" name="remove" value="Remove"/></p>
+</form>
+
+
+{% endblock %}
+
