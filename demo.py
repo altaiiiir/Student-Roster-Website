@@ -125,41 +125,7 @@ def update_course():
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
             con.commit()
             return redirect(url_for("viewStudent"))
-            # currSln = request.form["sln"]
-            # newCourseName = request.form["CourseName"]
-            # newSection = request.form["Section"]
-            # newRoomID = request.form["RoomID"]
-            # newInstructorName = request.form["InstructorName"]
-            # newTime = request.form["Time"]
-            # newQuarter = request.form["Quarter"]
-            # newYear = request.form["Year"]
 
-            # if newCourseName is not "":
-            #     cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [newCourseName])
-            #     tempCourseID = cur.fetchall()
-            #     newCourseID = tempCourseID[0][0]
-            #     cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, currSln))
-
-            # if newSection is not "":
-            #     cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (newSection, currSln))
-
-            # if newRoomID is not "":
-            #     cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (newRoomID, currSln))
-
-            # if newInstructorName is not "":
-            #     cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (newInstructorName, currSln))
-
-            # if newTime is not "":
-            #     cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (newTime, currSln))
-
-            # if newQuarter is not "":
-            #     cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (newQuarter, currSln))
-
-            # if newYear is not "":
-            #     cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (newYear, currSln))
-
-            # con.commit()
-            # return render_template("CourseInfo.html", things=showCourseInfoRows())
     else:
         return render_template("UpdateClass.html")
 
