@@ -20,9 +20,6 @@ password = "2fD9vPoMU6HAfMM"
 #cursor
 cur = con.cursor()
 
-#queryToRestartSequence = """alter sequence Note_id_seq restart with 1"""
-#cur.execute(queryToRestartSequence)
-#con.commit()
 
 gettingIDQuery= "Select ID, firstname, lastname, alias from Student where firstname = %s"
 allStudentsQuery = "Select * from Student"
@@ -71,9 +68,7 @@ def studentPage():
         session["user"] = user
         if 'viewNotes' in request.form:
             studentNotes = func.viewStudentNotes() #this calls method in func which just returns all student notes
-            queryToRestartSequence = """alter sequence Note_id_seq restart with 1"""
-            cur.execute(queryToRestartSequence)
-            con.commit()
+
             return render_template("studentNotes.html", things=studentNotes) #renders studentNotes page
         elif 'viewStudentName' in request.form:
             specificStudent = "Select * from Student where Student.FirstName = %s AND Student.StudentID = %s" 
