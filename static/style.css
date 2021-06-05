@@ -69,3 +69,13 @@ textarea {
 	outline: none;
 	margin-top: 1rem;
 }
+
+.myclass{
+    display:block;
+    width: 100%;
+    height: 100%;
+}
+td{
+    width: 80px;
+    height: 40px;
+}

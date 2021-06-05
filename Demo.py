@@ -26,33 +26,34 @@ courseRows = cur.fetchall()
 for r in courseRows:
     print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]}")
 
-# execute query
-cur.execute(
-    'Select * from Course_Info '
-    '   JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)')
-courseInfoRows = cur.fetchall()
+
+def showCourseInfoRows():
+    cur.execute(
+        'Select * from Course_Info '
+        '   JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
+        'ORDER BY Course_Catalog.Name')
+    courseInfoRows = cur.fetchall()
+    return courseInfoRows
 
 # execute query
 cur.execute(
-    'SELECT * FROM Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)'
+    'SELECT * FROM Course_Info JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
     '   JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) '
     '   JOIN Student ON (Student.ID = Transcript.StudentID) '
-    'WHERE Course_Info.SLN = 10000 AND Course_Info.RoomID = 5')
+    'WHERE Course_Info.CourseID = 10000 AND Course_Info.RoomID = 5')
 courseAttendeesRows = cur.fetchall()
 
 #execute query
-cur.execute('Select * from Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN)')
+cur.execute('Select * from Course_Info JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)')
 courseInfoRows = cur.fetchall()
 
 #execute query
-cur.execute('SELECT * FROM Course_Info JOIN Course_Catalog ON (Course_Info.SLN = Course_Catalog.SLN) JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) JOIN Student ON (Student.ID = Transcript.StudentID) WHERE Course_Info.SLN = 10000 AND Course_Info.RoomID = 5')
+cur.execute('SELECT * FROM Course_Info'
+            '   JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID) '
+            '   JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) '
+            '   JOIN Student ON (Student.ID = Transcript.StudentID) '
+            'WHERE Course_Info.CourseID = 10000 AND Course_Info.RoomID = 5')
 courseAttendeesRows = cur.fetchall()
-
-# close cursor
-cur.close()
-
-# close the connection
-con.close()
 
 app = Flask(__name__)
 
@@ -79,9 +80,11 @@ def courses_catalog():
     else:
         return render_template("CourseCatalog.html", things=courseRows)
 
+
 @app.route("/course-info")
-def courseInfo():
-    return render_template("courseInfo.html", things = courseInfoRows)
+def course_info():
+    return render_template("CourseInfo.html", things=showCourseInfoRows())
+
 
 @app.route("/student-page", methods=["POST", "GET"])
 def student_page():
@@ -92,6 +95,48 @@ def student_page():
         return render_template("StudentPage.html", things=rows)
 
 
+@app.route("/update-class", methods=["POST", "GET"])
+def update_course():
+    if request.method == "POST":
+        currSln = request.form["sln"]
+        newCourseName = request.form["CourseName"]
+        newSection = request.form["Section"]
+        newRoomID = request.form["RoomID"]
+        newInstructorName = request.form["InstructorName"]
+        newTime = request.form["Time"]
+        newQuarter = request.form["Quarter"]
+        newYear = request.form["Year"]
+
+        if newCourseName is not "":
+            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [newCourseName])
+            tempCourseID = cur.fetchall()
+            newCourseID = tempCourseID[0][0]
+            cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, currSln))
+
+        if newSection is not "":
+            cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (newSection, currSln))
+
+        if newRoomID is not "":
+            cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (newRoomID, currSln))
+
+        if newInstructorName is not "":
+            cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (newInstructorName, currSln))
+
+        if newTime is not "":
+            cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (newTime, currSln))
+
+        if newQuarter is not "":
+            cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (newQuarter, currSln))
+
+        if newYear is not "":
+            cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (newYear, currSln))
+
+        con.commit()
+        return render_template("CourseInfo.html", things=showCourseInfoRows())
+    else:
+        return render_template("UpdateClass.html")
+
+
 @app.route("/<usr>")
 def user(usr):
     return f"<h1>{usr} </h1>"
@@ -99,3 +144,9 @@ def user(usr):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# close cursor
+cur.close()
+
+# close the connection
+con.close()
