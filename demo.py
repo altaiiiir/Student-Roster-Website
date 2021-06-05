@@ -42,6 +42,7 @@ courseAttendeesRows = cur.fetchall()
 #con.close()
 
 app = Flask(__name__)
+app.secret_key = '1234'
 
 @app.route("/") 
 def home():
@@ -76,18 +77,16 @@ def add():
         # check if its an add or remove
         if 'add' in request.form:
 
-            # HERE --------
+            # checks if course already exists
             cur.execute('Select * from Course_Catalog')
             courseRows = cur.fetchall()
             for r in courseRows:
-                print("here------, ", {r[1]})
-                print("here2----" , name)
-                curName = {r[1]}
+                curName = r[1]
+               
                 if (curName == name): 
-                    print("here3------, ", {r[1]})
-                    flash("Error", "error") 
-                    #return render_template("addCourse.html")
-                print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]}")
+                    flash("You cannot add a course that already exists.", "error") 
+                    return render_template("addCourse.html")
+
             # ---------------
             # adds to course catalog
             cur.execute("""INSERT INTO Course_Catalog (Name, CourseCredits, Type) 
@@ -100,15 +99,26 @@ def add():
 
             return render_template("coursePage.html", things = courseRows)
         else:
-            # removes course from course catalog
-            cur.execute("""DELETE FROM Course_Catalog WHERE Name = %s""", [name])
-            con.commit()
 
-            # update table
+            # checks if course doesn't exist
             cur.execute('Select * from Course_Catalog')
             courseRows = cur.fetchall()
-            
-            return render_template("coursePage.html", things = courseRows)
+            for r in courseRows:
+                curName = r[1]
+               
+                if (curName == name): 
+                   # removes course from course catalog
+                    cur.execute("""DELETE FROM Course_Catalog WHERE Name = %s""", [name])
+                    con.commit()
+
+                    # update table
+                    cur.execute('Select * from Course_Catalog')
+                    courseRows = cur.fetchall()
+                    
+                    return render_template("coursePage.html", things = courseRows) 
+                else:
+                    flash("You cannot remove a course that doesn't exists.", "error") 
+                    return render_template("addCourse.html")
     else:
         return render_template("addCourse.html")
 
@@ -127,41 +137,64 @@ def addClass():
 
         # check if its an add or remove
         if 'add' in request.form:
-            # adds to course info
-            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
-            idEntry = cur.fetchall()
-            id = idEntry[0][0]
         
-            cur.execute("""INSERT INTO Course_Info (CourseID, Section, RoomID, InstructorName, Time, Quarter, Year) 
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (id, section, roomid, instructor, time, quarter, year))
-            con.commit()
+            cur.execute('Select * from Course_Catalog')
+            courseRows = cur.fetchall()
+            for r in courseRows:
+                curName = r[1]
+               
+                if (curName == name): 
+                    # adds to course info
+                    cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
+                    idEntry = cur.fetchall()
+                    id = idEntry[0][0]
+                    
+                    cur.execute("""INSERT INTO Course_Info (CourseID, Section, RoomID, InstructorName, Time, Quarter, Year) 
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s)""", (id, section, roomid, instructor, time, quarter, year))
 
-            # update table
-            cur.execute('Select * from Course_Info')
-            courseInfoRows = cur.fetchall()
-            con.commit()
+                    con.commit()
 
-            return render_template("courseInfoPage.html", things = courseInfoRows)
+                    # update table
+                    cur.execute('Select * from Course_Info')
+                    courseInfoRows = cur.fetchall()
+                    con.commit()
+
+                    return render_template("courseInfoPage.html", things = courseInfoRows)
+
+                else: 
+                    flash("You cannot add a class to a course that doesn't exists.", "error") 
+                    return render_template("addCourse.html")
         else:
-            
-            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
-            idEntry = cur.fetchall()
-            id = idEntry[0][0]
 
-            
-            cur.execute('SELECT SLN FROM Course_Info WHERE CourseID = %s AND Section = %s', (id, section))
-            slnEntry = cur.fetchall()
-            sln = slnEntry[0][0]
-
-            # removes course from course Info
-            cur.execute("""DELETE FROM Course_Info WHERE SLN = %s""", [sln])
-            con.commit()
-
-            # update table
+            # for class delete only name and section are needed
+            # checks if course doesn't exist
             cur.execute('Select * from Course_Info')
             courseInfoRows = cur.fetchall()
+            for r in courseInfoRows:
+                curName = r[1]
+               
+                if (curName == name): 
+                    cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
+                    idEntry = cur.fetchall()
+                    id = idEntry[0][0]
+
+                    cur.execute('SELECT SLN FROM Course_Info WHERE CourseID = %s AND Section = %s', (id, section))
+                    slnEntry = cur.fetchall()
+                    sln = slnEntry[0][0]
+
+                    # removes course from course Info
+                    cur.execute("""DELETE FROM Course_Info WHERE SLN = %s""", [sln])
+                    con.commit()
+
+                    # update table
+                    cur.execute('Select * from Course_Info')
+                    courseInfoRows = cur.fetchall()
             
-            return render_template("courseInfoPage.html", things = courseInfoRows)
+                    return render_template("courseInfoPage.html", things = courseInfoRows)
+                else:
+                    flash("You cannot remove a class that doesn't exists.", "error") 
+                    return render_template("addCourse.html")
+            
     else:
         # show main screen initially
         return render_template("addClass.html")
