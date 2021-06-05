@@ -49,6 +49,10 @@ print(max)
 
 func.viewAdmin()
 
+cur.execute("""select * from Note""")
+notesRows = cur.fetchall()
+print(notesRows)
+
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
@@ -88,13 +92,15 @@ def studentPage():
             studentInsert = """INSERT INTO Note (NoteID, Note, Date, Type, AdminID)
                                 Values(%s, %s, %s, %s, %s)""" #OKAY so apparently I need to insert into Note first and then connect that to Student Notes
                                                   #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
-            
+            print('WHAT IS THIS WHAT IS THIS WHAT IS THIS')
+            print(max, note, currentDate, noteType, adminID )
             cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
-
-            query = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type, Note_Type.Name FROM Student_Notes
+            con.commit()
+            badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type, Note_Type.Name FROM Student_Notes
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
                     """
+            query = """select * from Note"""
             cur.execute(query)
             studentNotesRows = cur.fetchall()
             print(studentNotesRows)

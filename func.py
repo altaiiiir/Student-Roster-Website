@@ -42,7 +42,11 @@ def viewStudentNotes():
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
     """
-    cur.execute(query)
+    thequery = """select * from Note"""
+
+    cur.execute(thequery)
     studentNotesRows = cur.fetchall()
+    print('---------------')
+    print(studentNotesRows)
     cur.close()
     return studentNotesRows
