@@ -28,6 +28,12 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 def home():
     return render_template("index.html")
 
+@app.route("/viewStudent") 
+def viewStudent():
+    cur.execute('Select * from Student')
+    rows = cur.fetchall()
+    return render_template("studentPage.html", things=rows)
+
 @app.route("/TranscriptAddRemove", methods=["POST", "GET"])
 def TranscriptAddRemove():
     if request.method == "POST":
@@ -118,7 +124,7 @@ def addRemoveStudent():
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
                 Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
             con.commit()
-            return redirect(url_for("home"))
+            return redirect(url_for("viewStudent"))
         else:
             #TODO to double check data, protect against sql injections
             #TODO double check if value is legit
@@ -129,7 +135,7 @@ def addRemoveStudent():
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
             con.commit()
-            return redirect(url_for("home"))
+            return redirect(url_for("viewStudent"))
     else:
         return render_template("addRemoveStudent.html")
 
