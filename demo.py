@@ -16,8 +16,11 @@ user = "postgres",
 password = "2fD9vPoMU6HAfMM"
 )
 
+
 #cursor
 cur = con.cursor()
+
+
 gettingIDQuery= "Select ID, firstname, lastname, alias from Student where firstname = %s"
 allStudentsQuery = "Select * from Student"
 #execute query
@@ -38,6 +41,13 @@ FROM Transcript
 	JOIN Student ON (Transcript.StudentID = Student.ID)""")
 transcriptRows = cur.fetchall()
 
+findMaxNoteID = """Select MAX(NoteID) from Student_Notes"""
+cur.execute(findMaxNoteID)
+maxNotInForm = cur.fetchall()
+max = maxNotInForm[0][0] #get max note because idk how we are keeping track of noteID
+print(max)
+
+func.viewAdmin()
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -52,25 +62,41 @@ def studentPage():
     if request.method == "POST":
         session.permanant = True
         user = request.form["nm"]
-
+        theStudentID = request.form["theirID"]
+        note = request.form["notes"]
+        noteType = request.form["noteType"]
         session["user"] = user
         if 'viewNotes' in request.form:
-            studentNotes = func.viewStudentNotes()
-            return render_template("studentNotes.html", things=studentNotes)
+            studentNotes = func.viewStudentNotes() #this calls method in func which just returns all student notes
+
+            return render_template("studentNotes.html", things=studentNotes) #renders studentNotes page
         elif 'viewStudentName' in request.form:
-            specificStudent = "Select * from Student where Student.FirstName = %s" 
-            cur.execute(specificStudent, (user,))
+            specificStudent = "Select * from Student where Student.FirstName = %s AND Student.StudentID = %s" 
+            cur.execute(specificStudent, (user,theStudentID)) # view the student based on their firstName and id
             studentNotes = cur.fetchall()
             
-            return render_template("studentPage.html", things=studentNotes)
-        
+            return render_template("studentPage.html", things=studentNotes) #returns query of that user and studentID to studentPage
+        #I need to add a studentNoteInput.html page that asks user for the Note, and the type 
+        elif 'add' in request.form:
+            findMaxNoteID = """Select MAX(NoteID) from Note""" #find max note from Note  
+            cur.execute(findMaxNoteID)
+            maxNotInForm = cur.fetchall()
+            max = maxNotInForm[0][0] #get max note because idk how we are keeping track of noteID
+            max = max + 1
+            adminID = 1
+            currentDate = date.today()
+            studentInsert = """INSERT INTO Note (NoteID, Note, Date, Type, AdminID)
+                                Values(%s, %s, %s, %s, %s)""" #OKAY so apparently I need to insert into Note first and then connect that to Student Notes
+                                                  #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
+            
+            cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
+            con.commit()
+            allStudents = func.viewAllStudents()
+            return render_template("studentPage.html", things=allStudents)
         return render_template("studentPage.html", things=rows)
     else:
         return render_template("studentPage.html", things=rows)
     
-# @app.route("/test")
-# def test():
-#     return render_template("new.html")
 
 @app.route("/courseCatalog", methods=["POST", "GET"])
 def courseCatalog():
@@ -140,7 +166,10 @@ def Transcript():
 
 @app.route("/studentNotes", methods=["POST", "GET"])
 def studentNotes():
-    studentNotes = func.viewStudentNotes()
+    if request.method == "POST":
+        studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+        return render_template("studentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
+    studentNotes = func.viewStudentNotes() # calls viewStudentNotes
     return render_template("studentNotes.html", things=studentNotes)
     if request.method == "POST":
         if 'ViewNotes' in request.form:
@@ -163,3 +192,5 @@ cur.close()
 
 #close the connection
 con.close()
+
+#Am I gonna have to keep track of the noteID somewhere
