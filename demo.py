@@ -84,7 +84,7 @@ def courses_catalog():
 @app.route("/course-info")
 def course_info():
     return render_template("CourseInfo.html", things=showCourseInfoRows())
-    
+
 
 @app.route("/student-page", methods=["POST", "GET"])
 def student_page():
@@ -98,34 +98,41 @@ def student_page():
 @app.route("/update-class", methods=["POST", "GET"])
 def update_course():
     if request.method == "POST":
-        if 'add' in request.form:
-            #TODO double check data, protect against sql injections
-            #TODO double check if values are legit
-            StuID = request.form["studentID"]
-            Fname = request.form["first"]
-            Lname = request.form["last"]
-            gender = request.form["gender"]
-            super = request.form["super"]
-            alias = request.form["alias"]
-            dob = request.form["dob"]
+        currSln = request.form["sln"]
+        newCourseName = request.form["CourseName"]
+        newSection = request.form["Section"]
+        newRoomID = request.form["RoomID"]
+        newInstructorName = request.form["InstructorName"]
+        newTime = request.form["Time"]
+        newQuarter = request.form["Quarter"]
+        newYear = request.form["Year"]
 
-            cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
-                Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
-                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
-            con.commit()
-            return redirect(url_for("viewStudent"))
-        else:
-            #TODO to double check data, protect against sql injections
-            #TODO double check if value is legit
-            studID = int(request.form["studID"])
-            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
-            # Find the noteID based on studentID, use that to delete notes
-            # cur.execute('DELETE FROM Notes WHERE Student_Notes.StudentID = %s',[studID])
-            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
-            cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
-            con.commit()
-            return redirect(url_for("viewStudent"))
+        if newCourseName is not "":
+            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [newCourseName])
+            tempCourseID = cur.fetchall()
+            newCourseID = tempCourseID[0][0]
+            cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, currSln))
 
+        if newSection is not "":
+            cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (newSection, currSln))
+
+        if newRoomID is not "":
+            cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (newRoomID, currSln))
+
+        if newInstructorName is not "":
+            cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (newInstructorName, currSln))
+
+        if newTime is not "":
+            cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (newTime, currSln))
+
+        if newQuarter is not "":
+            cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (newQuarter, currSln))
+
+        if newYear is not "":
+            cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (newYear, currSln))
+
+        con.commit()
+        return render_template("CourseInfo.html", things=showCourseInfoRows())
     else:
         return render_template("UpdateClass.html")
 
@@ -135,7 +142,7 @@ def user(usr):
     return f"<h1>{usr} </h1>"
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     app.run(debug=True)
 
 # close cursor
