@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, flash
 
 #connect to the local host db
 con = psycopg2.connect (
@@ -75,6 +75,20 @@ def add():
 
         # check if its an add or remove
         if 'add' in request.form:
+
+            # HERE --------
+            cur.execute('Select * from Course_Catalog')
+            courseRows = cur.fetchall()
+            for r in courseRows:
+                print("here------, ", {r[1]})
+                print("here2----" , name)
+                curName = {r[1]}
+                if (curName == name): 
+                    print("here3------, ", {r[1]})
+                    flash("Error", "error") 
+                    #return render_template("addCourse.html")
+                print(f"SLN {r[0]} Name {r[1]} CourseCredits {r[2]} Type {r[3]}")
+            # ---------------
             # adds to course catalog
             cur.execute("""INSERT INTO Course_Catalog (Name, CourseCredits, Type) 
                             VALUES (%s, %s, %s)""", (name, cc, type))
@@ -84,7 +98,7 @@ def add():
             courseRows = cur.fetchall()
             con.commit()
 
-            return render_template("courseInfoPage.html", things = courseRows)
+            return render_template("coursePage.html", things = courseRows)
         else:
             # removes course from course catalog
             cur.execute("""DELETE FROM Course_Catalog WHERE Name = %s""", [name])
@@ -99,40 +113,60 @@ def add():
         return render_template("addCourse.html")
 
 @app.route("/addClass", methods = ["POST", "GET"])
-def add():
+def addClass():
     if request.method == "POST":
 
         # request data
-        name = request.form["nm"]
-        cc = request.form["creds"]
-        type = request.form["type"]
+        name = request.form["name"]
+        section = request.form["section"]
+        roomid = request.form["roomid"]
+        instructor = request.form["ins"]
+        time = request.form["time"]
+        quarter = request.form["quarter"]
+        year = request.form["yr"]
 
         # check if its an add or remove
         if 'add' in request.form:
-            # adds to course catalog
-            cur.execute("""INSERT INTO Course_Catalog (Name, CourseCredits, Type) 
-                            VALUES (%s, %s, %s)""", (name, cc, type))
-
-            # update table
-            cur.execute('Select * from Course_Catalog')
-            courseRows = cur.fetchall()
+            # adds to course info
+            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
+            idEntry = cur.fetchall()
+            id = idEntry[0][0]
+        
+            cur.execute("""INSERT INTO Course_Info (CourseID, Section, RoomID, InstructorName, Time, Quarter, Year) 
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (id, section, roomid, instructor, time, quarter, year))
             con.commit()
 
-            return render_template("courseInfoPage.html", things = courseRows)
+            # update table
+            cur.execute('Select * from Course_Info')
+            courseInfoRows = cur.fetchall()
+            con.commit()
+
+            return render_template("courseInfoPage.html", things = courseInfoRows)
         else:
-            # removes course from course catalog
-            cur.execute("""DELETE FROM Course_Catalog WHERE Name = %s""", [name])
+            
+            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
+            idEntry = cur.fetchall()
+            id = idEntry[0][0]
+
+            
+            cur.execute('SELECT SLN FROM Course_Info WHERE CourseID = %s AND Section = %s', (id, section))
+            slnEntry = cur.fetchall()
+            sln = slnEntry[0][0]
+
+            # removes course from course Info
+            cur.execute("""DELETE FROM Course_Info WHERE SLN = %s""", [sln])
             con.commit()
 
             # update table
-            cur.execute('Select * from Course_Catalog')
-            courseRows = cur.fetchall()
+            cur.execute('Select * from Course_Info')
+            courseInfoRows = cur.fetchall()
             
-            return render_template("coursePage.html", things = courseRows)
+            return render_template("courseInfoPage.html", things = courseInfoRows)
     else:
-        return render_template("addCourse.html")
+        # show main screen initially
+        return render_template("addClass.html")
 
-@app.route("/courses") 
+@app.route("/CourseCatalog") 
 def course():
     return render_template("coursePage.html", things = courseRows)
 
