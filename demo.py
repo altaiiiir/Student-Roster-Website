@@ -19,33 +19,14 @@ password = "2fD9vPoMU6HAfMM"
 #cursor
 cur = con.cursor()
 
-#execute query
-cur.execute('Select * from Student')
-rows = cur.fetchall()
-
-for r in rows:
-   print(f"ID {r[0]} name {r[1]}")
-
-#execute courses query
-cur.execute('Select * from Course_Catalog')
-courseRows = cur.fetchall()
-
-#execute transcripts query
-cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
-FROM Transcript
-	JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
-	JOIN Course_Catalog ON (Course_Info.courseID = Course_Catalog.ID)
-	JOIN Student ON (Transcript.StudentID = Student.ID)""")
-transcriptRows = cur.fetchall()
-
-
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+
 @app.route("/") 
 def home():
-    return render_template("index.html", things=rows)
+    return render_template("index.html")
     
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -133,6 +114,44 @@ def Transcript():
                         JOIN Student ON (Transcript.StudentID = Student.ID)""")
     updatedTranscriptRows = cur.fetchall()
     return render_template("Transcripts.html", things=updatedTranscriptRows)
+
+
+@app.route("/addRemoveStudent", methods = ["POST","GET"]) 
+def addRemoveStudent():
+    if request.method == "POST":
+        if 'add' in request.form:
+            #TODO double check data, protect against sql injections
+            #TODO double check if values are legit
+            StuID = request.form["studentID"]
+            Fname = request.form["first"]
+            Lname = request.form["last"]
+            gender = request.form["gender"]
+            super = request.form["super"]
+            alias = request.form["alias"]
+            dob = request.form["dob"]
+
+            cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
+                Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
+                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
+            con.commit()
+            return redirect(url_for("home"))
+        else:
+            #TODO to double check data, protect against sql injections
+            #TODO double check if value is legit
+            studID = int(request.form["studID"])
+            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
+            # Find the noteID based on studentID, use that to delete notes
+            # cur.execute('DELETE FROM Notes WHERE Student_Notes.StudentID = %s',[studID])
+            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
+            cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
+            con.commit()
+            return redirect(url_for("home"))
+    else:
+        return render_template("addRemoveStudent.html")
+
+@app.route("/<usr>")
+def user(usr):
+    return f"<h1>{usr} </h1>"
 
 if __name__ == "__main__":
      app.run(debug =True)
