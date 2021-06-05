@@ -46,58 +46,7 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 @app.route("/") 
 def home():
     return render_template("index.html", things=rows)
-
-@app.route("/studentPage", methods=["POST", "GET"]) 
-def studentPage():
-    if request.method == "POST":
-        if 'add' in request.form:
-            studentID = request.form['id']
-            firstname = request.form['firstnm']
-            lastname = request.form['lastnm']
-            alias = request.form['alias']
-            gender = request.form['gender']
-            superpower = request.form['superpower']
-            dob = request.form['dob']
-            enrolled = request.form['enrolled']
-            print(studentID + " " + firstname + " " + lastname + " " + alias + " " + gender + " " + superpower + " " + dob + " " + enrolled)
-            cur.execute("""INSERT INTO Student (studentID, firstName, lastName, alias, gender, superpower, dob, iscurrentlyenrolled, adminID)
-                        Values (%s, %s, %s, %s, %s, %s, %s, %s, 1)""", (studentID, firstname, lastname, alias, gender, superpower, dob, enrolled))
-            cur.execute('Select * from Student')
-            updatedStudentrows = cur.fetchall()
-            return render_template("studentPage.html", things=rows)
-        else:
-            studentID = request.form['id']
-            firstname = request.form['firstnm']
-            lastname = request.form['lastnm']
-            alias = request.form['alias']
-            gender = request.form['gender']
-            superpower = request.form['superpower']
-            dob = request.form['dob']
-            enrolled = request.form['enrolled']
-            cur.execute('''DELETE FROM Student WHERE studentID = %s''', [studentID])
-            cur.execute('Select * from Student')
-            updatedStudentrows = cur.fetchall()
-            return render_template("studentPage.html", things=updatedStudentrows)
-    else:
-        return render_template("studentPage.html", things=rows)
     
-# @app.route("/test")
-# def test():
-#     return render_template("new.html")
-
-@app.route("/courseCatalog", methods=["POST", "GET"])
-def courseCatalog():
-    if request.method == "POST":
-        creditType = request.form["courseType"]
-        SLN = request.form["SLN"]
-        cur.execute('Select * from Course_Catalog WHERE Type = %s AND SLN = %d', (creditType, SLN))
-        creditRows = cur.fetchall()
-        for r in creditRows:
-            print(f"ID {r[0]} name {r[1]}")
-        return render_template("courseCatalog.html", things=creditRows)
-    else:
-        return render_template("courseCatalog.html", things=courseRows) 
-
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -113,12 +62,6 @@ def user():
         return f"<h1>{user} </h1>"
     else:
         return redirect(url_for("login"))
-
-@app.route("/logout")
-def logout():
-    session.pop("user", None)
-    flash("You have been logged out", "info")
-    return redirect(url_for("studentPage"))
 
 @app.route("/TranscriptAddRemove", methods=["POST", "GET"])
 def TranscriptAddRemove():
