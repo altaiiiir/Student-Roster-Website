@@ -92,16 +92,26 @@ def studentPage():
             studentInsert = """INSERT INTO Note (NoteID, Note, Date, Type, AdminID)
                                 Values(%s, %s, %s, %s, %s)""" #OKAY so apparently I need to insert into Note first and then connect that to Student Notes
                                                   #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
-            print('WHAT IS THIS WHAT IS THIS WHAT IS THIS')
+            studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s)"""
+            
             print(max, note, currentDate, noteType, adminID )
             cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
             con.commit()
-            badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type, Note_Type.Name FROM Student_Notes
+            getSerial = """SELECT Note.ID from Note where Note.NoteID = %s"""
+            cur.execute(getSerial, (max,))
+            theSerial = cur.fetchall()
+            serialRightForm = theSerial[0][0]
+
+            cur.execute(studentNotesInsert,(serialRightForm, theStudentID))
+            con.commit()
+            badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+                                 Note.Note, Note.Date, Note.Type, Note_Type.Name FROM Student_Notes
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
+                   JOIN Student ON (Student_Notes.StudentID = Student.ID)
                     """
             query = """select * from Note"""
-            cur.execute(query)
+            cur.execute(badquery)
             studentNotesRows = cur.fetchall()
             print(studentNotesRows)
             studentNotes = func.viewStudentNotes()

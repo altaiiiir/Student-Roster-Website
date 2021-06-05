@@ -38,13 +38,15 @@ def viewAllStudents():
     
 def viewStudentNotes():
     cur = con.cursor()
-    query = """SELECT Student_Notes.StudentID, Note.NoteID, Note.Note, Date, Note.Type, Note_Type.Name FROM Student_Notes
+    query = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+                                 Note.Note, Note.Date, Note_Type.Name FROM Student_Notes
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
-    """
+                   JOIN Student ON (Student_Notes.StudentID = Student.ID)
+                    """
     thequery = """select * from Note"""
 
-    cur.execute(thequery)
+    cur.execute(query)
     studentNotesRows = cur.fetchall()
     print('---------------')
     print(studentNotesRows)
