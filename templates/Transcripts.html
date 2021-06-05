@@ -12,13 +12,15 @@
    table {
       border-spacing: 15px;
    }
-</style>
 
-<table style="width:50%" align="left">
+</style>
+<div class="container-fluid">
+   <table style="width:50%" align="left">
    <tr><th>Student ID</th><th>First Name</th><th>Last Name</th><th>SLN</th><th>Name</th><th>Section</th><th>Final Grade</th></tr>
    {% for thing in things %}
    <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td></tr>
    {% endfor %}
-</table>
+   </table>
+</div>
 
 {% endblock %}
