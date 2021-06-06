@@ -1,8 +1,9 @@
+from re import split
 import psycopg2
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 import func
 from datetime import timedelta
-
+import datetime
 from datetime import date
 
 today = date.today()
@@ -102,9 +103,11 @@ def studentNotes():
             note = request.form["notes"]
             noteType = request.form["noteType"]
             theNoteID = request.form["NoteID"]
-           
-            if (theNoteID == "" or theStudentID == ""):
-                flash("Please enter a valid NoteID and StudentID", "error")
+            theDate = request.form["date"]
+            
+            
+            if (theNoteID == "" or theStudentID == "" or theDate == ""):
+                flash("Please enter a valid NoteID, StudentID and Date", "error")
                 return render_template("studentNotes.html", things=studentNotes)
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
@@ -188,6 +191,18 @@ def studentNotes():
             theStudentID = request.form["theirID"]
             note = request.form["notes"]
             noteType = request.form["noteType"]
+            theDate = request.form["date"]
+            
+            splitDate = theDate.split("/")
+            month = splitDate[0]
+            day = splitDate[1]
+            year = splitDate[2]
+            if (month.isdecimal() == 0 or day.isdecimal() == 0 or year.isdecimal() == 0 ):
+                flash("Please enter a valid date", "error")
+                return render_template("studentNotes.html", things=studentNotes)
+            
+            dateObject = datetime.datetime(year, month, day)
+            print (dateObject)
             #theNoteID = request.form["NoteID"]
             if theStudentID == "" or note == "":
                 flash("Please enter a valid StudentID and note", "error")
