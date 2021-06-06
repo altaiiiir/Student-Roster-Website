@@ -91,9 +91,15 @@ def studentPage():
         #I need to add a studentNoteInput.html page that asks user for the Note, and the type 
         
     return render_template("studentPage.html", things=rows)
-    
-@app.route("/studentNotes", methods=["POST", "GET"])
-def studentNotes():
+
+@app.route("/viewStudentNotes", methods = ["POST", "GET"])
+def viewStudentNotes():
+    studentNotes = func.viewStudentNotes()
+    return render_template("viewStudentNotes.html", things=studentNotes)
+
+
+@app.route("/modifyStudentNotes", methods=["POST", "GET"])
+def modifyStudentNotes():
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
         studentNotes = func.viewStudentNotes()
@@ -107,7 +113,7 @@ def studentNotes():
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
 
             print ("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
@@ -133,7 +139,7 @@ def studentNotes():
                     linkednote = 1
             if (linkedstud == 0 or linkednote == 0):
                 flash("Please enter a valid NoteID and StudentID combination", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
 
             cur.execute(allRowsStudentNotes)
             allRowsQuery= cur.fetchall()
@@ -162,7 +168,7 @@ def studentNotes():
            
             if (studentIDExists == 0 or NoteIDExists == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
 
         
 
@@ -178,7 +184,7 @@ def studentNotes():
             cur.execute(noteQuery, (theNoteID,))
             con.commit()
             studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-            return render_template("studentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
+            return render_template("modifyStudentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
       
       
         elif 'add' in request.form:
@@ -189,46 +195,46 @@ def studentNotes():
             theDate = request.form["date"]
             if theStudentID == "" or note == "" or theDate == "":
                 flash("Please enter a valid StudentID, note and date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             
             splitDate = theDate.split("/")
             if len(splitDate) != 3:
                 flash("Please enter a valid date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             month = splitDate[0]
             day = splitDate[1]
             year = splitDate[2]
             
             if (month.isdecimal() == 0 or day.isdecimal() == 0 or year.isdecimal() == 0 ):
                 flash("Please enter a valid date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             month = int(splitDate[0])
             day = int(splitDate[1])
             year = int(splitDate[2])
 
             if(month > 12 or month < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             if(day > 31 or day < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             if(year > 2021 or year < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
 
             dateObject = datetime.datetime(year, month, day)
             curDate = date.today()
 
             if (dateObject > datetime.datetime.now()):
                 flash("Please enter a date that is prior to today", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             print (dateObject)
             print(date.today())
             #theNoteID = request.form["NoteID"]
             
             if (theStudentID.isdecimal() == 0):
                 flash("Please enter a valid StudentID", "error")
-                return render_template("studentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things=studentNotes)
             
             studentQuery = """select * from student where ID = %s; """
             cur.execute(studentQuery, (theStudentID,)) 
@@ -246,7 +252,7 @@ def studentNotes():
             print (studentIDExists)
             if (studentIDExists == 0):
                 flash("Please enter a valid StudentID", "error")
-                return render_template("studentNotes.html", things=studentNotes)    
+                return render_template("modifyStudentNotes.html", things=studentNotes)    
             print ("went thorought checks ")
 
             findMaxNoteID = """Select MAX(NoteID) from Note""" #find max note from Note  
@@ -284,13 +290,13 @@ def studentNotes():
             #print(studentNotesRows)
             studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
-            return render_template("studentNotes.html", things=studentNotes)
+            return render_template("modifyStudentNotes.html", things=studentNotes)
         print ("post")
         studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-        return render_template("studentNotes.html", things=studentNotes)
+        return render_template("modifyStudentNotes.html", things=studentNotes)
     print ("no post")
     studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-    return render_template("studentNotes.html", things=studentNotes)
+    return render_template("modifyStudentNotes.html", things=studentNotes)
     
 
 @app.route("/courseCatalog", methods=["POST", "GET"])

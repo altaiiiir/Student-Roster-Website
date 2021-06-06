@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %} student Page{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p> {{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<h1> Student Notes </h1>
+<style type="text/css">
+    th
+    {
+        padding:0 20px 0 20px;
+    }
+    td
+    {
+        padding:0 20px 0 20px;
+    }
+    </style>
+
+<form action="#" method="post">
+    <p> Student ID: </p>
+    <p> <input type="text" name="theirID" /></p>
+
+    <p> Note ID: </p> 
+    <p> <input type="text" name="NoteID" /></p> 
+    <p><input type="submit" name="delete" value="Delete Note" /></p>
+
+    <p> Behavior Note Type: </p>   
+    <select class="form-control" id="noteType" name="noteType">
+         <option value="A">Accessibility </option>
+         <option value="D"selected>Disciplinary</option>
+    </select>
+
+    <p> Date: </p>  
+    <p> <input type="text" placeholder="MM/DD/YYY" name="date" /></p>
+
+    <p> Behavior Note: </p>  
+    <p> <input type="text" name="notes" /></p>
+    <p><input type="submit" name="add" value="Add Note" /></p> 
+    
+    
+    
+    <p> View Behavior Note: </p>  
+    <p><input type="submit" name="viewNotes" value="ViewNotes" /></p>
+    
+    <!-- to add note we need student ID to delete note we need note id and student ID -->
+   
+
+ </form>
+
+ <table>
+    <tr><th>Student ID </th>  <th>  Notes ID </th> <th> First Name</th> <th> Last Name</th> <th> Note</th> <th> Date </th> <th>  Note Type </th> </tr>
+    {% for thing in things %}
+    <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td><td>{{thing[3]}}</td><td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> </tr>
+    {% endfor %}
+ </table>
+
+{% endblock %}
