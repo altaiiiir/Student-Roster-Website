@@ -1,7 +1,7 @@
 import psycopg2
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from datetime import date
 
@@ -315,8 +315,6 @@ def addClass():
         quarter = request.form["quarter"]
         year = request.form["yr"]
 
-        
-
         # check if its an add or remove
         if 'add' in request.form:
             if(name and section and roomid and instructor and time and quarter and year) :
@@ -324,16 +322,28 @@ def addClass():
                 existsInCatalog = 0 # false
                 roomExists = 0 # false
                 roomHasSpace = 0 # false
+                roomAvaliable = 1 # true
+
+                # checks for room time avaliability 
+                cur.execute('SELECT * FROM Course_Info WHERE RoomID = %s', [roomid])
+                tempRows = cur.fetchall()
+                for x in tempRows:
+                    curTime = x[6]
+                    tempCurTime = curTime.strftime("%H:%M:%S")
+                    tempTime = time + ':00'
+                    if (tempCurTime == tempTime):
+                        roomAvaliable = 0 # false
 
                 # checks for room space and existence 
                 cur.execute('SELECT * FROM Classroom')
                 tempRows = cur.fetchall()
                 for x in tempRows:
                     curRoom = x[2]
+                    
                     curCapacity = x[3]
-                    if (curRoom == roomid):
+                    if (int(curRoom) == int(roomid)):
                         roomExists = 1 # true
-                    if (curCapacity >= curCapacity+1):
+                    if (int(curCapacity) >= int(curCapacity+1)):
                         roomHasSpace = 1 # true
 
                 # checks for class existance in course
@@ -354,6 +364,11 @@ def addClass():
                     if (curName == name and curSection == section): 
                         flash("You cannot add a class that already exists.") 
                         return render_template("addClass.html")
+
+                # Case: class time conflict
+                if roomAvaliable == 0:
+                    flash("Time conflict within that building.") 
+                    return render_template("addClass.html")
 
                 # Case: class not in catalog
                 if existsInCatalog == 0:
