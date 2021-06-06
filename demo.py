@@ -45,13 +45,13 @@ findMaxNoteID = """Select MAX(NoteID) from Student_Notes"""
 cur.execute(findMaxNoteID)
 maxNotInForm = cur.fetchall()
 max = maxNotInForm[0][0] #get max note because idk how we are keeping track of noteID
-print(max)
+#print(max)
 
-func.viewAdmin()
+#func.viewAdmin()
 
 cur.execute("""select * from Note""")
 notesRows = cur.fetchall()
-print(notesRows)
+#print(notesRows)
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -64,24 +64,61 @@ def home():
 @app.route("/studentPage", methods=["POST", "GET"]) 
 def studentPage():
     if request.method == "POST":
-        session.permanant = True
-        user = request.form["nm"]
-        theStudentID = request.form["theirID"]
-        note = request.form["notes"]
-        noteType = request.form["noteType"]
-        session["user"] = user
-        if 'viewNotes' in request.form:
-            studentNotes = func.viewStudentNotes() #this calls method in func which just returns all student notes
 
-            return render_template("studentNotes.html", things=studentNotes) #renders studentNotes page
+        studentNotes = func.viewStudentNotes()
+        if 'viewNotes' in request.form:
+            print("clicked viewNotes")
+            return render_template('studentNotes.html', things = studentNotes) #renders studentNotes page
         elif 'viewStudentName' in request.form:
-            specificStudent = "Select * from Student where Student.FirstName = %s AND Student.StudentID = %s" 
-            cur.execute(specificStudent, (user,theStudentID)) # view the student based on their firstName and id
-            studentNotes = cur.fetchall()
-            
-            return render_template("studentPage.html", things=studentNotes) #returns query of that user and studentID to studentPage
+            theStudentID = request.form["theirID"]
+            specificStudent = "Select * from Student where Student.StudentID = %s" 
+            if (theStudentID != ""):
+                cur.execute(specificStudent, (theStudentID,)) # view the student based on their firstName and id
+                specificStudent = cur.fetchall()
+                return render_template("studentPage.html", things=specificStudent)
+            else:
+                return render_template("studentPage.html", things=rows) #returns query of that user and studentID to studentPage
+
+        return render_template("studentPage.html", things=rows) #returns query of that user and studentID to studentPage
         #I need to add a studentNoteInput.html page that asks user for the Note, and the type 
+        
+    return render_template("studentPage.html", things=rows)
+    
+@app.route("/studentNotes", methods=["POST", "GET"])
+def studentNotes():
+    studentNotes = func.viewStudentNotes()
+    if request.method == "POST":
+        studentNotes = func.viewStudentNotes()
+        if 'delete' in request.form:
+            print ("DELETE WAS RANNNN")
+            theStudentID = request.form["theirID"]
+            note = request.form["notes"]
+            noteType = request.form["noteType"]
+            theNoteID = request.form["NoteID"]
+            if (theNoteID == ""):
+                return render_template("studentNotes.html", things=studentNotes)
+
+            noteQuery = """ delete from note where note.noteID = %s """
+            getSerial = """select ID from note where NoteID = %s """
+            cur.execute(getSerial, (theNoteID,))
+            NoteSerialNotInForm= cur.fetchall()
+            noteSerialInForm = NoteSerialNotInForm[0][0]
+          
+            student_notesQuery = """ delete from Student_Notes where student_notes.StudentID = %s AND student_notes.noteID = %s """
+            cur.execute(student_notesQuery, (theStudentID, noteSerialInForm))
+            con.commit()
+            cur.execute(noteQuery, (theNoteID,))
+            con.commit()
+            studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+            return render_template("studentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
         elif 'add' in request.form:
+            print ("WENT THROUGH ADD")
+            theStudentID = request.form["theirID"]
+            note = request.form["notes"]
+            noteType = request.form["noteType"]
+            #theNoteID = request.form["NoteID"]
+            if theStudentID == "" or note =="":
+                return render_template("studentNotes.html", things=studentNotes)
             findMaxNoteID = """Select MAX(NoteID) from Note""" #find max note from Note  
             cur.execute(findMaxNoteID)
             maxNotInForm = cur.fetchall()
@@ -94,7 +131,7 @@ def studentPage():
                                                   #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
             studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s)"""
             
-            print(max, note, currentDate, noteType, adminID )
+            #print(max, note, currentDate, noteType, adminID )
             cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
             con.commit()
             getSerial = """SELECT Note.ID from Note where Note.NoteID = %s"""
@@ -113,14 +150,16 @@ def studentPage():
             query = """select * from Note"""
             cur.execute(badquery)
             studentNotesRows = cur.fetchall()
-            print(studentNotesRows)
+            #print(studentNotesRows)
             studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
             return render_template("studentNotes.html", things=studentNotes)
-            #return render_template("studentPage.html", things=allStudents)
-        return render_template("studentPage.html", things=rows)
-    else:
-        return render_template("studentPage.html", things=rows)
+        print ("post")
+        studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+        return render_template("studentNotes.html", things=studentNotes)
+    print ("no post")
+    studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+    return render_template("studentNotes.html", things=studentNotes)
     
 
 @app.route("/courseCatalog", methods=["POST", "GET"])
@@ -189,23 +228,7 @@ def Transcript():
     else:        
         return render_template("Transcripts.html", things=transcriptRows) 
 
-@app.route("/studentNotes", methods=["POST", "GET"])
-def studentNotes():
-    if request.method == "POST":
-        studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-        return render_template("studentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
-    studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-    return render_template("studentNotes.html", things=studentNotes)
-    if request.method == "POST":
-        if 'ViewNotes' in request.form:
-            studentNotes = func.viewStudentNotes()
-            return render_template("studentNotes.html", things=studentNotes)
-        else:
-            studentNotes = func.viewStudentNotes()
-            return render_template("studentNotes.html", things=studentNotes)
-    else:
-        studentNotes = func.viewStudentNotes()
-        return render_template("studentNotes.html", things=studentNotes)
+
 
 
 

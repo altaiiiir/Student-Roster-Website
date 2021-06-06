@@ -21,8 +21,8 @@ def viewStudents(name):
   strname=str(name)
   cur.execute('Select ID, FirstName, LastName, from Student where Student.FirstName = %s', (strname))
   rows = cur.fetchall()
-  for i in rows:
-      print( i[0])
+  #for i in rows:
+   #   print( i[0])
 
   cur.close()
   return rows
@@ -49,6 +49,6 @@ def viewStudentNotes():
     cur.execute(query)
     studentNotesRows = cur.fetchall()
     print('---------------')
-    print(studentNotesRows)
+    #print(studentNotesRows)
     cur.close()
     return studentNotesRows
