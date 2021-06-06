@@ -95,8 +95,34 @@ def studentNotes():
             note = request.form["notes"]
             noteType = request.form["noteType"]
             theNoteID = request.form["NoteID"]
-            if (theNoteID == ""):
+           
+           
+           
+           
+            if (theNoteID == "" or theStudentID == ""):
                 return render_template("studentNotes.html", things=studentNotes)
+            
+            doesStudentHaveNote = """ select * from student_notes where studentID = %s """
+            
+            doesStudentHaveBoth = """select * from student_notes where studentID = %s AND NoteID = %s """ 
+            
+            
+            cur.execute(doesStudentHaveBoth, (theStudentID, theNoteID))
+            studentIDExists = 0
+            NoteIDExists = 0
+            tempRows = cur.fetchall()
+            for x in tempRows:
+                curStudID = x[0]
+                curNotID = x[1]
+                if (curStudID == theStudentID):
+                    studentIDExists = 1 # true
+                if (curNotID == theNoteID):
+                    NoteIDExists = 1
+           
+            if (studentIDExists == 0 or NoteIDExists == 0):
+                return render_template("studentNotes.html", things=studentNotes)
+
+        
 
             noteQuery = """ delete from note where note.noteID = %s """
             getSerial = """select ID from note where NoteID = %s """
