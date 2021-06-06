@@ -147,10 +147,6 @@ def studentNotes():
             tempRows = cur.fetchall() #does studentid exist
             print (tempRows)
             
-            
-                    
-
-            
             for x in tempRows:
                 curStudID = x[0]
                 if (str(curStudID) == theStudentID):
@@ -232,6 +228,7 @@ def studentNotes():
             studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s);"""
             
             #print(max, note, currentDate, noteType, adminID )
+            
             cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
             con.commit()
             getSerial = """SELECT Note.ID from Note where Note.NoteID = %s;"""
