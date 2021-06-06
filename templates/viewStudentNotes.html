@@ -32,5 +32,10 @@
     <p><input type="submit" name="modifyNotes" value="Modify Notes" /></p>
 </form>
     <!-- to add note we need student ID to delete note we need note id and student ID -->
-
+    <table>
+        <tr><th>Student ID </th>  <th>  Notes ID </th> <th> First Name</th> <th> Last Name</th> <th> Note</th> <th> Date </th> <th>  Note Type </th> </tr>
+        {% for thing in things %}
+        <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td><td>{{thing[3]}}</td><td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> </tr>
+        {% endfor %}
+     </table>
 {% endblock %}

@@ -34,6 +34,7 @@ def viewAllStudents():
     cur.execute(allStudentsQuery)
     rows = cur.fetchall()
     cur.close()
+    print(rows)
     return rows
     
 def viewStudentNotes():
@@ -49,6 +50,7 @@ def viewStudentNotes():
     cur.execute(query)
     studentNotesRows = cur.fetchall()
     print('---------------')
+    print(studentNotesRows)
     #print(studentNotesRows)
     cur.close()
     return studentNotesRows
