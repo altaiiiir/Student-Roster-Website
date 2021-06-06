@@ -42,10 +42,11 @@
     <p> <input type="text" name="notes" /></p>
     <p><input type="submit" name="add" value="Add Note" /></p> 
     
-    
-    
-    <p> View Behavior Note: </p>  
-    <p><input type="submit" name="viewNotes" value="ViewNotes" /></p>
+    </form>
+
+    <form action="{{ url_for('viewStudentNotes') }}" method="GET">
+        <p> View Behavior Note: </p>  
+        <p><input type="submit" name="viewNotes" value="viewNotes" /></p>
     
     <!-- to add note we need student ID to delete note we need note id and student ID -->
    

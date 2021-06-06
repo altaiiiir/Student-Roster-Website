@@ -52,3 +52,21 @@ def viewStudentNotes():
     #print(studentNotesRows)
     cur.close()
     return studentNotesRows
+
+def viewSpecificStudentNotes(studentID):
+    cur = con.cursor()
+    ID=int(studentID)
+    query = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+                                 Note.Note, Note.Date, Note_Type.Name FROM Student_Notes
+                   JOIN Note ON (Student_Notes.NoteID = Note.ID)
+                   JOIN Note_Type ON (Note.Type = Note_Type.Type)
+                   JOIN Student ON (Student_Notes.StudentID = Student.ID)
+                   WHERE student_Notes.studentID = %s;
+                    """
+    cur.execute(query, (ID,))
+    rows = cur.fetchall()
+  #for i in rows:
+   #   print( i[0])
+
+    cur.close()
+    return rows

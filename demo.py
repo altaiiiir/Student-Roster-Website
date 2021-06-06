@@ -95,6 +95,28 @@ def studentPage():
 @app.route("/viewStudentNotes", methods = ["POST", "GET"])
 def viewStudentNotes():
     studentNotes = func.viewStudentNotes()
+    if request.method == "POST":
+        
+        if 'modifyNotes' in request.form:
+            
+            studentNotes = func.viewStudentNotes()
+            return render_template('modifyStudentNotes.html', things = studentNotes)
+        
+        if 'viewNotes' in request.form:
+            theStudentID = request.form["theirID"]
+               
+            if (theStudentID != ""):
+                    
+                if (theStudentID.isdecimal() == 0):
+                    flash("StudentID must be a number", "error")
+                    return render_template("viewStudentNotes.html", things=studentNotes)
+
+                specificStudent = func.viewSpecificStudentNotes(theStudentID)
+                return render_template("viewStudentNotes.html", things=specificStudent)
+            else:
+                return render_template("viewStudentNotes.html", things=studentNotes)
+    
+    studentNotes = func.viewStudentNotes()
     return render_template("viewStudentNotes.html", things=studentNotes)
 
 
@@ -102,7 +124,11 @@ def viewStudentNotes():
 def modifyStudentNotes():
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
-        studentNotes = func.viewStudentNotes()
+        if 'viewNotes' in request.form:
+            print("clicked viewNotes")
+            studentNotes = func.viewStudentNotes()
+            return render_template('viewStudentNotes.html')
+        
         if 'delete' in request.form:
             print ("DELETE WAS RANNNN")
             theStudentID = request.form["theirID"]
@@ -113,7 +139,7 @@ def modifyStudentNotes():
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things = studentNotes)
 
             print ("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
@@ -139,7 +165,7 @@ def modifyStudentNotes():
                     linkednote = 1
             if (linkedstud == 0 or linkednote == 0):
                 flash("Please enter a valid NoteID and StudentID combination", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things = studentNotes)
 
             cur.execute(allRowsStudentNotes)
             allRowsQuery= cur.fetchall()
@@ -168,7 +194,7 @@ def modifyStudentNotes():
            
             if (studentIDExists == 0 or NoteIDExists == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("modifyStudentNotes.html", things = studentNotes)
 
         
 
@@ -184,7 +210,8 @@ def modifyStudentNotes():
             cur.execute(noteQuery, (theNoteID,))
             con.commit()
             studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-            return render_template("modifyStudentNotes.html", things=studentNotes) #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
+            flash("Successfully deleted note")
+            return render_template("modifyStudentNotes.html") #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
       
       
         elif 'add' in request.form:
