@@ -49,13 +49,13 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 def home():
     return render_template("index.html")
 
-@app.route("/viewStudent") 
+@app.route("/view-student")
 def viewStudent():
     cur.execute('Select * from Student')
     rows = cur.fetchall()
-    return render_template("studentPage.html", things=rows)
+    return render_template("StudentPage.html", things=rows)
 
-@app.route("/TranscriptFilter", methods=["POST", "GET"])
+@app.route("/transcript-filter", methods=["POST", "GET"])
 def TranscriptFilter():
    if 'filterAll' in request.form:
       try:
@@ -103,29 +103,29 @@ def TranscriptFilter():
    else:
       return render_template("filterTranscript.html")
 
-@app.route("/TranscriptAddRemove", methods=["POST", "GET"])
+@app.route("/transcript-add-remove", methods=["POST", "GET"])
 def TranscriptAddRemove():
    if request.method == "POST":
       studentID = request.form["studentID"]
       if studentID == '':
          flash("Enter In Student ID", "info")
-         return render_template("Transcriptaddremove.html")
+         return render_template("TranscriptAddRemove.html")
       SLN = request.form["SLN"]
       if SLN == '':
          flash("Enter in SLN", "info")
-         return render_template("Transcriptaddremove.html")
+         return render_template("TranscriptAddRemove.html")
       cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [SLN])
       classIDs = cur.fetchall()
       if classIDs.__len__() == 0:
          flash("Class Doesn't Exist", "info")
-         return render_template("Transcriptaddremove.html")
+         return render_template("TranscriptAddRemove.html")
       classID = classIDs[0][0]
       if 'delete' in request.form:
          cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
          isConnection = cur.fetchall()
          if isConnection.__len__() == 0:
             flash("Student is not Enrolled in the Class", "info")
-            return render_template("Transcriptaddremove.html")
+            return render_template("TranscriptAddRemove.html")
          cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
       elif 'addStudent' in request.form:
          try:
@@ -141,30 +141,30 @@ def TranscriptAddRemove():
                   Values(%s, %s)''', (studentID, int(classID)))
             else:
                flash("Student is Already in the Class", "info")
-               return render_template("Transcriptaddremove.html")
+               return render_template("TranscriptAddRemove.html")
       else:
          grade = request.form["grade"]
          if grade == '':
             flash("Enter Grade", "info")
-            return render_template("Transcriptaddremove.html")
+            return render_template("TranscriptAddRemove.html")
          #adding grade
          cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
          isConnection = cur.fetchall()
          if isConnection.__len__() == 0:
             flash("Student is not Enrolled in the Class", "info")
-            return render_template("Transcriptaddremove.html")
+            return render_template("TranscriptAddRemove.html")
          else:
             if float(grade) < 0.0 or float(grade) > 4.0:
                flash("Not a valid grade", "info")
-               return render_template("Transcriptaddremove.html")
+               return render_template("TranscriptAddRemove.html")
             cur.execute('''UPDATE Transcript SET 
                finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
       con.commit()
       return redirect(url_for("Transcript"))
    else:        
-      return render_template("Transcriptaddremove.html") 
+      return render_template("TranscriptAddRemove.html")
 
-@app.route("/Transcript", methods=["POST", "GET"])
+@app.route("/transcript", methods=["POST", "GET"])
 def Transcript():
     cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                     FROM Transcript
@@ -176,7 +176,7 @@ def Transcript():
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
 
-@app.route("/addRemoveStudent", methods = ["POST","GET"]) 
+@app.route("/add-remove-student", methods = ["POST","GET"])
 def addRemoveStudent():
     if request.method == "POST":
         if 'add' in request.form:
@@ -219,7 +219,7 @@ def courses_catalog():
         courseRows = cur.fetchall()
         return render_template("CourseCatalog.html", things=courseRows)
 
-@app.route("/course-info")
+@app.route("/class-info")
 def course_info():
     return render_template("CourseInfo.html", things=showCourseInfoRows())
 
@@ -264,11 +264,9 @@ def update_course():
     else:
         return render_template("UpdateClass.html")
 
-@app.route("/addCourse", methods = ["POST", "GET"])
+@app.route("/add-course", methods = ["POST", "GET"])
 def add():
     if request.method == "POST":
-
-        
 
         # check if its an add or remove
         if 'add' in request.form:
@@ -334,7 +332,7 @@ def add():
     else:
         return render_template("addCourse.html")
 
-@app.route("/addClass", methods = ["POST", "GET"])
+@app.route("/add-class", methods = ["POST", "GET"])
 def addClass():
     if request.method == "POST":
 
@@ -482,7 +480,7 @@ def addClass():
         # show main screen initially
         return render_template("addClass.html")
 
-@app.route("/viewStudentNotes", methods = ["POST", "GET"])
+@app.route("/view-student-notes", methods = ["POST", "GET"])
 def viewStudentNotes():
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
@@ -509,7 +507,7 @@ def viewStudentNotes():
     studentNotes = func.viewStudentNotes()
     return render_template("viewStudentNotes.html", things=studentNotes)
 
-@app.route("/modifyStudentNotes", methods=["POST", "GET"])
+@app.route("/modify-student-notes", methods=["POST", "GET"])
 def modifyStudentNotes():
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
@@ -706,6 +704,7 @@ def modifyStudentNotes():
             #print(studentNotesRows)
             studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
+            flash("Note successfully added", "info")
             return render_template("modifyStudentNotes.html", things=studentNotes)
         print ("post")
         studentNotes = func.viewStudentNotes() # calls viewStudentNotes
