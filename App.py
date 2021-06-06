@@ -104,7 +104,13 @@ def TranscriptFilter():
 def TranscriptAddRemove():
    if request.method == "POST":
       studentID = request.form["studentID"]
+      if studentID == '':
+         flash("Enter In Student ID", "info")
+         return render_template("Transcriptaddremove.html")
       SLN = request.form["SLN"]
+      if SLN == '':
+         flash("Enter in SLN", "info")
+         return render_template("Transcriptaddremove.html")
       cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [SLN])
       classIDs = cur.fetchall()
       if classIDs.__len__() == 0:
@@ -118,7 +124,7 @@ def TranscriptAddRemove():
             flash("Student is not Enrolled in the Class", "info")
             return render_template("Transcriptaddremove.html")
          cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
-      elif 'addStudent':
+      elif 'addStudent' in request.form:
          try:
             grade = request.form["grade"]
          except:
@@ -133,19 +139,23 @@ def TranscriptAddRemove():
             else:
                flash("Student is Already in the Class", "info")
                return render_template("Transcriptaddremove.html")
+      else:
+         grade = request.form["grade"]
+         if grade == '':
+            flash("Enter Grade", "info")
+            return render_template("Transcriptaddremove.html")
+         #adding grade
+         cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
+         isConnection = cur.fetchall()
+         if isConnection.__len__() == 0:
+            flash("Student is not Enrolled in the Class", "info")
+            return render_template("Transcriptaddremove.html")
          else:
-            #adding grade
-            cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
-            isConnection = cur.fetchall()
-            if isConnection.__len__() == 0:
-               flash("Student is not Enrolled in the Class", "info")
+            if float(grade) < 0.0 or float(grade) > 4.0:
+               flash("Not a valid grade", "info")
                return render_template("Transcriptaddremove.html")
-            else:
-               if float(grade) < 0.0 or float(grade) > 4.0:
-                  flash("Not a valid grade", "info")
-                  return render_template("Transcriptaddremove.html")
-               cur.execute('''UPDATE Transcript SET 
-                  finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
+            cur.execute('''UPDATE Transcript SET 
+               finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
       con.commit()
       return redirect(url_for("Transcript"))
    else:        
