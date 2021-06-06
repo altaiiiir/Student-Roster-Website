@@ -704,6 +704,7 @@ def modifyStudentNotes():
             #print(studentNotesRows)
             studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
+            flash("Note successfully added", "info")
             return render_template("modifyStudentNotes.html", things=studentNotes)
         print ("post")
         studentNotes = func.viewStudentNotes() # calls viewStudentNotes
