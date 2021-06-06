@@ -1,10 +1,10 @@
 {% extends "Base.html" %}
 	{% block content %}
-        <h1 style = "font-size:2em">Students</h1>
+        <h1 style = "font-size:2em; text-align: center;">Students</h1>
       {% with messages = get_flashed_messages() %}
          {% if messages %}
             {% for msg in messages %}
-               <p>{{msg}}</p>
+               <p style="text-align: center;">{{msg}}</p>
             {% endfor %}
          {% endif %}
       {% endwith %}
@@ -13,43 +13,47 @@
     <style>
         
         #t1 {
-            text-align: left;
-            padding: 15px;
+            text-align: center;
+            padding: 30px;
             width: 440px;
-            margin: -10px;
+            margin: auto;
         }
     </style>
 
    <form action="#" method="post">
         <div  id="t1">
-      <p><input type="text" name = "nm" class="form-control" size="15" placeholder="Student Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+            <p><input type="text" name = "nm" class="form-control" size="15" placeholder="Student Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+            <button style="position:relative; " type="submit" name="submit" class="btn btn-dark">View</button>
         </div>
 
         <!-- old input doesn't work -->
       <!-- <p><input type="submit" value="submit" /></p> -->
       
-      <button style="position:relative;" type="submit" name="submit" class="btn btn-dark">View</button>
+      
    </form>
 
-<style>
-table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-}
-table {
-   border-spacing: 15px;
-}
-</style>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        table {
+        border-spacing: 15px;
+        }
+        #tc{
+            
+        }
+    </style>
 </head>
 <body>
-
-<table style="width:50%" text-align="left">
-    <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Alias</th><th>Gender</th><th>Super Power</th><th>Date of Birth</th><th>Enrolled</th></tr>
-    {% for thing in things %}
-    <tr><td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> <td>{{thing[7]}}</td> <td>{{thing[8]}}</td></tr>
-    {% endfor %}
-</table>
-
+<div id="tc">
+    <table style="width:50%; text-align: center"; align="center">
+        <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Alias</th><th>Gender</th><th>Super Power</th><th>Date of Birth</th><th>Enrolled</th></tr>
+        {% for thing in things %}
+        <tr><td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> <td>{{thing[7]}}</td> <td>{{thing[8]}}</td></tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
