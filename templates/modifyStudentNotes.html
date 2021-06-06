@@ -19,6 +19,10 @@
     {
         padding:0 20px 0 20px;
     }
+
+    #con {
+        max-width: 150px;
+    }
     </style>
 
 <form action="#" method="post">
@@ -29,11 +33,13 @@
     <p> <input type="text" name="NoteID" /></p> 
     <p><input type="submit" name="delete" value="Delete Note" /></p>
 
-    <p> Behavior Note Type: </p>   
-    <select class="form-control" id="noteType" name="noteType">
-         <option value="A">Accessibility </option>
-         <option value="D"selected>Disciplinary</option>
-    </select>
+    <div id="con">
+        <p> Behavior Note Type: </p>   
+        <select class="form-control" id="noteType" name="noteType">
+            <option value="A">Accessibility </option>
+            <option value="D"selected>Disciplinary</option>
+        </select>
+    </div>      
 
     <p> Date: </p>  
     <p> <input type="text" placeholder="MM/DD/YYY" name="date" /></p>
