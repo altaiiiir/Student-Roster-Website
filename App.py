@@ -290,6 +290,18 @@ def addClass():
         if 'add' in request.form:
         
             existsInCatalog = 0 # false
+            roomExists = 0 # false
+            roomHasSpace = 0 # false
+
+            cur.execute('SELECT * FROM Classroom')
+            tempRows = cur.fetchall()
+            for x in tempRows:
+                curRoom = x[2]
+                curCapacity = x[3]
+                if (curRoom == roomid):
+                    roomExists = 1 # true
+                if (curCapacity >= curCapacity+1):
+                    roomHasSpace = 1 # true
 
             cur.execute('SELECT * FROM Course_Catalog')
             tempRows = cur.fetchall()
@@ -312,6 +324,14 @@ def addClass():
                 flash("You cannot add a class to a course that doesn't exist.") 
                 return render_template("addClass.html")
 
+            if roomExists == 0:
+                flash("You cannot add a class to a room that doesn't exist.") 
+                return render_template("addClass.html")
+
+            if roomHasSpace == 0:
+                flash("You cannot add a class to a full room.") 
+                return render_template("addClass.html")    
+            
             # adds to course info
             cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
             idEntry = cur.fetchall()
