@@ -286,7 +286,6 @@ def add():
                         flash("You cannot add a course that already exists.", "error") 
                         return render_template("addCourse.html")
 
-                # ---------------
                 # adds to course catalog
                 cur.execute("""INSERT INTO Course_Catalog (Name, CourseCredits, Type) 
                                 VALUES (%s, %s, %s)""", (name, cc, type))
