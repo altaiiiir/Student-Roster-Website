@@ -104,11 +104,6 @@ def studentNotes():
             noteType = request.form["noteType"]
             theNoteID = request.form["NoteID"]
             theDate = request.form["date"]
-            
-            
-            if (theNoteID == "" or theStudentID == "" or theDate == ""):
-                flash("Please enter a valid NoteID, StudentID and Date", "error")
-                return render_template("studentNotes.html", things=studentNotes)
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
@@ -192,21 +187,45 @@ def studentNotes():
             note = request.form["notes"]
             noteType = request.form["noteType"]
             theDate = request.form["date"]
+            if theStudentID == "" or note == "" or theDate == "":
+                flash("Please enter a valid StudentID, note and date", "error")
+                return render_template("studentNotes.html", things=studentNotes)
             
             splitDate = theDate.split("/")
+            if len(splitDate) != 3:
+                flash("Please enter a valid date", "error")
+                return render_template("studentNotes.html", things=studentNotes)
             month = splitDate[0]
             day = splitDate[1]
             year = splitDate[2]
+            
             if (month.isdecimal() == 0 or day.isdecimal() == 0 or year.isdecimal() == 0 ):
                 flash("Please enter a valid date", "error")
                 return render_template("studentNotes.html", things=studentNotes)
-            
-            dateObject = datetime.datetime(year, month, day)
-            print (dateObject)
-            #theNoteID = request.form["NoteID"]
-            if theStudentID == "" or note == "":
-                flash("Please enter a valid StudentID and note", "error")
+            month = int(splitDate[0])
+            day = int(splitDate[1])
+            year = int(splitDate[2])
+
+            if(month > 12 or month < 1):
+                flash("Please enter a valid date", "error")
                 return render_template("studentNotes.html", things=studentNotes)
+            if(day > 31 or day < 1):
+                flash("Please enter a valid date", "error")
+                return render_template("studentNotes.html", things=studentNotes)
+            if(year > 2021 or year < 1):
+                flash("Please enter a valid date", "error")
+                return render_template("studentNotes.html", things=studentNotes)
+
+            dateObject = datetime.datetime(year, month, day)
+            curDate = date.today()
+
+            if (dateObject > datetime.datetime.now()):
+                flash("Please enter a date that is prior to today", "error")
+                return render_template("studentNotes.html", things=studentNotes)
+            print (dateObject)
+            print(date.today())
+            #theNoteID = request.form["NoteID"]
+            
             if (theStudentID.isdecimal() == 0):
                 flash("Please enter a valid StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
@@ -244,7 +263,7 @@ def studentNotes():
             
             #print(max, note, currentDate, noteType, adminID )
             
-            cur.execute(studentInsert, (max, note, currentDate, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
+            cur.execute(studentInsert, (max, note, dateObject, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
             con.commit()
             getSerial = """SELECT Note.ID from Note where Note.NoteID = %s;"""
             cur.execute(getSerial, (max,))
