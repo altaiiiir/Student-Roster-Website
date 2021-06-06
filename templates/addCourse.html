@@ -16,11 +16,11 @@ Add Courses
 <form action ="#" method = "POST">
 
     <p> Name: </p>
-    <p><input type="text" name = "nm" maxlength = "20"/></p>
+    <p><input type="text" name = "nm" pattern="[a-zA-Z]*" maxlength = "20"/></p>
     <p> CourseCredits: </p>
-    <p><input type="number" name = "creds" maxlength = "1"/></p>
+    <p><input type="number" name="creds" min="0" step="1" maxlength="2"/></p>
     <p> Type: </p>
-    <p><input type="text" name = "type" maxlength = "1"/></p>
+    <p><input type="text" name = "type" pattern="[A-Z]*" maxlength = "1"/></p>
 
     <p><input type="submit" name="add" value="Add"/></p>
     <p><input type="submit" name="remove" value="Remove"/></p>
