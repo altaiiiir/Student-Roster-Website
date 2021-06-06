@@ -112,14 +112,14 @@ def studentNotes():
                 return render_template("studentNotes.html", things=studentNotes)
 
             print ("after first if")
-            doesNoteExist = """ select * from Note where NoteID = %s """
+            doesNoteExist = """ select * from Note where NoteID = %s; """
             
-            doesStudentHaveBoth = """select * from student_notes where studentID = %s """ 
+            doesStudentHaveBoth = """select * from student_notes where studentID = %s; """ 
             
             allRowsStudentNotes = """select * from student_notes """
             isStudentLinkedWithNote = """select StudentID, Student_notes.NoteID, Note.NoteID from student_notes
                                          JOIN Note ON (student_notes.noteID = Note.ID)   
-                                         where studentID = %s AND Note.NoteID = %s  """
+                                         where studentID = %s AND Note.NoteID = %s;  """
             
             cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
             linkedwithnotequery= cur.fetchall()
@@ -178,7 +178,7 @@ def studentNotes():
             NoteSerialNotInForm= cur.fetchall()
             noteSerialInForm = NoteSerialNotInForm[0][0]
           
-            student_notesQuery = """ delete from Student_Notes where student_notes.StudentID = %s AND student_notes.noteID = %s """
+            student_notesQuery = """ delete from Student_Notes where student_notes.StudentID = %s AND student_notes.noteID = %s; """
             cur.execute(student_notesQuery, (theStudentID, noteSerialInForm))
             con.commit()
             cur.execute(noteQuery, (theNoteID,))
@@ -200,7 +200,7 @@ def studentNotes():
                 flash("Please enter a valid StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
             
-            studentQuery = """select * from student where ID = %s """
+            studentQuery = """select * from student where ID = %s; """
             cur.execute(studentQuery, (theStudentID,)) 
            
             studentQueryResult = cur.fetchall()
