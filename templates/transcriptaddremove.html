@@ -5,34 +5,41 @@
 <p>For 5/29/2021</p>
 
 <div class="container">
-   <div class ="row">
-      <div class="col-sm">
+   <div class="d-flex justify-content-center">
       {% with messages = get_flashed_messages() %}
-         {% if messages %}
-            {% for msg in messages %}
-               <p>{{msg}}</p>
-            {% endfor %}
-         {% endif %}
-      {% endwith %}  
-         <form action="#" method="post">
-            <p> Student ID: </p>
-            <p> <input type="number" step="1" name="studentID" /></p>
-            <p> SLN: </p>
-            <p> <input type="number" step="1" name="SLN" /></p>
-            <p> Grade: </p>
-            <p> <input type="number" name="grade" /></p>
-            <p><input type="submit" name="delete" value="Remove Student from Class " /></p>
-         </form>
-      </div>
-      <div class="col-sm">
-         <form action="#" method="post">
-            <p> Student ID: </p>
-            <p> <input type="number" step="1" name="studentID" /></p>
-            <p> SLN: </p>
-            <p> <input type="number" step="1" name="SLN" /></p>
-            <p><input type="submit" name="addStudent" value="Add Student to Class" /></p>
-            <p><input type="submit" name="delete" value="Remove Student from Class " /></p>
-         </form>
+      {% if messages %}
+         {% for msg in messages %}
+            <p>{{msg}}</p>
+         {% endfor %}
+      {% endif %}
+      {% endwith %} 
+   </div>
+</div>
+
+<div class="container">
+   <div class="d-flex justify-content-center">
+      <div class ="row">
+         <div class="col-sm">
+            <form action="#" method="post">
+               <p> Student ID: </p>
+               <p> <input type="number" step="1" name="studentID" /></p>
+               <p> SLN: </p>
+               <p> <input type="number" step="1" name="SLN" /></p>
+               <p> Grade: </p>
+               <p> <input type="number" step=".1" name="grade" /></p>
+               <p><input type="submit" name="addRemoveStudent" value="Add Grade to Student" /></p>
+            </form>
+         </div>
+         <div class="col-sm">
+            <form action="#" method="post">
+               <p> Student ID: </p>
+               <p> <input type="number" step="1" name="studentID" /></p>
+               <p> SLN: </p>
+               <p> <input type="number" step="1" name="SLN" /></p>
+               <p><input type="submit" name="addStudent" value="Add Student to Class" /></p>
+               <p><input type="submit" name="delete" value="Remove Student from Class " /></p>
+            </form>
+         </div>
       </div>
    </div>
 </div>
