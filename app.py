@@ -104,10 +104,11 @@ def studentNotes():
             theNoteID = request.form["NoteID"]
            
             if (theNoteID == "" or theStudentID == ""):
-                #FLASH
+                flash("Please enter a valid NoteID and StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
-            if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal == 0):
-                #FLASH
+           
+            if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
+                flash("Please enter a valid NoteID and StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
 
             print ("after first if")
@@ -116,7 +117,26 @@ def studentNotes():
             doesStudentHaveBoth = """select * from student_notes where studentID = %s """ 
             
             allRowsStudentNotes = """select * from student_notes """
+            isStudentLinkedWithNote = """select StudentID, Student_notes.NoteID, Note.NoteID from student_notes
+                                         JOIN Note ON (student_notes.noteID = Note.ID)   
+                                         where studentID = %s AND Note.NoteID = %s  """
             
+            cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
+            linkedwithnotequery= cur.fetchall()
+
+            linkedstud = 0
+            linkednote = 0
+            for x in linkedwithnotequery:
+                studid = x[0]
+                noteid = x[2]
+                if (str(studid) == theStudentID):
+                    linkedstud =1
+                if (str(noteid) == theNoteID):
+                    linkednote = 1
+            if (linkedstud == 0 or linkednote == 0):
+                flash("Please enter a valid NoteID and StudentID combination", "error")
+                return render_template("studentNotes.html", things=studentNotes)
+
             cur.execute(allRowsStudentNotes)
             allRowsQuery= cur.fetchall()
             print(allRowsQuery)
@@ -128,7 +148,9 @@ def studentNotes():
             print (tempRows)
             
             
+                    
 
+            
             for x in tempRows:
                 curStudID = x[0]
                 if (str(curStudID) == theStudentID):
@@ -145,6 +167,7 @@ def studentNotes():
                     print("note id exists")
            
             if (studentIDExists == 0 or NoteIDExists == 0):
+                flash("Please enter a valid NoteID and StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
 
         
@@ -171,8 +194,10 @@ def studentNotes():
             noteType = request.form["noteType"]
             #theNoteID = request.form["NoteID"]
             if theStudentID == "" or note == "":
+                flash("Please enter a valid StudentID and note", "error")
                 return render_template("studentNotes.html", things=studentNotes)
             if (theStudentID.isdecimal() == 0):
+                flash("Please enter a valid StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)
             
             studentQuery = """select * from student where ID = %s """
@@ -190,6 +215,7 @@ def studentNotes():
                     print ("went thorought checks ")
             print (studentIDExists)
             if (studentIDExists == 0):
+                flash("Please enter a valid StudentID", "error")
                 return render_template("studentNotes.html", things=studentNotes)    
             print ("went thorought checks ")
 
