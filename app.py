@@ -75,13 +75,15 @@ def studentPage():
             if (theStudentID != ""):
                 
                 if (theStudentID.isdecimal() == 0):
+                    flash("StudentID must be a number", "error")
                     return render_template("studentPage.html", things=rows)
-            
+
                 specificStudent = "Select * from Student where Student.StudentID = %s;" 
                 cur.execute(specificStudent, (theStudentID,)) # view the student based on their firstName and id
                 specificStudent = cur.fetchall()
                 return render_template("studentPage.html", things=specificStudent)
             else:
+                flash("Please enter a valid StudentID", "error")
                 return render_template("studentPage.html", things=rows) #returns query of that user and studentID to studentPage
 
         return render_template("studentPage.html", things=rows) #returns query of that user and studentID to studentPage
