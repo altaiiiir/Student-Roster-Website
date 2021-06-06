@@ -12,9 +12,9 @@ Add Class
             {% endfor %}
         {% endif %}
     {% endwith %}
-<h1 style="text-align:center;">  Add Class</h1>
+<h1 style="text-align:center;">  Add/Remove Class</h1>
 
-<link href="https://bootswatch.com/5/morph/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="" rel="stylesheet" type="text/css">
 
 <div class="container">
    
@@ -22,38 +22,39 @@ Add Class
             <div style="display: flex;"> 
                 
                 <div class="col-sm" style="position:relative; right:-610px">
-                        <form action ="#" method = "POST" >
-                            <div class="well" style="color: aqua;">
-                                <p style="text-align:matchparent;"> Name: </p>
+                        <form action ="#" method = "POST" class="form-inline" >
+                            <div class="btn-group-vertical">
+                                <p><input type="text" name = "name" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                                
+                                <p><input type="text" name = "section" class="form-control" size="15" placeholder="Section" pattern="[A-Z]" maxlength = "1"/></p>
+                                
+                                <p><input type="number" name = "roomid" class="form-control" size="15" placeholder="Room ID" min="0" step="1" maxlength = "1"/></p>
+                               
+                                <p><input type="number" name = "creds" class="form-control" size="15" placeholder="Credits" min="0" step="1" maxlength = "2"/></p>
+                               
+                                <p><input type="text" name = "ins" class="form-control" size="15" placeholder="Instructor Name" pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
+                                
+                                <p><input type="time" name = "time" class="form-control" size="15" placeholder="Time" /></p>
+                                
+                                <p><input type="text" name = "quarter" class="form-control" size="15" placeholder="Quarter (F, W, S, SU)" pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "1"/></p>
+                               
+                                <p><input type="number" name = "yr" class="form-control" size="15" placeholder="Year" min="0" step="1" minLength="4" maxlength="4"/></p>
+                                 
+                                
+                                    <button style="position:relative;" type="submit" name="add" class="btn btn-dark">Add</button>
+                                
                             </div>
-                            <p><input type="text" name = "name" pattern="[a-zA-Z]*" maxlength = "20"/></p>
-                            <p> Section: </p>
-                            <p><input type="text" name = "section" pattern="[A-Z]" maxlength = "1"/></p>
-                            <p> Room Number: </p>
-                            <p><input type="number" name = "roomid" min="0" step="1" maxlength = "1"/></p>
-                            <p> CourseCredits: </p>
-                            <p><input type="number" name = "creds" min="0" step="1" maxlength = "2"/></p>
-                            <p> Instructor Name: </p>
-                            <p><input type="text" name = "ins" pattern="[a-zA-Z]*" maxlength = "20"/></p>
-                            <p> Time: </p>
-                            <p><input type="time" name = "time" /></p>
-                            <p> Quarter (F, W, S, SU): </p>
-                            <p><input type="text" name = "quarter" pattern="[A-Z]" maxlength = "1"/></p>
-                            <p> Year: </p>
-                            <p><input type="number" name = "yr" min="0" step="1" minLength="4" maxlength="4"/></p>
-
-                            <p style="position:relative; right:-70px" ><input type="submit" name="add" value="Add"/></p>
                         </form>
                 </div>
                 
                 <div class="col-sm" style="text-align:Left;">
-                    <form action ="#" method = "POST"></form>
-                        <p> Name: </p>
-                            <p><input type="text" name = "name" pattern="[a-zA-Z]*" maxlength = "20"/></p>
-                            <p> Section: </p>
-                            <p><input type="text" name = "section" pattern="[A-Z]" maxlength = "1"/></p>
-
-                        <p style="position:relative; right:-60px"><input type="submit" name="remove" value="Remove"/></p>   
+                   
+                    <form action ="#" method = "POST" class="form-inline">
+                        <div class="btn-group-vertical">
+                            <p><input type="text" name = "name" class="form-control" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
+                            <p><input type="text" name = "section" class="form-control" placeholder="Section" required pattern="^(?!^ +$)([A-Z])$*" maxlength = "1"/></p>
+                            <button style="position:relative; right:0px" type="submit" name="remove" class="btn btn-dark">Remove</button>
+                        </div>
                     </form>
                 </div>
             </div>

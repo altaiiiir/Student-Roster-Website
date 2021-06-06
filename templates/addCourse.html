@@ -5,27 +5,51 @@ Add Courses
 {% endblock %}
 
 {% block content %}
-<h1>Add Course</h1>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for msg in messages %}
-                <p> {{msg}}</p>
+                <p style="text-align: center;"> {{msg}}</p>
             {% endfor %}
         {% endif %}
     {% endwith %}
-<form action ="#" method = "POST">
 
-    <p> Name: </p>
-    <p><input type="text" name = "nm" pattern="[a-zA-Z]*" maxlength = "20"/></p>
-    <p> CourseCredits: </p>
-    <p><input type="number" name="creds" min="0" step="1" maxlength="2"/></p>
-    <p> Type: </p>
-    <p><input type="text" name = "type" pattern="[A-Z]*" maxlength = "1"/></p>
+<h1 style="text-align:center;"> Add/Remove Course</h1>
 
-    <p><input type="submit" name="add" value="Add"/></p>
-    <p><input type="submit" name="remove" value="Remove"/></p>
-</form>
+<link href="" rel="stylesheet" type="text/css">
 
+<div class="container">
+   
+</div class="row">
+    <div style="display: flex;"> 
+        
+        <div class="col-sm" style="position:relative; right:-610px">
+                <form action ="#" method = "POST" class="form-inline" >
+                    <div class="btn-group-vertical">
+                        <p><input type="text" name = "nm" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                        
+                        <p><input type="number" name="creds" class="form-control" size="15" placeholder="Credits" required min="0" step="1" maxlength="2"/></p>
+                        
+                        <p><input type="text" name = "type" class="form-control" size="15" placeholder="Type (C, E)" required pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "1"/></p>
+
+                        <button style="position:relative;" type="submit" name="add" class="btn btn-dark">Add</button>
+                        
+                    </div>
+                </form>
+        </div>
+        
+        <div class="col-sm" style="text-align:Left;">
+           
+            <form action ="#" method = "POST" class="form-inline">
+                <div class="btn-group-vertical">
+                    <p><input type="text" name = "nm" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                    <button style="position:relative; right:0px" type="submit" name="remove" class="btn btn-dark">Remove</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
 
 {% endblock %}
 

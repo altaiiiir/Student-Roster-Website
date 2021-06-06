@@ -265,13 +265,15 @@ def update_course():
 def add():
     if request.method == "POST":
 
-        # request data
-        name = request.form["nm"]
-        cc = request.form["creds"]
-        type = request.form["type"]
+        
 
         # check if its an add or remove
         if 'add' in request.form:
+            # request data
+            name = request.form["nm"]
+            cc = request.form["creds"]
+            type = request.form["type"]
+
             if(name and cc and type) :
                 # checks if course already exists
                 cur.execute('Select * from Course_Catalog')
@@ -298,6 +300,7 @@ def add():
                 flash("Fill in neccesary information.") 
                 return render_template("addCourse.html")
         else:
+            name = request.form["nm"]
             if(name) :
                 # checks if course doesn't exist
                 cur.execute('Select * from Course_Catalog')
@@ -332,17 +335,17 @@ def add():
 def addClass():
     if request.method == "POST":
 
-        # request data
-        name = request.form["name"]
-        section = request.form["section"]
-        roomid = request.form["roomid"]
-        instructor = request.form["ins"]
-        time = request.form["time"]
-        quarter = request.form["quarter"]
-        year = request.form["yr"]
-
         # check if its an add or remove
         if 'add' in request.form:
+            # request data
+            name = request.form["name"]
+            section = request.form["section"]
+            roomid = request.form["roomid"]
+            instructor = request.form["ins"]
+            time = request.form["time"]
+            quarter = request.form["quarter"]
+            year = request.form["yr"]
+
             if(name and section and roomid and instructor and time and quarter and year) :
                 # error flags
                 existsInCatalog = 0 # false
@@ -431,6 +434,10 @@ def addClass():
                 flash("Fill in neccesary information.") 
                 return render_template("addClass.html")    
         else:
+            # request data
+            name = request.form["name"]
+            section = request.form["section"]
+
             if(name and section) :
                 # for class delete only name and section are needed
                 # checks if class doesn't exist in course_Info 
