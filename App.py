@@ -52,66 +52,88 @@ def viewStudent():
     rows = cur.fetchall()
     return render_template("studentPage.html", things=rows)
 
+@app.route("/TranscriptFilter", methods=["POST", "GET"])
+def TranscriptFilter():
+   if 'filterAll' in request.form:
+      studentID = int(request.form["studentID"])
+      cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+                        FROM Transcript
+                           JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+                           JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
+                           JOIN Student ON (Transcript.StudentID = Student.ID)
+                        WHERE student.id = %s""", [studentID])
+      updatedTranscriptRows = cur.fetchall()
+      return render_template("Transcripts.html", things=updatedTranscriptRows)
+   elif 'filterCur' in request.form:
+      studentID = int(request.form["studentID"])
+      cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+                        FROM Transcript
+                           JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+                           JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
+                           JOIN Student ON (Transcript.StudentID = Student.ID)
+                        WHERE student.id = %s AND transcript.finalGrade IS NULL""", [studentID])
+      updatedTranscriptRows = cur.fetchall()
+      return render_template("Transcripts.html", things=updatedTranscriptRows)
+   elif 'filterCor' in request.form:
+      SLN = int(request.form["SLN"])
+      cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+                        FROM Transcript
+                           JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
+                           JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
+                           JOIN Student ON (Transcript.StudentID = Student.ID)
+                        WHERE course_info.SLN = %s""", [SLN])
+      updatedTranscriptRows = cur.fetchall()
+      return render_template("Transcripts.html", things=updatedTranscriptRows)
+   else:
+      return render_template("filterTranscript.html")
+
 @app.route("/TranscriptAddRemove", methods=["POST", "GET"])
 def TranscriptAddRemove():
-    if request.method == "POST":
-        if 'delete' in request.form:
-            studentID = request.form["studentID"]
-            SLN = request.form["SLN"]
-            section = request.form["section"]
-            cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s AND Section = %s', (SLN, section))
-            classIDs = cur.fetchall()
-            classID = classIDs[0][0]
-            cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
-        elif 'filterAll' in request.form:
-            studentID = int(request.form["studentID"])
-            cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
-                            FROM Transcript
-                                JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
-                                JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
-                                JOIN Student ON (Transcript.StudentID = Student.ID)
-                            WHERE student.id = %s""", [studentID])
-            updatedTranscriptRows = cur.fetchall()
-            return render_template("Transcripts.html", things=updatedTranscriptRows)
-        elif 'filterCur' in request.form:
-            studentID = int(request.form["studentID"])
-            cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
-                            FROM Transcript
-                                JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
-                                JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
-                                JOIN Student ON (Transcript.StudentID = Student.ID)
-                            WHERE student.id = %s AND transcript.finalGrade IS NULL""", [studentID])
-            updatedTranscriptRows = cur.fetchall()
-            return render_template("Transcripts.html", things=updatedTranscriptRows)
-        elif 'filterCor' in request.form:
-            SLN = int(request.form["SLN"])
-            cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
-                            FROM Transcript
-                                JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
-                                JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
-                                JOIN Student ON (Transcript.StudentID = Student.ID)
-                            WHERE course_info.SLN = %s""", [SLN])
-            updatedTranscriptRows = cur.fetchall()
-            return render_template("Transcripts.html", things=updatedTranscriptRows)
-        else:
-            studentID = int(request.form["studentID"])
-            SLN = request.form["SLN"]
-            section = request.form["section"]
-            grade = request.form["grade"]
-            cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s AND Section = %s', (SLN, section))
-            classIDs = cur.fetchall()
-            classID = classIDs[0][0]
-            #adds either a grade with null or with a final grade
-            if grade == '':
-                cur.execute('''INSERT INTO Transcript (StudentID, ClassID)
-                    Values(%s, %s)''', (studentID, int(classID)))
+   if request.method == "POST":
+      studentID = request.form["studentID"]
+      SLN = request.form["SLN"]
+      cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [SLN])
+      classIDs = cur.fetchall()
+      if classIDs.__len__() == 0:
+         flash("Class Doesn't Exist", "info")
+         return render_template("Transcriptaddremove.html")
+      classID = classIDs[0][0]
+      if 'delete' in request.form:
+         cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
+         isConnection = cur.fetchall()
+         if isConnection.__len__() == 0:
+            flash("Student is not Enrolled in the Class", "info")
+            return render_template("Transcriptaddremove.html")
+         cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
+      elif 'addStudent':
+         grade = request.form["grade"]
+         #adds either a grade with null or with a final grade
+         if grade == '':
+            cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
+            isConnection = cur.fetchall()
+            if isConnection.__len__() == 0:
+               cur.execute('''INSERT INTO Transcript (StudentID, ClassID)
+                  Values(%s, %s)''', (studentID, int(classID)))
             else:
-                cur.execute('''INSERT INTO Transcript (StudentID, ClassID, FinalGrade)
-                                Values(%s, %s, %s)''', (studentID, int(classID), grade))
-        
-        redirect(url_for("Transcript"))
-    else:        
-        return render_template("Transcriptaddremove.html") 
+               flash("Student is Already in the Class", "info")
+               return render_template("Transcriptaddremove.html")
+         else:
+            #adding grade
+            cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
+            isConnection = cur.fetchall()
+            if isConnection.__len__() == 0:
+               flash("Student is not Enrolled in the Class", "info")
+               return render_template("Transcriptaddremove.html")
+            else:
+               if float(grade) < 0.0 or float(grade) > 4.0:
+                  flash("Not a valid grade", "info")
+                  return render_template("Transcriptaddremove.html")
+               cur.execute('''UPDATE Transcript SET 
+                  finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
+      con.commit()
+      return redirect(url_for("Transcript"))
+   else:        
+      return render_template("Transcriptaddremove.html") 
 
 @app.route("/Transcript", methods=["POST", "GET"])
 def Transcript():
@@ -119,7 +141,8 @@ def Transcript():
                     FROM Transcript
                         JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                         JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
-                        JOIN Student ON (Transcript.StudentID = Student.ID)""")
+                        JOIN Student ON (Transcript.StudentID = Student.ID)
+                  ORDER BY Student.ID""")
     updatedTranscriptRows = cur.fetchall()
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
