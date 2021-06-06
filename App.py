@@ -289,10 +289,12 @@ def addClass():
         # check if its an add or remove
         if 'add' in request.form:
         
+            # error flags
             existsInCatalog = 0 # false
             roomExists = 0 # false
             roomHasSpace = 0 # false
 
+            # checks for room space and existence 
             cur.execute('SELECT * FROM Classroom')
             tempRows = cur.fetchall()
             for x in tempRows:
@@ -303,6 +305,7 @@ def addClass():
                 if (curCapacity >= curCapacity+1):
                     roomHasSpace = 1 # true
 
+            # checks for class existance in course
             cur.execute('SELECT * FROM Course_Catalog')
             tempRows = cur.fetchall()
             for x in tempRows:
@@ -310,6 +313,7 @@ def addClass():
                 if (curName == name):
                     existsInCatalog = 1 # true
 
+            # checks for duplicate class
             cur.execute('Select * from Course_Catalog JOIN Course_Info ON (Course_Catalog.ID = Course_Info.CourseID)')
             courseRows = cur.fetchall()
             for r in courseRows:
@@ -320,14 +324,17 @@ def addClass():
                     flash("You cannot add a class that already exists.") 
                     return render_template("addClass.html")
 
+            # Case: class not in catalog
             if existsInCatalog == 0:
                 flash("You cannot add a class to a course that doesn't exist.") 
                 return render_template("addClass.html")
 
+            # Case: room doesn't exist
             if roomExists == 0:
                 flash("You cannot add a class to a room that doesn't exist.") 
                 return render_template("addClass.html")
 
+            # Case: room is full
             if roomHasSpace == 0:
                 flash("You cannot add a class to a full room.") 
                 return render_template("addClass.html")    
