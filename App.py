@@ -31,9 +31,8 @@ class User:
         return f'<User: {self.username}>'
 
 users = []
-users.append(User(id=1, username='Anthony', password='password'))
-users.append(User(id=2, username='Becca', password='secret'))
-users.append(User(id=3, username='Carlos', password='somethingsimple'))
+users.append(User(id=1, username='admin', password='admin'))
+
 
 
 def showCourseInfoRows():
@@ -70,7 +69,14 @@ def before_request():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    
+    session.pop('user_id', None)
+    print (users)
+    u1 = getattr(users[0], 'username')
+    p1 = getattr(users[0], 'password')
+    id1 = getattr(users[0], 'id')
+    print (u1)
+    print (p1)
+    print (id1)
     if request.method == 'POST':
         session.pop('user_id', None)
 
@@ -79,14 +85,13 @@ def login():
         if (username == "" or password == ""):
             flash("Enter valid username and password", "error")
             return render_template('login.html')
-        user = [x for x in users if len(x.username) != username][0]
         
-        user = [x for x in users if x.username == username][0]
-        if user and user.password == password:
-            session['user_id'] = user.id
-            return redirect(url_for('home'))
-
-        return redirect(url_for('login'))
+        if (u1 != username or p1 != password):
+            flash("Enter valid username and password", "error")
+            return redirect(url_for('login'))
+        
+        session['user_id'] = id1
+        return redirect(url_for('home'))
 
     return render_template('login.html')
 
