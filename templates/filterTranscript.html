@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Filter Transcripts</h1>
+<p>For 5/29/2021</p>  
+<div class="container">
+   <div class ="row">
+      <div class="col-sm">
+         <form action="#" method="post">
+            <p> Student ID: </p>
+            <p> <input type="text" name="studentID" /></p>
+            <p><input type="submit" name="filterAll" value="Filter All Courses Using Student ID" /></p>
+            <p><input type="submit" name="filterCur" value="Filter Current Courses Using Student ID" /></p>
+         </form>
+      </div>
+      <div class="col-sm">
+         <form action="#" method="post">
+            <p> SLN: </p>
+            <p> <input type="text" name="SLN" /></p>
+            <p><input type="submit" name="filterCor" value="Filter All Grades Using SLN" /></p>
+         </form>
+      </div>
+   </div>
+</div>
+{% endblock %}
