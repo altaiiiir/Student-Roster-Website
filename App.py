@@ -1,6 +1,6 @@
 from re import split
 import psycopg2
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, g
 
 import func
 from datetime import timedelta, datetime
@@ -20,6 +20,20 @@ password = "2fD9vPoMU6HAfMM"
 
 #cursor
 cur = con.cursor()
+
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
+users = []
+users.append(User(id=1, username='Anthony', password='password'))
+users.append(User(id=2, username='Becca', password='secret'))
+users.append(User(id=3, username='Carlos', password='somethingsimple'))
 
 
 def showCourseInfoRows():
@@ -45,8 +59,41 @@ app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-@app.route("/") 
+@app.before_request
+def before_request():
+    g.user = None
+
+    if 'user_id' in session:
+        user = [x for x in users if x.id == session['user_id']][0]
+        g.user = user
+
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    
+    if request.method == 'POST':
+        session.pop('user_id', None)
+
+        username = request.form['username']
+        password = request.form['password']
+        if (username == "" or password == ""):
+            flash("Enter valid username and password", "error")
+            return render_template('login.html')
+        user = [x for x in users if len(x.username) != username][0]
+        
+        user = [x for x in users if x.username == username][0]
+        if user and user.password == password:
+            session['user_id'] = user.id
+            return redirect(url_for('home'))
+
+        return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+@app.route("/index.html") 
 def home():
+    if not g.user:
+        return redirect(url_for('login'))
     return render_template("index.html")
 
 @app.route("/view-student")
