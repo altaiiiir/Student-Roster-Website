@@ -1,8 +1,10 @@
+from re import split
 import psycopg2
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 
+import func
 from datetime import timedelta, datetime
-
+import datetime
 from datetime import date
 
 today = date.today()
@@ -18,6 +20,7 @@ password = "2fD9vPoMU6HAfMM"
 
 #cursor
 cur = con.cursor()
+
 
 def showCourseInfoRows():
     cur.execute(
@@ -478,6 +481,239 @@ def addClass():
     else:
         # show main screen initially
         return render_template("addClass.html")
+
+@app.route("/viewStudentNotes", methods = ["POST", "GET"])
+def viewStudentNotes():
+    studentNotes = func.viewStudentNotes()
+    if request.method == "POST":
+        
+        if 'modifyNotes' in request.form:
+            
+            studentNotes = func.viewStudentNotes()
+            return render_template('modifyStudentNotes.html', things = studentNotes)
+        
+        if 'viewNotes' in request.form:
+            theStudentID = request.form["theirID"]
+               
+            if (theStudentID != ""):
+                    
+                if (theStudentID.isdecimal() == 0):
+                    flash("StudentID must be a number", "error")
+                    return render_template("viewStudentNotes.html", things=studentNotes)
+
+                specificStudent = func.viewSpecificStudentNotes(theStudentID)
+                return render_template("viewStudentNotes.html", things=specificStudent)
+            else:
+                return render_template("viewStudentNotes.html", things=studentNotes)
+    
+    studentNotes = func.viewStudentNotes()
+    return render_template("viewStudentNotes.html", things=studentNotes)
+
+@app.route("/modifyStudentNotes", methods=["POST", "GET"])
+def modifyStudentNotes():
+    studentNotes = func.viewStudentNotes()
+    if request.method == "POST":
+        if 'viewNotes' in request.form:
+            print("clicked viewNotes")
+            studentNotes = func.viewStudentNotes()
+            return render_template('viewStudentNotes.html')
+        
+        if 'delete' in request.form:
+            print ("DELETE WAS RANNNN")
+            theStudentID = request.form["theirID"]
+            note = request.form["notes"]
+            noteType = request.form["noteType"]
+            theNoteID = request.form["NoteID"]
+            theDate = request.form["date"]
+           
+            if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
+                flash("Please enter a valid NoteID and StudentID", "error")
+                return render_template("modifyStudentNotes.html", things = studentNotes)
+
+            print ("after first if")
+            doesNoteExist = """ select * from Note where NoteID = %s; """
+            
+            doesStudentHaveBoth = """select * from student_notes where studentID = %s; """ 
+            
+            allRowsStudentNotes = """select * from student_notes """
+            isStudentLinkedWithNote = """select StudentID, Student_notes.NoteID, Note.NoteID from student_notes
+                                         JOIN Note ON (student_notes.noteID = Note.ID)   
+                                         where studentID = %s AND Note.NoteID = %s;  """
+            
+            cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
+            linkedwithnotequery= cur.fetchall()
+
+            linkedstud = 0
+            linkednote = 0
+            for x in linkedwithnotequery:
+                studid = x[0]
+                noteid = x[2]
+                if (str(studid) == theStudentID):
+                    linkedstud =1
+                if (str(noteid) == theNoteID):
+                    linkednote = 1
+            if (linkedstud == 0 or linkednote == 0):
+                flash("Please enter a valid NoteID and StudentID combination", "error")
+                return render_template("modifyStudentNotes.html", things = studentNotes)
+
+            cur.execute(allRowsStudentNotes)
+            allRowsQuery= cur.fetchall()
+            print(allRowsQuery)
+
+            cur.execute(doesStudentHaveBoth, (theStudentID,))
+            studentIDExists = 0
+            NoteIDExists = 0
+            tempRows = cur.fetchall() #does studentid exist
+            print (tempRows)
+            
+            for x in tempRows:
+                curStudID = x[0]
+                if (str(curStudID) == theStudentID):
+                    studentIDExists = 1 # true
+                    print("student id exists")
+            
+            cur.execute(doesNoteExist, (theNoteID,))
+            noteQuery = cur.fetchall()
+            print (noteQuery)
+            for r in noteQuery:
+                curNotID = r[1]
+                if (str(curNotID) == theNoteID):
+                    NoteIDExists = 1
+                    print("note id exists")
+           
+            if (studentIDExists == 0 or NoteIDExists == 0):
+                flash("Please enter a valid NoteID and StudentID", "error")
+                return render_template("modifyStudentNotes.html", things = studentNotes)
+
+        
+
+            noteQuery = """ delete from note where note.noteID = %s """
+            getSerial = """select ID from note where NoteID = %s """
+            cur.execute(getSerial, (theNoteID,))
+            NoteSerialNotInForm= cur.fetchall()
+            noteSerialInForm = NoteSerialNotInForm[0][0]
+          
+            student_notesQuery = """ delete from Student_Notes where student_notes.StudentID = %s AND student_notes.noteID = %s; """
+            cur.execute(student_notesQuery, (theStudentID, noteSerialInForm))
+            con.commit()
+            cur.execute(noteQuery, (theNoteID,))
+            con.commit()
+            studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+            flash("Successfully deleted note")
+            return render_template("modifyStudentNotes.html") #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
+      
+      
+        elif 'add' in request.form:
+            print ("WENT THROUGH ADD")
+            theStudentID = request.form["theirID"]
+            note = request.form["notes"]
+            noteType = request.form["noteType"]
+            theDate = request.form["date"]
+            if theStudentID == "" or note == "" or theDate == "":
+                flash("Please enter a valid StudentID, note and date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            
+            splitDate = theDate.split("/")
+            if len(splitDate) != 3:
+                flash("Please enter a valid date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            month = splitDate[0]
+            day = splitDate[1]
+            year = splitDate[2]
+            
+            if (month.isdecimal() == 0 or day.isdecimal() == 0 or year.isdecimal() == 0 ):
+                flash("Please enter a valid date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            month = int(splitDate[0])
+            day = int(splitDate[1])
+            year = int(splitDate[2])
+
+            if(month > 12 or month < 1):
+                flash("Please enter a valid date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            if(day > 31 or day < 1):
+                flash("Please enter a valid date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            if(year > 2021 or year < 1):
+                flash("Please enter a valid date", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+
+            dateObject = datetime.datetime(year, month, day)
+            curDate = date.today()
+
+            if (dateObject > datetime.datetime.now()):
+                flash("Please enter a date that is prior to today", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            print (dateObject)
+            print(date.today())
+            #theNoteID = request.form["NoteID"]
+            
+            if (theStudentID.isdecimal() == 0):
+                flash("Please enter a valid StudentID", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)
+            
+            studentQuery = """select * from student where ID = %s; """
+            cur.execute(studentQuery, (theStudentID,)) 
+           
+            studentQueryResult = cur.fetchall()
+            print (studentQueryResult)
+            studentIDExists = 0
+            for x in studentQueryResult:
+                curStudID = x[0]
+                
+                print(type(theStudentID))
+                if (str(curStudID) == theStudentID):
+                    studentIDExists = 1 # true
+                    print ("went thorought checks ")
+            print (studentIDExists)
+            if (studentIDExists == 0):
+                flash("Please enter a valid StudentID", "error")
+                return render_template("modifyStudentNotes.html", things=studentNotes)    
+            print ("went thorought checks ")
+
+            findMaxNoteID = """Select MAX(NoteID) from Note""" #find max note from Note  
+            cur.execute(findMaxNoteID)
+            maxNotInForm = cur.fetchall()
+            max = maxNotInForm[0][0] #get max note because idk how we are keeping track of noteID
+            max = max + 1
+            adminID = 1
+            currentDate = date.today()
+            studentInsert = """INSERT INTO Note (NoteID, Note, Date, Type, AdminID)
+                                Values(%s, %s, %s, %s, %s);""" #OKAY so apparently I need to insert into Note first and then connect that to Student Notes
+                                                  #by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"  
+            studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s);"""
+            
+            #print(max, note, currentDate, noteType, adminID )
+            
+            cur.execute(studentInsert, (max, note, dateObject, noteType, adminID )) #here trying to insert the studentID and notID into the student_notes table 
+            con.commit()
+            getSerial = """SELECT Note.ID from Note where Note.NoteID = %s;"""
+            cur.execute(getSerial, (max,))
+            theSerial = cur.fetchall()
+            serialRightForm = theSerial[0][0]
+
+            cur.execute(studentNotesInsert,(serialRightForm, theStudentID))
+            con.commit()
+            badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+                                 Note.Note, Note.Date, Note.Type, Note_Type.Name FROM Student_Notes
+                   JOIN Note ON (Student_Notes.NoteID = Note.ID)
+                   JOIN Note_Type ON (Note.Type = Note_Type.Type)
+                   JOIN Student ON (Student_Notes.StudentID = Student.ID);
+                    """
+            query = """select * from Note"""
+            cur.execute(badquery)
+            studentNotesRows = cur.fetchall()
+            #print(studentNotesRows)
+            studentNotes = func.viewStudentNotes()
+            allStudents = func.viewAllStudents()
+            return render_template("modifyStudentNotes.html", things=studentNotes)
+        print ("post")
+        studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+        return render_template("modifyStudentNotes.html", things=studentNotes)
+    print ("no post")
+    studentNotes = func.viewStudentNotes() # calls viewStudentNotes
+    return render_template("modifyStudentNotes.html", things=studentNotes)
+    
 
 if __name__ == "__main__":
      app.run(debug =True)
