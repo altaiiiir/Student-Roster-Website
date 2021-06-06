@@ -16,12 +16,25 @@ Add Class
 
 <link href="" rel="stylesheet" type="text/css">
 
+<style>
+    
+    #column_container {
+    width: 510px;
+    margin: 0 auto;
+    }
+    .container {
+        padding: 15px;
+      max-width: 500px;
+      margin: auto;
+    }
+</style>
+
+
 <div class="container">
    
         </div class="row">
-            <div style="display: flex;"> 
-                
-                <div class="col-sm" style="position:relative; right:-610px">
+            <div id="column_container" style="display: flex;"> 
+                <div class="col-sm" style="position:relative; ">
                         <form action ="#" method = "POST" class="form-inline" >
                             <div class="btn-group-vertical">
                                 <p><input type="text" name = "name" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
@@ -46,9 +59,7 @@ Add Class
                             </div>
                         </form>
                 </div>
-                
                 <div class="col-sm" style="text-align:Left;">
-                   
                     <form action ="#" method = "POST" class="form-inline">
                         <div class="btn-group-vertical">
                             <p><input type="text" name = "name" class="form-control" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
