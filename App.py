@@ -55,7 +55,12 @@ def viewStudent():
 @app.route("/TranscriptFilter", methods=["POST", "GET"])
 def TranscriptFilter():
    if 'filterAll' in request.form:
-      studentID = int(request.form["studentID"])
+      try:
+         studentID = int(request.form["studentID"])
+      except:
+         flash("Invalid Number Entry", "info")
+         return render_template("filterTranscript.html")
+
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -65,7 +70,11 @@ def TranscriptFilter():
       updatedTranscriptRows = cur.fetchall()
       return render_template("Transcripts.html", things=updatedTranscriptRows)
    elif 'filterCur' in request.form:
-      studentID = int(request.form["studentID"])
+      try:
+         studentID = int(request.form["studentID"])
+      except:
+         flash("Invalid Number Entry", "info")
+         return render_template("filterTranscript.html")
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -75,7 +84,11 @@ def TranscriptFilter():
       updatedTranscriptRows = cur.fetchall()
       return render_template("Transcripts.html", things=updatedTranscriptRows)
    elif 'filterCor' in request.form:
-      SLN = int(request.form["SLN"])
+      try:
+         SLN = int(request.form["SLN"])
+      except:
+         flash("Invalid Number Entry", "info")
+         return render_template("filterTranscript.html")
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -106,7 +119,10 @@ def TranscriptAddRemove():
             return render_template("Transcriptaddremove.html")
          cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
       elif 'addStudent':
-         grade = request.form["grade"]
+         try:
+            grade = request.form["grade"]
+         except:
+            grade = ''
          #adds either a grade with null or with a final grade
          if grade == '':
             cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',(studentID, classID))
