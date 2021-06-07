@@ -277,9 +277,9 @@ def addRemoveStudent():
         return redirect(url_for('login'))
     if request.method == "POST":
         if 'add' in request.form:
-            StuID = request.form["studentID"]
+            studID = request.form["studentID"]
             # StudChecker(StuID)
-            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s", [StuID])
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s", [studID])
             exists = cur.fetchall()
             if exists.__len__() != 0:
                 flash("Student already exists")
@@ -300,8 +300,9 @@ def addRemoveStudent():
 
             cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
-                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)', (int(StuID), Fname, Lname, alias, gender, super, dob))
+                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)', (int(studID), Fname, Lname, alias, gender, super, dob))
             con.commit()
+            
             return redirect(url_for("viewStudent"))
         elif 'remove' in request.form:
 
@@ -328,15 +329,15 @@ def addRemoveStudent():
             con.commit()
             return redirect(url_for("viewStudent"))
         else:
-            StuID = request.form["studentID"]
+            studID = request.form["studentID"]
 
-            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s", [StuID])
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s", [studID])
             exists = cur.fetchall()
             if exists.__len__() == 0:
                 flash("Student doesn't exists")
                 return render_template("addRemoveStudent.html")
 
-            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s", [StuID])
+            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s", [studID])
             StuID = cur.fetchall()
             StuID = StuID[0][0]
 
