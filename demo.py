@@ -23,13 +23,6 @@ app = Flask(__name__)
 # app = Flask(name)
 app.secret_key = 'asrtarstaursdlarsn'
 
-def StudChecker(str):
-    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
-    exists= cur.fetchall()
-    if exists:
-        flash("Student already exists")
-        return render_template("addRemoveStudent.html")
-
 def StringChecker(str,name):
     for x in str:
         if (ord(x) >= 65 or ord(x) <= 95) and \
@@ -45,13 +38,6 @@ def genderChecker(str):
         return render_template("addRemoveStudent.html")
 
 
-def notStudChecker(str):
-    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
-    exists= cur.fetchall()
-    if not exists:
-        flash("Student doesn't exist")
-        return render_template("addRemoveStudent.html")
-
 @app.route("/") 
 def home():
     cur.execute('Select * from Student')
@@ -64,10 +50,13 @@ def home():
 def addRemoveStudent():
     if request.method == "POST":
         if 'add' in request.form:
-            #if we are adding why are we checking if the student exists
-            #we only need to check if studentID exists 
             StuID = request.form["studentID"]
-            StudChecker(StuID)
+            # StudChecker(StuID)
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            exists= cur.fetchall()
+            if exists.__len__() != 0:
+                flash("Student already exists")
+                return render_template("addRemoveStudent.html")
 
             Fname = request.form["first"]
             
@@ -90,7 +79,11 @@ def addRemoveStudent():
         elif 'remove' in request.form:
             
             studID = int(request.form["studID"])
-            notStudChecker(studID)
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[studID])
+            exists= cur.fetchall()
+            if exists.__len__() == 0:
+                flash("Student doesn't exists")
+                return render_template("addRemoveStudent.html")
           
             cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[studID])
             studID = cur.fetchall()
@@ -99,7 +92,6 @@ def addRemoveStudent():
            
             # Find the noteID based on studentID, use that to delete notes
             cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
-           
             noteNumb = cur.fetchall()
             if noteNumb.__len__() != 0:
                 cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
@@ -111,16 +103,24 @@ def addRemoveStudent():
             return redirect(url_for("home"))
         else:
             StuID = request.form["studentID"]
-            notStudChecker(StuID)
+            
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            exists= cur.fetchall()
+            if exists.__len__() == 0:
+                flash("Student doesn't exists")
+                return render_template("addRemoveStudent.html")
+
             cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[StuID])
             StuID = cur.fetchall()
+            StuID = StuID[0][0]
 
             Fname = request.form["first"]
 
             Lname = request.form["last"]
 
             gender = request.form["gender"]
-            genderChecker(gender)
+            if gender.__len__() > 0:           
+                genderChecker(gender)
             
             super = request.form["super"]
             
@@ -129,52 +129,50 @@ def addRemoveStudent():
             dob = request.form["dob"]
 
             enr = request.form["enrollment"]
-            if enr.upper() != "T" or enr.upper() != "F":
-                flash("Must be T or F")
-                return render_template("addRemoveStudent.html")
-            if (StuID == ""):
-                flash("Enter studentID", "error")
-                return render_template("addRemoveStudent.html")
-
-            studentQuery = """select * from Student where student.ID = %s """ 
-            cur.execute(studentQuery, (StuID,))
+            if enr.__len__() > 0:
+                if enr.upper() != "T" or enr.upper() != "F":
+                    flash("Enrolled Must be T or F")
+                    return render_template("addRemoveStudent.html")
+        
+            cur.execute("SELECT * FROM STUDENT WHERE ID = %s",[StuID])
             getStudentQuery = cur.fetchall()
-
+            print(getStudentQuery)
+            #[(19, 24, 'first', 'last', 'gff', 'M', 'gayaf', datetime.date(2005, 4, 8), True, 1)]
             if Fname == "":
-                qFirst = getStudentQuery[0][0]
+                qFirst = getStudentQuery[0][2]
             else:
                 qFirst = Fname
             
             if Lname == "":
-                qLast = getStudentQuery[0][1]
+                qLast = getStudentQuery[0][3]
             else:
                 qLast = Fname
-            if gender == "":
-                qGender = getStudentQuery[0][2] 
-            else:
-                qGender = gender
-            if super == "":
-                qSuper = getStudentQuery[0][3]
-            else:
-                qSuper = super
             if alias == "":
                 qAlias = getStudentQuery[0][4]
             else:
                 qAlias = alias
+            if gender == "":
+                qGender = getStudentQuery[0][5] 
+            else:
+                qGender = gender
+            if super == "":
+                qSuper = getStudentQuery[0][6]
+            else:
+                qSuper = super
             if dob == "":
-                qDOB = getStudentQuery[0][5]
+                qDOB = getStudentQuery[0][7]
             else:
                 qDOB = dob
+            
             if enr == "":
-                qENR = getStudentQuery[0][6]
+                qENR = getStudentQuery[0][8]
             else:
                 qENR = enr
-
 
             cur.execute('Update Student \
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
-                IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
+                IsCurrentlyEnrolled= %s WHERE ID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
             con.commit()
             return redirect(url_for("home"))               
     else:
