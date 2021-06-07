@@ -117,7 +117,7 @@ def home():
 def viewStudent():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute('Select * from Student')
+    cur.execute('Select * from Student ORDER BY Student.StudentID')
     rows = cur.fetchall()
     return render_template("StudentPage.html", things=rows)
 
