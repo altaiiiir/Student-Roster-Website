@@ -9,46 +9,85 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-<h1> Student Notes </h1>
-<style type="text/css">
-    th
-    {
-        padding:0 20px 0 20px;
-    }
-    td
-    {
-        padding:0 20px 0 20px;
-    }
+    <h1 style="text-align:center;"> Modify Student Notes</h1>
 
-    #con {
-        max-width: 150px;
-    }
+    <link href="" rel="stylesheet" type="text/css">
+    
+    <style>
+        
+        #column_container {
+        width: 440px;
+        margin: 0 auto;
+        }
+        
+        /* .container {
+          padding: 15px;
+          max-width: 500px;
+          margin: auto;
+        } */
+
+        #con {
+        padding: 20px;
+        max-width: 300px;
+        border-radius: 10px;
+        min-width: 200px;
+        }
+        #cn {
+        padding: 10px;
+        max-width: 300px;
+        }
+        #cn2 {
+        padding: 20px;
+        max-width: 300px;
+        border-radius: 10px;
+        
+        }
     </style>
 
-<form action="#" method="post">
-    <p> Student ID: </p>
-    <p> <input type="text" name="theirID" /></p>
+<div class="container">
+<div class="row">
+        <div id="column_container" style="display: flex;"> 
+            <div class="col-sm">
+                    <form action ="#" method = "POST" class="form-inline" >
+                        <div class="btn-group-vertical">
+                            <div id="con">
+                            <p><input type="text" name = "theirID" class="form-control" size="15" placeholder="Student ID" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>                        
+                            <p><input type="text" name = "date" class="form-control" size="15" placeholder="MM/DD/YYY" required pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "8"/></p>
+                            
+                                
+                                <select class="form-control"  id="noteType" name="noteType">
+                                    <option value="A">Accessibility </option>
+                                    <option value="D"selected>Disciplinary</option>
+                                </select>
+                              
+                            
+                        </div> 
+                        <p><input type="text" name = "notes" style="position:relative; right:-20px;" class="form-control" size="15" placeholder="Notes..." required pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "100"/></p>
+                        
+                        <div id="cn2">
+                        <button style="position:relative;"  type="submit" name="add" class=" btn-block btn btn-dark">Add</button>
+                        </div>
+                        </div>
+                    </form>
+            </div>
+            <div class="col-sm" style="text-align:Left;">
 
-    <p> Note ID: </p> 
-    <p> <input type="text" name="NoteID" /></p> 
-    <p><input type="submit" name="delete" value="Delete Note" /></p>
+                <form action ="#" method = "POST" class="form-inline">
+                    <div class="btn-group-vertical">
+                        <div id="cn"></div>
+                        <p><input type="text" name = "theirID" class="form-control" size="15" placeholder="Student ID" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                        <p><input type="text" name = "NoteID" class="form-control" size="15" placeholder="Note ID" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                       
+                        <button style="position:relative; right:0px" type="submit" name="delete" class="btn btn-dark">Delete</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div id="con">
-        <p> Behavior Note Type: </p>   
-        <select class="form-control" id="noteType" name="noteType">
-            <option value="A">Accessibility </option>
-            <option value="D"selected>Disciplinary</option>
-        </select>
-    </div>      
 
-    <p> Date: </p>  
-    <p> <input type="text" placeholder="MM/DD/YYY" name="date" /></p>
-
-    <p> Behavior Note: </p>  
-    <p> <input type="text" name="notes" /></p>
-    <p><input type="submit" name="add" value="Add Note" /></p> 
-    
-    </form>
 
     <!-- <form action="{{ url_for('viewStudentNotes') }}" method="GET">
         <p> View Behavior Note: </p>  

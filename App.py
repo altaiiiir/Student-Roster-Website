@@ -591,10 +591,9 @@ def modifyStudentNotes():
         if 'delete' in request.form:
             print ("DELETE WAS RANNNN")
             theStudentID = request.form["theirID"]
-            note = request.form["notes"]
-            noteType = request.form["noteType"]
+           
             theNoteID = request.form["NoteID"]
-            theDate = request.form["date"]
+           
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
