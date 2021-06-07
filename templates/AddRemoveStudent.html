@@ -28,11 +28,19 @@
      max-width: 500px;
      margin: auto;
    }
+   
+   #cn2 {
+        padding: 20px;
+        max-width: 300px;
+        border-radius: 10px;
+        
+        }
+
 </style>
 
 <div class="container">
-
-</div class="row">
+<!-- right most column -->
+</div class="row"> 
    <div id="column_container" style="display: flex; margin-left: 2.5%; margin-top: 5%"> 
       <div class="col-sm" style="float: left; ">
                <form action ="#" method = "POST" class="form-inline" >
@@ -48,16 +56,18 @@
                   </div>
                </form>
       </div>
-
+<!-- middle column -->
       <div class="col-sm" style="float: right; margin-right: 45%; margin-top: 0%">
             <form action ="#" method = "POST" class="form-inline">
                <div class="btn-group-vertical">
                   <p><input type="number" class="form-control" placeholder="StudentID" maxlength="100" name = studID required></p>
-                  <p><input type = "submit" class="btn btn-dark" name = "remove" value = "Remove" > </p>
-               </div>
+                  <div id="cn2"></div>
+                    <p><input type = "submit" class="btn btn-dark" name = "remove" value = "Remove" > </p>
+                  </div>
+                </div>
             </form>
       </div>
-
+<!-- right column -->
       <div class="col-sm" style="float: right; margin-right: 5%; margin-top: 0%">
         <form action ="#" method = "POST" class="form-inline">
            <div class="btn-group-vertical">
