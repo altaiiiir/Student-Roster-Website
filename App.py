@@ -84,7 +84,7 @@ def login():
         password = request.form['password']
         if (username == "" or password == ""):
             flash("Enter valid username and password", "error")
-            return render_template('login.html')
+            return render_template('Login.html')
         
         if (u1 != username or p1 != password):
             flash("Enter valid username and password", "error")
@@ -93,7 +93,7 @@ def login():
         session['user_id'] = id1
         return redirect(url_for('home'))
 
-    return render_template('login.html')
+    return render_template('Login.html')
 
 @app.route("/index.html") 
 def home():
@@ -118,7 +118,7 @@ def TranscriptFilter():
          studentID = int(request.form["studentID"])
       except:
          flash("Invalid Number Entry", "info")
-         return render_template("filterTranscript.html")
+         return render_template("FilterTranscript.html")
 
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
@@ -133,7 +133,7 @@ def TranscriptFilter():
          studentID = int(request.form["studentID"])
       except:
          flash("Invalid Number Entry", "info")
-         return render_template("filterTranscript.html")
+         return render_template("FilterTranscript.html")
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -147,7 +147,7 @@ def TranscriptFilter():
          SLN = int(request.form["SLN"])
       except:
          flash("Invalid Number Entry", "info")
-         return render_template("filterTranscript.html")
+         return render_template("FilterTranscript.html")
       cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -157,7 +157,7 @@ def TranscriptFilter():
       updatedTranscriptRows = cur.fetchall()
       return render_template("Transcripts.html", things=updatedTranscriptRows)
    else:
-      return render_template("filterTranscript.html")
+      return render_template("FilterTranscript.html")
 
 @app.route("/transcript-add-remove", methods=["POST", "GET"])
 def TranscriptAddRemove():
@@ -269,7 +269,7 @@ def addRemoveStudent():
             con.commit()
             return redirect(url_for("viewStudent"))
     else:
-        return render_template("addRemoveStudent.html")
+        return render_template("AddRemoveStudent.html")
 
 @app.route("/course-catalog", methods=["POST", "GET"])
 def courses_catalog():
@@ -295,36 +295,36 @@ def update_course():
         return redirect(url_for('login'))
     if request.method == "POST":
         currSln = request.form["sln"]
-        newCourseName = request.form["CourseName"]
-        newSection = request.form["Section"]
-        newRoomID = request.form["RoomID"]
-        newInstructorName = request.form["InstructorName"]
-        newTime = request.form["Time"]
-        newQuarter = request.form["Quarter"]
-        newYear = request.form["Year"]
+        newCourseName = request.form["name"]
+        newSection = request.form["section"]
+        newRoomID = request.form["roomID"]
+        newInstructorName = request.form["instructorName"]
+        newTime = request.form["time"]
+        newQuarter = request.form["quarter"]
+        newYear = request.form["year"]
 
-        if newCourseName is not "":
+        if newCourseName != "":
             cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [newCourseName])
             tempCourseID = cur.fetchall()
             newCourseID = tempCourseID[0][0]
             cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, currSln))
 
-        if newSection is not "":
+        if newSection != "":
             cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (newSection, currSln))
 
-        if newRoomID is not "":
+        if newRoomID != "":
             cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (newRoomID, currSln))
 
-        if newInstructorName is not "":
+        if newInstructorName != "":
             cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (newInstructorName, currSln))
 
-        if newTime is not "":
+        if newTime != "":
             cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (newTime, currSln))
 
-        if newQuarter is not "":
+        if newQuarter != "":
             cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (newQuarter, currSln))
 
-        if newYear is not "":
+        if newYear != "":
             cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (newYear, currSln))
 
         con.commit()
@@ -354,7 +354,7 @@ def add():
                 
                     if (curName == name): 
                         flash("You cannot add a course that already exists.", "error") 
-                        return render_template("addCourse.html")
+                        return render_template("AddCourse.html")
 
                 # adds to course catalog
                 cur.execute("""INSERT INTO Course_Catalog (Name, CourseCredits, Type) 
@@ -368,7 +368,7 @@ def add():
                 return render_template("CourseCatalog.html", things = courseRows)
             else:
                 flash("Fill in neccesary information.") 
-                return render_template("addCourse.html")
+                return render_template("AddCourse.html")
         else:
             name = request.form["nm"]
             if(name) :
@@ -394,12 +394,12 @@ def add():
                         
                 if (courseExist == 0):
                     flash("You cannot remove a course that doesn't exists.", "error") 
-                    return render_template("addCourse.html")
+                    return render_template("AddCourse.html")
             else:
                 flash("Fill in neccesary information.") 
-                return render_template("addCourse.html")
+                return render_template("AddCourse.html")
     else:
-        return render_template("addCourse.html")
+        return render_template("AddCourse.html")
 
 @app.route("/add-class", methods = ["POST", "GET"])
 def addClass():
@@ -464,27 +464,27 @@ def addClass():
 
                     if (curName == name and curSection == section): 
                         flash("You cannot add a class that already exists.") 
-                        return render_template("addClass.html")
+                        return render_template("AddClass.html")
 
                 # Case: class time conflict
                 if roomAvaliable == 0:
                     flash("Time conflict within that building.") 
-                    return render_template("addClass.html")
+                    return render_template("AddClass.html")
 
                 # Case: class not in catalog
                 if existsInCatalog == 0:
                     flash("You cannot add a class to a course that doesn't exist.") 
-                    return render_template("addClass.html")
+                    return render_template("AddClass.html")
 
                 # Case: room doesn't exist
                 if roomExists == 0:
                     flash("You cannot add a class to a room that doesn't exist.") 
-                    return render_template("addClass.html")
+                    return render_template("AddClass.html")
 
                 # Case: room is full
                 if roomHasSpace == 0:
                     flash("You cannot add a class to a full room.") 
-                    return render_template("addClass.html")    
+                    return render_template("AddClass.html")
                 
                 # adds to course info
                 cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
@@ -504,7 +504,7 @@ def addClass():
                 return render_template("courseInfo.html", things=showCourseInfoRows())
             else:
                 flash("Fill in neccesary information.") 
-                return render_template("addClass.html")    
+                return render_template("AddClass.html")
         else:
             # request data
             name = request.form["name"]
@@ -543,13 +543,13 @@ def addClass():
                         
                 if (courseExist == 0):
                     flash("You cannot remove a class that doesn't exists.", "error") 
-                    return render_template("addClass.html")
+                    return render_template("AddClass.html")
             else:
                 flash("Fill in neccesary information.") 
-                return render_template("addClass.html")
+                return render_template("AddClass.html")
     else:
         # show main screen initially
-        return render_template("addClass.html")
+        return render_template("AddClass.html")
 
 @app.route("/view-student-notes", methods = ["POST", "GET"])
 def viewStudentNotes():
@@ -561,7 +561,7 @@ def viewStudentNotes():
         if 'modifyNotes' in request.form:
             
             studentNotes = func.viewStudentNotes()
-            return render_template('modifyStudentNotes.html', things = studentNotes)
+            return render_template('ModifyStudentNotes.html', things = studentNotes)
         
         if 'viewNotes' in request.form:
             theStudentID = request.form["theirID"]
@@ -570,15 +570,15 @@ def viewStudentNotes():
                     
                 if (theStudentID.isdecimal() == 0):
                     flash("StudentID must be a number", "error")
-                    return render_template("viewStudentNotes.html", things=studentNotes)
+                    return render_template("ViewStudentNotes.html", things=studentNotes)
 
                 specificStudent = func.viewSpecificStudentNotes(theStudentID)
-                return render_template("viewStudentNotes.html", things=specificStudent)
+                return render_template("ViewStudentNotes.html", things=specificStudent)
             else:
-                return render_template("viewStudentNotes.html", things=studentNotes)
+                return render_template("ViewStudentNotes.html", things=studentNotes)
     
     studentNotes = func.viewStudentNotes()
-    return render_template("viewStudentNotes.html", things=studentNotes)
+    return render_template("ViewStudentNotes.html", things=studentNotes)
 
 @app.route("/modify-student-notes", methods=["POST", "GET"])
 def modifyStudentNotes():
@@ -589,7 +589,7 @@ def modifyStudentNotes():
         if 'viewNotes' in request.form:
             print("clicked viewNotes")
             studentNotes = func.viewStudentNotes()
-            return render_template('viewStudentNotes.html')
+            return render_template('ViewStudentNotes.html')
         
         if 'delete' in request.form:
             print ("DELETE WAS RANNNN")
@@ -601,7 +601,7 @@ def modifyStudentNotes():
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("modifyStudentNotes.html", things = studentNotes)
+                return render_template("ModifyStudentNotes.html", things = studentNotes)
 
             print ("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
@@ -627,7 +627,7 @@ def modifyStudentNotes():
                     linkednote = 1
             if (linkedstud == 0 or linkednote == 0):
                 flash("Please enter a valid NoteID and StudentID combination", "error")
-                return render_template("modifyStudentNotes.html", things = studentNotes)
+                return render_template("ModifyStudentNotes.html", things = studentNotes)
 
             cur.execute(allRowsStudentNotes)
             allRowsQuery= cur.fetchall()
@@ -656,7 +656,7 @@ def modifyStudentNotes():
            
             if (studentIDExists == 0 or NoteIDExists == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
-                return render_template("modifyStudentNotes.html", things = studentNotes)
+                return render_template("ModifyStudentNotes.html", things = studentNotes)
 
         
 
@@ -673,7 +673,7 @@ def modifyStudentNotes():
             con.commit()
             studentNotes = func.viewStudentNotes() # calls viewStudentNotes
             flash("Successfully deleted note")
-            return render_template("modifyStudentNotes.html") #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
+            return render_template("ModifyStudentNotes.html") #passes studentNotes to page 'studentNotes.html' to have it's contents printed to screen
       
       
         elif 'add' in request.form:
@@ -684,46 +684,46 @@ def modifyStudentNotes():
             theDate = request.form["date"]
             if theStudentID == "" or note == "" or theDate == "":
                 flash("Please enter a valid StudentID, note and date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             
             splitDate = theDate.split("/")
             if len(splitDate) != 3:
                 flash("Please enter a valid date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             month = splitDate[0]
             day = splitDate[1]
             year = splitDate[2]
             
             if (month.isdecimal() == 0 or day.isdecimal() == 0 or year.isdecimal() == 0 ):
                 flash("Please enter a valid date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             month = int(splitDate[0])
             day = int(splitDate[1])
             year = int(splitDate[2])
 
             if(month > 12 or month < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             if(day > 31 or day < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             if(year > 2021 or year < 1):
                 flash("Please enter a valid date", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
 
             dateObject = datetime.datetime(year, month, day)
             curDate = date.today()
 
             if (dateObject > datetime.datetime.now()):
                 flash("Please enter a date that is prior to today", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             print (dateObject)
             print(date.today())
             #theNoteID = request.form["NoteID"]
             
             if (theStudentID.isdecimal() == 0):
                 flash("Please enter a valid StudentID", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             
             studentQuery = """select * from student where ID = %s; """
             cur.execute(studentQuery, (theStudentID,)) 
@@ -741,7 +741,7 @@ def modifyStudentNotes():
             print (studentIDExists)
             if (studentIDExists == 0):
                 flash("Please enter a valid StudentID", "error")
-                return render_template("modifyStudentNotes.html", things=studentNotes)    
+                return render_template("ModifyStudentNotes.html", things=studentNotes)
             print ("went thorought checks ")
 
             findMaxNoteID = """Select MAX(NoteID) from Note""" #find max note from Note  
@@ -780,13 +780,13 @@ def modifyStudentNotes():
             studentNotes = func.viewStudentNotes()
             allStudents = func.viewAllStudents()
             flash("Note successfully added", "info")
-            return render_template("modifyStudentNotes.html", things=studentNotes)
+            return render_template("ModifyStudentNotes.html", things=studentNotes)
         print ("post")
         studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-        return render_template("modifyStudentNotes.html", things=studentNotes)
+        return render_template("ModifyStudentNotes.html", things=studentNotes)
     print ("no post")
     studentNotes = func.viewStudentNotes() # calls viewStudentNotes
-    return render_template("modifyStudentNotes.html", things=studentNotes)
+    return render_template("ModifyStudentNotes.html", things=studentNotes)
     
 
 if __name__ == "__main__":

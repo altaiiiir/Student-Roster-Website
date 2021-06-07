@@ -25,17 +25,23 @@ Update Courses
 
         <h4>Target:</h4>
 
-        <p><input type="number" class="form-control" name = "sln" placeholder="SLN" maxlength="5"/></p>
+        <p><input type="number" class="form-control" name = "sln" required placeholder="SLN" maxlength="5"/></p>
 
         <h4>Edit:</h4>
 
-        <p><input type="text" name = "CourseName" class="form-control" placeholder="Class Name" maxlength="20"/></p>
-        <p><input type="text" name = "Section" class="form-control" placeholder="Section" maxlength="1"/></p>
-        <p><input type="number" name = "RoomID" class="form-control" placeholder="Room ID"/></p>
-        <p><input type="text" name = "InstructorName" class="form-control" placeholder="Instructor" maxlength="20"/></p>
-        <p><input type="time" name = "Time" class="form-control" placeholder="Time"/></p>
-        <p><input type="text" name = "Quarter" class="form-control" placeholder="Quarter"/></p>
-        <p><input type="text" name = "Year" class="form-control" placeholder="Year"/></p>
+        <p><input type="text" name = "name" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+
+        <p><input type="text" name = "section" class="form-control" size="15" placeholder="Section" required pattern="[A-Z]" maxlength = "1"/></p>
+
+        <p><input type="number" name = "roomID" class="form-control" size="15" placeholder="Room ID" required min="0" step="1" maxlength = "1"/></p>
+
+        <p><input type="text" name = "instructorName" class="form-control" size="15" placeholder="Instructor Name" required pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
+
+        <p><input type="time" name = "time" class="form-control" size="15" placeholder="Time" /></p>
+
+        <p><input type="text" name = "quarter" class="form-control" size="15" placeholder="Quarter (F, W, S, SU)" pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "2"/></p>
+
+        <p><input type="number" name ="year" class="form-control" size="15" placeholder="Year" min="0" step="1" minLength="4" maxlength="4"/></p>
 
         <p><input type="submit" class="btn btn-dark" name = "submit" /></p>
 
