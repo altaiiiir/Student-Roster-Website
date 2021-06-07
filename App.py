@@ -232,41 +232,140 @@ def Transcript():
     updatedTranscriptRows = cur.fetchall()
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
-
+def genderChecker(str):
+    if str.upper() != 'F' or str.upper() != 'M':
+        flash("Unacceptable Gender","info")
+        return render_template("addRemoveStudent.html")
+          
 @app.route("/add-remove-student", methods = ["POST","GET"])
 def addRemoveStudent():
     if not g.user:
         return redirect(url_for('login'))
     if request.method == "POST":
         if 'add' in request.form:
-            #TODO double check data, protect against sql injections
-            #TODO double check if values are legit
             StuID = request.form["studentID"]
+            # StudChecker(StuID)
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            exists= cur.fetchall()
+            if exists.__len__() != 0:
+                flash("Student already exists")
+                return render_template("addRemoveStudent.html")
+
             Fname = request.form["first"]
+            
             Lname = request.form["last"]
+                      
             gender = request.form["gender"]
+            genderChecker(gender)
+            
             super = request.form["super"]
+            
             alias = request.form["alias"]
+            
             dob = request.form["dob"]
 
             cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
                 Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
             con.commit()
-            return redirect(url_for("viewStudent"))
-        else:
-            #TODO to double check data, protect against sql injections
-            #TODO double check if value is legit
+            return redirect(url_for("home"))
+        elif 'remove' in request.form:
+            
             studID = int(request.form["studID"])
-            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[studID])
+            exists= cur.fetchall()
+            if exists.__len__() == 0:
+                flash("Student doesn't exists")
+                return render_template("addRemoveStudent.html")
+          
+            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[studID])
+            studID = cur.fetchall()
+            
+            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',(studID))
+           
             # Find the noteID based on studentID, use that to delete notes
-            # cur.execute('DELETE FROM Notes WHERE Student_Notes.StudentID = %s',[studID])
-            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
-            cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
+            cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
+            noteNumb = cur.fetchall()
+            if noteNumb.__len__() != 0:
+                cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
+
+            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
+            cur.execute('DELETE FROM STUDENT WHERE ID = %s',(studID))
             con.commit()
-            return redirect(url_for("viewStudent"))
+            return redirect(url_for("home"))
+        else:
+            StuID = request.form["studentID"]
+            
+            cur.execute("SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            exists= cur.fetchall()
+            if exists.__len__() == 0:
+                flash("Student doesn't exists")
+                return render_template("addRemoveStudent.html")
+
+            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            StuID = cur.fetchall()
+            StuID = StuID[0][0]
+
+            Fname = request.form["first"]
+            Lname = request.form["last"]
+            gender = request.form["gender"]
+            if gender.__len__() > 0:           
+                genderChecker(gender)
+            
+            super = request.form["super"]
+            
+            alias = request.form["alias"]
+            
+            dob = request.form["dob"]
+
+            enr = request.form["enrollment"]
+            if enr.__len__() > 0:
+                if enr.upper() != "T" or enr.upper() != "F":
+                    flash("Enrolled Must be T or F")
+                    return render_template("addRemoveStudent.html")
+        
+            cur.execute("SELECT * FROM STUDENT WHERE ID = %s",[StuID])
+            getStudentQuery = cur.fetchall()
+            # print(getStudentQuery)
+            #[(19, 24, 'first', 'last', 'gff', 'M', 'gayaf', datetime.date(2005, 4, 8), True, 1)]
+            if Fname == "":
+                qFirst = getStudentQuery[0][2]
+            else:
+                qFirst = Fname
+            if Lname == "":
+                qLast = getStudentQuery[0][3]
+            else:
+                qLast = Lname
+            if alias == "":
+                qAlias = getStudentQuery[0][4]
+            else:
+                qAlias = alias
+            if gender == "":
+                qGender = getStudentQuery[0][5] 
+            else:
+                qGender = gender
+            if super == "":
+                qSuper = getStudentQuery[0][6]
+            else:
+                qSuper = super
+            if dob == "":
+                qDOB = getStudentQuery[0][7]
+            else:
+                qDOB = dob
+            
+            if enr == "":
+                qENR = getStudentQuery[0][8]
+            else:
+                qENR = enr
+            
+            cur.execute('Update Student \
+                SET FirstName= %s, LastName= %s, Alias= %s, \
+                Gender= %s, SuperPower= %s, DOB= %s, \
+                IsCurrentlyEnrolled= %s WHERE ID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
+            con.commit()
+            return redirect(url_for("home"))               
     else:
-        return render_template("AddRemoveStudent.html")
+        return render_template("addRemoveStudent.html")
 
 @app.route("/course-catalog", methods=["POST", "GET"])
 def courses_catalog():
