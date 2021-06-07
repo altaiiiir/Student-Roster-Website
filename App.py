@@ -182,14 +182,16 @@ def TranscriptAddRemove():
         return redirect(url_for('login'))
     if request.method == "POST":
         studentID = request.form["studentID"]
+        studentID = int(studentID)
         if studentID == '':
             flash("Enter In Student ID", "info")
             return render_template("TranscriptAddRemove.html")
-        SLN = request.form["SLN"]
-        if SLN == '':
+        sln = request.form["SLN"]
+        sln = int(sln)
+        if sln == '':
             flash("Enter in SLN", "info")
             return render_template("TranscriptAddRemove.html")
-        cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [SLN])
+        cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [sln])
         classIDs = cur.fetchall()
         if classIDs.__len__() == 0:
             flash("Class Doesn't Exist", "info")
@@ -226,7 +228,7 @@ def TranscriptAddRemove():
                 return render_template("TranscriptAddRemove.html")
             # adding grade
             cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',
-                        (studentID, classID))
+                        (studentID, int(classID)))
             isConnection = cur.fetchall()
             if isConnection.__len__() == 0:
                 flash("Student doesn't exist.", "info")
@@ -302,7 +304,7 @@ def addRemoveStudent():
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
                 Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)', (int(studID), Fname, Lname, alias, gender, super, dob))
             con.commit()
-            
+
             return redirect(url_for("viewStudent"))
         elif 'remove' in request.form:
 
