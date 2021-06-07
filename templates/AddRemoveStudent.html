@@ -56,11 +56,11 @@
     <update>
         <h1>Update Student </h1>
         <form action="#" method = "POST">
-            <p> StudentID <input type="number" maxlength="100" name = studentID required></p>
-            <p> First name <input type="text" maxlength="100" name=first></p>
-            <p> Last name <input type="text"  maxlength="100" name=last></p>
+            <p> StudentID <input type="number" maxlength="100" name = studentID required ></p>
+            <p> First name <input type="text" maxlength="100" name=first pattern="^(?!^ +$)([a-zA-Z]+)"></p>
+            <p> Last name <input type="text"  maxlength="100" name=last pattern="^(?!^ +$)([a-zA-Z]+)"></p>
             <p> Gender <input type="text" maxlength="1" name= gender></p>
-            <p> SuperPowers <input type="text"maxlength="100" name =super></p>
+            <p> SuperPowers <input type="text"maxlength="100" name =super pattern="^(?!^ +$)([a-zA-Z]+)"></p>
             <p> Alias <input type="text" maxlength="100" name = alias></p>
             <p> DOB <input type="number" maxlength="10" name = dob pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"></p>
             <p> Enrolled <input type="text"  maxlength="100" name= enrollment></p>

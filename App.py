@@ -54,6 +54,11 @@ courseAttendeesRows = cur.fetchall()
 cur.execute('Select * from Course_Info JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)')
 courseInfoRows = cur.fetchall()
 
+def genderChecker(str):
+    if str.upper() != 'F' or str.upper() != 'M':
+        flash("Unacceptable Gender","info")
+        return render_template("addRemoveStudent.html")
+        
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
@@ -784,12 +789,8 @@ def modifyStudentNotes():
     studentNotes = func.viewStudentNotes() # calls viewStudentNotes
     return render_template("ModifyStudentNotes.html", things=studentNotes)
     
-def genderChecker(str):
-    if str.upper() != 'F' or str.upper() != 'M':
-        flash("Unacceptable Gender","info")
-        return render_template("addRemoveStudent.html")
 
-@app.route("/addRemoveStudent", methods = ["POST","GET"]) 
+@app.route("/add-remove-student", methods = ["POST","GET"]) 
 def addRemoveStudent():
     if request.method == "POST":
         if 'add' in request.form:
