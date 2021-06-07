@@ -76,9 +76,9 @@ def addRemoveStudent():
             enr = request.form["enrollment"]
 
             cur.execute('Update Student \
-                SET StudentID = %s, FirstName= %s, LastName= %s, Alias= %s, \
+                SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
-                IsCurrentlyEnrolled= %s, adminID = 1',(int(StuID),Fname,Lname,alias,gender,super,dob,enr))
+                IsCurrentlyEnrolled= %s, adminID = 1 WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
             con.commit()
                
     else:
