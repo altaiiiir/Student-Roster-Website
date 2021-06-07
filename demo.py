@@ -1,5 +1,13 @@
+from re import split
 import psycopg2
-from flask import Flask, redirect, url_for, render_template, request, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, g
+
+
+from datetime import timedelta, datetime
+import datetime
+from datetime import date
+
+
 
 #connect to the local host db
 con = psycopg2.connect (
@@ -74,16 +82,30 @@ def addRemoveStudent():
             alias = request.form["alias"]
             dob = request.form["dob"]
             enr = request.form["enrollment"]
+            
+            if (StuID == ""):
+                flash("Enter studentID", "error")
+                render_template("addRemoveStudent.html")
 
-            cur.execute('Update Student \
-                SET FirstName= %s, LastName= %s, Alias= %s, \
-                Gender= %s, SuperPower= %s, DOB= %s, \
-                IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
-            con.commit()
+            studentQuery = """select * from Student where student.ID = %s """ 
+            cur.execute(studentQuery, (StuID,))
+
+
+            getStudentQuery = cur.fetchall()
+
+            print (getStudentQuery)
+            qStudID = getStudentQuery[0][1]
+            qFirst = getStudentQuery[0][1]
+        return render_template("addRemoveStudent.html")
+            # cur.execute('Update Student \
+            # SET FirstName= %s, LastName= %s, Alias= %s, \
+            # Gender= %s, SuperPower= %s, DOB= %s, \
+            # IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
+            #con.commit()
                
     else:
         return render_template("addRemoveStudent.html")
-
+    return render_template("addRemoveStudent.html")
 @app.route("/<usr>")
 def user(usr):
     return f"<h1>{usr} </h1>"
