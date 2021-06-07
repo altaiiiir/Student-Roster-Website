@@ -24,10 +24,11 @@
    }
    
    .container {
-     padding: 5px;
+     padding: 15px;
      max-width: 500px;
      margin: auto;
    }
+<<<<<<< HEAD
    
    #cn2 {
         padding: 20px;
@@ -43,6 +44,20 @@
 </div class="row"> 
    <div id="column_container" style="display: flex; margin-left: 2.5%; margin-top: 5%"> 
       <div class="col-sm" style="float: left; ">
+=======
+
+   #cn {
+        padding: 10px;
+        max-width: 300px;
+        }
+</style>
+
+<div class="container">
+
+</div class="row">
+   <div id="column_container" style="display: flex; margin-left: 22%; margin-top: 1%"> 
+      <div class="col-left" style="float: left; margin-right: 0%;">
+>>>>>>> 6926171b5ff6e60098114cc99fd499fa348b96a8
                <form action ="#" method = "POST" class="form-inline" >
                   <div class="btn-group-vertical">
                      <p><input type="number" class="form-control" placeholder="Student ID"   maxlength="100" name=studentID required></p>
@@ -52,10 +67,11 @@
                      <p><input type="text" class="form-control" placeholder="SuperPowers" maxlength="100" name =super required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                      <p><input type="text" class="form-control" placeholder="Alias"  maxlength="100" name = alias pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                      <p><input type="text" class="form-control" placeholder="DOB"  maxlength="10" name = dob pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" required></p>
-                     <p><input type = "submit" class="btn btn-dark" name= "add" value = "Add" style="margin-left: 75px;"> </p>
+                     <p><input type = "submit" id = "cn" class="btn btn-dark" name= "add" value = "Add" style="margin-left: 75px;"> </p>
                   </div>
                </form>
       </div>
+<<<<<<< HEAD
 <!-- middle column -->
       <div class="col-sm" style="float: right; margin-right: 45%; margin-top: 0%">
             <form action ="#" method = "POST" class="form-inline">
@@ -69,6 +85,19 @@
       </div>
 <!-- right column -->
       <div class="col-sm" style="float: right; margin-right: 5%; margin-top: 0%">
+=======
+      <!-- margin-right: 45%; margin-top: 0% margin-right: 10%-->
+      <div class="col-mid" style="float: right; margin-left: 5%; margin-right: 5%;">
+            <form action ="#" method = "POST" class="form-inline">
+               <div class="btn-group-vertical">
+                  <p><input type="number" class="form-control" placeholder="StudentID" maxlength="100" name = studID required></p>
+                  <p><input type = "submit" class="btn btn-dark" name = "remove" value = "Remove" style="margin-left: 75px;"> </p>
+               </div>
+            </form>
+      </div>
+
+      <div class="col-right" style="float: right; margin-right: 10%;">
+>>>>>>> 6926171b5ff6e60098114cc99fd499fa348b96a8
         <form action ="#" method = "POST" class="form-inline">
            <div class="btn-group-vertical">
                <p><input type="number" class="form-control" placeholder="StudentID" maxlength="100" name = studentID required></p>
@@ -79,7 +108,7 @@
                <p><input type="text" class="form-control" placeholder="Alias" maxlength="100" name = alias></p>
                <p><input type="number" class="form-control" placeholder="DOB" maxlength="10" name = dob pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"></p>
                <p><input type="text" class="form-control" placeholder="Enrolled" maxlength="100" name= enrollment></p>
-               <p><input type = "submit" class="btn btn-dark" name = "update" value = "update"> </p>
+               <p><input type = "submit" class="btn btn-dark" name = "update" value = "Update" style="margin-left: 75px;"> </p>
             </div>
         </form>
   </div>
