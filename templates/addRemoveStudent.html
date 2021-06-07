@@ -3,6 +3,15 @@
 
 
 {% block content %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for msg in messages %}
+            <p>{{msg}}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 <style>
     add{
         float: left;
@@ -11,30 +20,52 @@
 
     delete{
         float: right;
-        margin-right: 30%;
+        margin-right: 45%;
      }
+    
+     update{
+        float: right;
+        margin-right: 5%;
+        margin-top: -11%;
+    }
+
 </style>
 
     <add>
         <h1>Add Student</h1>
-        <form action="#" method = "POST" name = "insertStud">
+        <form action="#" method = "POST">
                 <p> First name <input type="text" maxlength="100" name=first></p>
                 <p> Last name <input type="text"  maxlength="100" name=last></p>
-                <p> Student ID <input type="text"  maxlength="100" name=studentID></p>
+                <p> Student ID <input type="number"  maxlength="100" name=studentID></p>
                 <p> Gender <input type="text" maxlength="1" name= gender></p>
                 <p> SuperPowers <input type="text"maxlength="100" name =super></p>
                 <p> Alias <input type="text" maxlength="100" name = alias></p>
-                <p> DOB <input type="text" maxlength="10" name = dob></p>
+                <p> DOB <input type="number" maxlength="10" name = dob></p>
                 <p><input type = "submit" name= "add" value = "Add"> </p>
         </form>
     </add>
 
     <delete>
         <h1>Remove Student </h1>
-        <form action="#" method = "POST" name = "deleteStud">
-            <p> StudentID <input type="text" maxlength="100" name = studID ></p>
+        <form action="#" method = "POST">
+            <p> StudentID <input type="number" maxlength="100" name = studID ></p>
             <p><input type = "submit" name = "remove" value = "Remove"> </p>
         </form>
     </delete>
+
+    <update>
+        <h1>Update Student </h1>
+        <form action="#" method = "POST">
+            <p> StudentID <input type="number" maxlength="100" name = studentID ></p>
+            <p> First name <input type="text" maxlength="100" name=first></p>
+            <p> Last name <input type="text"  maxlength="100" name=last></p>
+            <p> Gender <input type="text" maxlength="1" name= gender></p>
+            <p> SuperPowers <input type="text"maxlength="100" name =super></p>
+            <p> Alias <input type="text" maxlength="100" name = alias></p>
+            <p> DOB <input type="number" maxlength="10" name = dob></p>
+            <p> Enrolled <input type="text"  maxlength="100" name= enrollment></p>
+            <p><input type = "submit" name = "update" value = "update"> </p>
+        </form>        
+    </update>
 
 {% endblock %}
