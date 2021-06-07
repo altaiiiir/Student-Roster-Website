@@ -205,7 +205,11 @@ def TranscriptAddRemove():
         if 'delete' in request.form:
             cur.execute('''SELECT id FROM Student WHERE studentid = %s''', [studentID])
             curStud = cur.fetchall()
-            curStud = curStud[0][0]
+            if curStud.__len__() != 0:
+                curStud = curStud[0][0]
+            else:
+                flash("Student doesn't Exist", "info")
+                return render_template("TranscriptAddRemove.html")
             cur.execute('''SELECT StudentID FROM Transcript WHERE studentid = %s AND classID = %s''',
                         (curStud, classID))
             isConnection = cur.fetchall()
