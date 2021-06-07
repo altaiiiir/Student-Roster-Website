@@ -48,23 +48,23 @@
                               name=studentID required></p>
                     <p><input type="text" class="form-control"
                               placeholder="First name" maxlength="100"
-                              name=first required
+                              name=first required title= "Letters only"
                               pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letters only"
                               placeholder="Last name" maxlength="100" name=last
                               required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letter only"
                               placeholder="Gender (Any Letter)" maxlength="1" name=gender pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
                               placeholder="SuperPowers" maxlength="100"
-                              name=super required
+                              name=super required title= "Letters only"
                               pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letters only"
                               placeholder="Alias" maxlength="100" name=alias
                               pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="text" class="form-control" placeholder="DOB (MM/DD/YY)"
-                              maxlength="10" name=dob
+                              maxlength="10" name=dob title= "MM/DD/YY format only"
                               pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"
                               required></p>
                     <p><input type="submit" id="cn" class="btn btn-dark"
@@ -94,25 +94,26 @@
                               placeholder="StudentID" maxlength="100"
                               name=studentID required></p>
                     <p><input type="text" class="form-control"
-                              placeholder="First name" maxlength="100"
+                              placeholder="First name" maxlength="100" title= "Letters only"
                               name=first pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="text" class="form-control"
-                              placeholder="Last name" maxlength="100" name=last pattern="^(?!^ +$)([a-zA-Z]+)">
+                              placeholder="Last name" maxlength="100" name=last 
+                              pattern="^(?!^ +$)([a-zA-Z]+)" title= "Letters only">
                     </p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letter only"
                               placeholder="Gender (Any Letter)" maxlength="1" name=gender pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
-                              placeholder="SuperPowers" maxlength="100"
+                              placeholder="SuperPowers" maxlength="100" title= "Letters only"
                               name=super pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letters only"
                               placeholder="Alias" maxlength="100" name=alias pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
-                              placeholder="DOB (MM/DD/YY)" maxlength="10" name=dob
+                              placeholder="DOB (MM/DD/YY)" maxlength="10" name=dob title= "MM/DD/YY format only"
                               pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d">
                     </p>
-                    <p><input type="text" class="form-control"
+                    <p><input type="text" class="form-control" title= "Letter only"
                               placeholder="Enrolled (T or F)" maxlength="1"
                               name=enrollment pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="submit" class="btn btn-dark" name="update"
