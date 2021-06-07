@@ -1,7 +1,7 @@
 {% extends "Base.html" %}
 {% block content %}
 
-<h1 style = font-size:2em>Classes</h1>
+<h1 style = "font-size:2em; text-align: center;">Classes</h1>
 
 <style>
 table, th, td {
@@ -11,24 +11,25 @@ table, th, td {
 table {
    border-spacing: 15px;
 }
+#tb {
+    padding: 30px;
+    margin: auto;
+}
+
 </style>
 </head>
 <body>
 
-   <table style="width:60%" align="left">
-      <th>SLN</th><th>Course</th><th>Section</th><th>RoomID</th><th>Instructor</th><th>Time</th><th>Quarter</th><th align="center">Action</th></tr>
+<div id="tb" style="text-align: center;">
+   <table style="width:60%" align="center">
+      <th>SLN</th><th>Course</th><th>Section</th><th>RoomID</th><th>Instructor</th><th>Time</th><th>Quarter</th></tr>
       {% for thing in things %}
       </td>
           <td>{{thing[2]}}</td><td>{{thing[10]}}</td><td>{{thing[3]}}</td><td>{{thing[4]}}</td><td>{{thing[5]}}</td><td>{{thing[6]}}</td><td>{{thing[7]}}</td>
-          <td>
-            <a href="update-class">
-                <button>EDIT</button>
-            </a>
-          </td>
       </tr>
       {% endfor %}
    </table>
-
+</div>
 {% endblock %}
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
