@@ -29,13 +29,6 @@ def genderChecker(str):
         flash("Unacceptable Gender","info")
         return render_template("addRemoveStudent.html")
 
-def dobChecker(str):
-    try: 
-        dateObject = datetime.strptime(str,'%d/%m/%y')
-        DOB = str.split("/")
-    except:
-        flash("Invalid DOB")
-        return render_template("addRemoveStudent.html")
 
 def StudChecker(str):
     cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
@@ -87,7 +80,6 @@ def addRemoveStudent():
             alias = request.form["alias"]
             
             dob = request.form["dob"]
-            dobChecker(dob)
 
             cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
@@ -134,7 +126,6 @@ def addRemoveStudent():
             alias = request.form["alias"]
             
             dob = request.form["dob"]
-            dobChecker(dob)
 
             enr = request.form["enrollment"]
             if enr.upper() != "T" or enr.upper() != "F":

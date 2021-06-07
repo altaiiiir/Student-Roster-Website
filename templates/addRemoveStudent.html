@@ -40,7 +40,7 @@
                 <p> Gender <input type="text" maxlength="1" name= gender></p>
                 <p> SuperPowers <input type="text"maxlength="100" name =super required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                 <p> Alias <input type="text" maxlength="100" name = alias required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                <p> DOB <input type="text" maxlength="10" name = dob></p>
+                <p> DOB <input type="text" maxlength="10" name = dob pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" required></p>
                 <p><input type = "submit" name= "add" value = "Add"> </p>
         </form>
     </add>
@@ -62,7 +62,7 @@
             <p> Gender <input type="text" maxlength="1" name= gender></p>
             <p> SuperPowers <input type="text"maxlength="100" name =super></p>
             <p> Alias <input type="text" maxlength="100" name = alias></p>
-            <p> DOB <input type="number" maxlength="10" name = dob></p>
+            <p> DOB <input type="number" maxlength="10" name = dob pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" required></p>
             <p> Enrolled <input type="text"  maxlength="100" name= enrollment></p>
             <p><input type = "submit" name = "update" value = "update"> </p>
         </form>        
