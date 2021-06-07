@@ -328,7 +328,7 @@ def addRemoveStudent():
 
             cur.execute('INSERT INTO Student (StudentID, FirstName, LastName, Alias, \
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
-                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)', (int(studID), Fname, Lname, alias, gender, super, dob))
+                Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)', (int(studID), Fname, Lname, alias, gender.upper(), super, dob))
             con.commit()
 
             return redirect(url_for("viewStudent"))
@@ -418,7 +418,7 @@ def addRemoveStudent():
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
                 IsCurrentlyEnrolled= %s WHERE ID = %s',
-                        (qFirst, qLast, qAlias, qGender, qSuper, qDOB, qENR, int(StuID)))
+                        (qFirst, qLast, qAlias, qGender.upper(), qSuper, qDOB, qENR, int(StuID)))
             con.commit()
             return redirect(url_for("viewStudent"))
     else:
