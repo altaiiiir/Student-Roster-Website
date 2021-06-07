@@ -243,9 +243,19 @@ def TranscriptAddRemove():
                 flash("Enter Grade", "info")
                 return render_template("TranscriptAddRemove.html")
             # adding grade
+            
+            cur.execute('''SELECT id FROM Student WHERE studentid = %s''', [studentID])
+            curStud = cur.fetchall()
+            if curStud.__len__() != 0:
+                curStud = curStud[0][0]
+            else:
+                flash("Student doesn't Exist", "info")
+                return render_template("TranscriptAddRemove.html")
+
             cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',
-                        (studentID, int(classID)))
+               (curStud, int(classID)))
             isConnection = cur.fetchall()
+
             if isConnection.__len__() == 0:
                 flash("Student doesn't exist in class.", "info")
                 return render_template("TranscriptAddRemove.html")
@@ -254,7 +264,7 @@ def TranscriptAddRemove():
                     flash("Not a valid grade", "info")
                     return render_template("TranscriptAddRemove.html")
                 cur.execute('''UPDATE Transcript SET 
-               finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
+               finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, curStud, int(classID)))
         
         con.commit()
         cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
