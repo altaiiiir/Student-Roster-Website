@@ -268,7 +268,7 @@ def addRemoveStudent():
                 Gender, SuperPower, DOB, IsCurrentlyEnrolled,adminID) \
                 Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
             con.commit()
-            return redirect(url_for("home"))
+            return redirect(url_for("viewStudent"))
         elif 'remove' in request.form:
             
             studID = int(request.form["studID"])
@@ -292,7 +292,7 @@ def addRemoveStudent():
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',(studID))
             con.commit()
-            return redirect(url_for("home"))
+            return redirect(url_for("viewStudent"))
         else:
             StuID = request.form["studentID"]
             
@@ -363,7 +363,7 @@ def addRemoveStudent():
                 Gender= %s, SuperPower= %s, DOB= %s, \
                 IsCurrentlyEnrolled= %s WHERE ID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
             con.commit()
-            return redirect(url_for("home"))               
+            return redirect(url_for("viewStudent"))               
     else:
         return render_template("addRemoveStudent.html")
 
