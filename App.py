@@ -41,19 +41,6 @@ def showCourseInfoRows():
         '   JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
         'ORDER BY Course_Catalog.Name')
     courseInfoRows = cur.fetchall()
-
-    cur.execute("""SELECT tb1.classid, coalesce(SUM(tb1.attendees)) AS Attendees 
-    FROM (SELECT course_info.ID as classid, COUNT(StudentID) AS attendeesFROM Course_Info
-         LEFT JOIN Transcript on (Course_Info.ID = Transcript.ClassID)
-       GROUP BY course_info.ID ) as tb1
-        GROUP BY tb1.classid
-        ORDER BY  tb1.classid;""")
-        
-    print(courseInfoRows[0])
-    print(type(courseInfoRows[0]))
-    listCourseRows = list (courseInfoRows[0])
-    listCourseRows.append("something")
-    print (listCourseRows)
     #print (courseInfoRows)
     return courseInfoRows
 
