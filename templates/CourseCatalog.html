@@ -1,29 +1,35 @@
 {% extends "Base.html" %}
 {% block content %}
 
-<h1 style = "font-size:2em; text-align: center;">Course Catalog</h1>
+    <h1 style="font-size:2em; text-align: center;">Course Catalog</h1>
 
 
-<style>
-table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-}
-#table {
-   padding: 20px;
-   border-spacing: 15px;
-}
-</style>
-</head>
-<body>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
 
-<div id="table" style="text-align: center;">
-   <table width="25%" align="center">
-      <th>Name</th><th>Credits</th><th>Type</th></tr>
-      {% for thing in things %}
-      <td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td></tr>
-      {% endfor %}
-   </table>
-</div>
+        #table {
+            padding: 20px;
+            border-spacing: 15px;
+        }
+    </style>
+    </head>
+    <body>
+
+    <div id="table" style="text-align: center;">
+        <table width="25%" align="center">
+            <th>Name</th>
+            <th>Credits</th>
+            <th>Type</th>
+            </tr>
+            {% for thing in things %}
+                <td>{{ thing[1] }}</td>
+                <td>{{ thing[2] }}</td>
+                <td>{{ thing[3] }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
 
 {% endblock %}
