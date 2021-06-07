@@ -23,6 +23,13 @@ app = Flask(__name__)
 # app = Flask(name)
 app.secret_key = 'asrtarstaursdlarsn'
 
+def StudChecker(str):
+    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
+    exists= cur.fetchall()
+    if exists:
+        flash("Student already exists")
+        return render_template("addRemoveStudent.html")
+
 def StringChecker(str,name):
     for x in str:
         if (ord(x) >= 65 or ord(x) <= 95) and \
@@ -48,13 +55,6 @@ def dobChecker(str):
         flash("Invalid DOB")
         return render_template("addRemoveStudent.html")
 
-def StudChecker(str):
-    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
-    exists= cur.fetchall()
-    if exists:
-        flash("Student already exists")
-        return render_template("addRemoveStudent.html")
-
 def notStudChecker(str):
     cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
     exists= cur.fetchall()
@@ -69,20 +69,13 @@ def home():
     return render_template("studentPage.html", things=rows)
 
 
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    if request.method == "POST":
-        user = request.form["nm"]
-        return redirect(url_for("user", usr =user))
-    else:
-        return render_template("login.html")
-
-
 
 @app.route("/addRemoveStudent", methods = ["POST","GET"]) 
 def addRemoveStudent():
     if request.method == "POST":
         if 'add' in request.form:
+            #if we are adding why are we checking if the student exists
+            #we only need to check if studentID exists 
             StuID = request.form["studentID"]
             StudChecker(StuID)
 
@@ -110,7 +103,7 @@ def addRemoveStudent():
             con.commit()
             return redirect(url_for("home"))
         elif 'remove' in request.form:
-
+            
             studID = int(request.form["studID"])
             notStudChecker(studID)
           
