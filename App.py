@@ -133,12 +133,12 @@ def TranscriptFilter():
             flash("Invalid Number Entry", "info")
             return render_template("FilterTranscript.html")
 
-        cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+        cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                            JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
                            JOIN Student ON (Transcript.StudentID = Student.ID)
-                        WHERE student.id = %s
+                        WHERE student.Studentid = %s
                         ORDER BY Course_Catalog.name""", [studentID])
         updatedTranscriptRows = cur.fetchall()
         return render_template("Transcripts.html", things=updatedTranscriptRows)
@@ -148,12 +148,12 @@ def TranscriptFilter():
         except:
             flash("Invalid Number Entry", "info")
             return render_template("FilterTranscript.html")
-        cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+        cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                            JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
                            JOIN Student ON (Transcript.StudentID = Student.ID)
-                        WHERE student.id = %s AND transcript.finalGrade IS NULL
+                        WHERE student.StudentID = %s AND transcript.finalGrade IS NULL
                         ORDER BY Course_Catalog.name""", [studentID])
         updatedTranscriptRows = cur.fetchall()
         return render_template("Transcripts.html", things=updatedTranscriptRows)
@@ -163,7 +163,7 @@ def TranscriptFilter():
         except:
             flash("Invalid Number Entry", "info")
             return render_template("FilterTranscript.html")
-        cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+        cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                         FROM Transcript
                            JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                            JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
@@ -182,29 +182,38 @@ def TranscriptAddRemove():
         return redirect(url_for('login'))
     if request.method == "POST":
         studentID = request.form["studentID"]
-        studentID = int(studentID)
+        try:
+            studentID = int(studentID)
+        except:
+            flash("Enter in ID", "info")
+            return render_template("TranscriptAddRemove.html")
         if studentID == '':
             flash("Enter In Student ID", "info")
             return render_template("TranscriptAddRemove.html")
+
         sln = request.form["SLN"]
-        sln = int(sln)
+        sln = sln
         if sln == '':
             flash("Enter in SLN", "info")
             return render_template("TranscriptAddRemove.html")
-        cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [sln])
+        cur.execute('SELECT ID FROM Course_Info WHERE SLN = %s', [int(sln)])
         classIDs = cur.fetchall()
         if classIDs.__len__() == 0:
             flash("Class Doesn't Exist", "info")
             return render_template("TranscriptAddRemove.html")
         classID = classIDs[0][0]
         if 'delete' in request.form:
-            cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',
-                        (studentID, classID))
+            cur.execute('''SELECT id FROM Student WHERE studentid = %s''', [studentID])
+            curStud = cur.fetchall()
+            curStud = curStud[0][0]
+            cur.execute('''SELECT StudentID FROM Transcript WHERE studentid = %s AND classID = %s''',
+                        (curStud, classID))
             isConnection = cur.fetchall()
             if isConnection.__len__() == 0:
                 flash("Student is not enrolled in the Class", "info")
                 return render_template("TranscriptAddRemove.html")
-            cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), studentID))
+            cur.execute('''DELETE FROM Transcript WHERE classID = %s AND studentID = %s''', (int(classID), curStud))
+            con.commit()
         elif 'addStudent' in request.form:
             try:
                 grade = request.form["grade"]
@@ -212,12 +221,15 @@ def TranscriptAddRemove():
                 grade = ''
             # adds either a grade with null or with a final grade
             if grade == '':
+                cur.execute('''SELECT id FROM Student WHERE studentid = %s''', [studentID])
+                curStud = cur.fetchall()
+                curStud = curStud[0][0]
                 cur.execute('''SELECT studentID FROM Transcript WHERE studentid = %s AND classID = %s''',
-                            (studentID, classID))
+                            (curStud, classID))
                 isConnection = cur.fetchall()
                 if isConnection.__len__() == 0:
                     cur.execute('''INSERT INTO Transcript (StudentID, ClassID)
-                  Values(%s, %s)''', (studentID, int(classID)))
+                  Values(%s, %s)''', (curStud, int(classID)))
                 else:
                     flash("Student is Already in the Class.", "info")
                     return render_template("TranscriptAddRemove.html")
@@ -239,13 +251,14 @@ def TranscriptAddRemove():
                     return render_template("TranscriptAddRemove.html")
                 cur.execute('''UPDATE Transcript SET 
                finalGrade = %s WHERE studentID = %s AND classID = %s''', (grade, studentID, int(classID)))
+        
         con.commit()
-        cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+        cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                                 FROM Transcript
                                    JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                                    JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
                                    JOIN Student ON (Transcript.StudentID = Student.ID)
-                                WHERE student.id = %s
+                                WHERE student.StudentID = %s
                                 ORDER BY Course_Catalog.name""", [studentID])
         updatedTranscriptRows = cur.fetchall()
         return render_template("Transcripts.html", things=updatedTranscriptRows)
@@ -257,12 +270,12 @@ def TranscriptAddRemove():
 def Transcript():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
+    cur.execute("""SELECT Student.StudentID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                     FROM Transcript
                         JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
                         JOIN Course_Catalog ON (Course_Info.courseid = Course_Catalog.id)
                         JOIN Student ON (Transcript.StudentID = Student.ID)
-                  ORDER BY Student.ID""")
+                  ORDER BY Student.StudentID""")
     updatedTranscriptRows = cur.fetchall()
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
