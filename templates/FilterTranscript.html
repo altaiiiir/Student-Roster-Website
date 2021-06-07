@@ -1,52 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 style="text-align:center;">Filter Transcripts</h1>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-   {% for msg in messages %}
-      <p>{{msg}}</p>
-   {% endfor %}
-{% endif %}
-{% endwith %}
+    <h1 style="text-align:center;">Filter Transcripts</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-<style>
-    
-   #column_container {
-   width: 470px;
-   margin: 0 auto;
-   }
-   
-   .container {
-     padding: 15px;
-     max-width: 500px;
-     margin: auto;
-   }
-</style>
+    <style>
 
-<div class="container">
-   
-   </div class="row">
-      <div id="column_container" style="display: flex;"> 
-         <div class="col-sm" style="position:relative; ">
-                  <form action ="#" method = "POST" class="form-inline" >
-                     <div class="btn-group-vertical">
-                        <p> <input type="number" class="form-control"  placeholder="Student ID" step="1" name="studentID" /></p>
-                        <p><input type="submit" name="filterAll" class="btn btn-dark" value="Filter All Courses"/></p>
-                        <p><input type="submit"  name="filterCur" class="btn btn-dark" value="Filter Current Courses"/></p>
-                     </div>
-                  </form>
-         </div>
-         <div class="col-sm" style="text-align:Left;">
-               <form action ="#" method = "POST" class="form-inline">
-                  <div class="btn-group-vertical">
-                     <p> <input type="number" class="form-control" placeholder="SLN" step="1" name="SLN"/></p>
-                     <p><input type="submit" name="filterCor" class="btn btn-dark" value="Filter All Grades" /></p>
-                  </div>
-               </form>
-         </div>
-      </div>
-   </div>
+        #column_container {
+            width: 470px;
+            margin: 0 auto;
+        }
 
-</div> 
+        .container {
+            padding: 15px;
+            max-width: 500px;
+            margin: auto;
+        }
+    </style>
+
+    <div class="container">
+
+    </div class="row">
+    <div id="column_container" style="display: flex;">
+        <div class="col-sm" style="position:relative; ">
+            <form action="#" method="POST" class="form-inline">
+                <div class="btn-group-vertical">
+                    <p><input type="number" class="form-control"
+                              placeholder="Student ID" step="1"
+                              name="studentID"/></p>
+                    <p><input type="submit" name="filterAll"
+                              class="btn btn-dark" value="Filter All Courses"/>
+                    </p>
+                    <p><input type="submit" name="filterCur"
+                              class="btn btn-dark"
+                              value="Filter Current Courses"/></p>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm" style="text-align:Left;">
+            <form action="#" method="POST" class="form-inline">
+                <div class="btn-group-vertical">
+                    <p><input type="number" class="form-control"
+                              placeholder="SLN" step="1" name="SLN"/></p>
+                    <p><input type="submit" name="filterCor"
+                              class="btn btn-dark" value="Filter All Grades"/>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+    </div>
 {% endblock %}

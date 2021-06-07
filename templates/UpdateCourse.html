@@ -1,50 +1,59 @@
 {% extends 'base.html' %}
 
-{% block title%}
-Update Courses
+{% block title %}
+    Update Courses
 {% endblock %}
 
 {% block content %}
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for msg in messages %}
-                <p style="text-align:center;"> {{msg}}</p>
+                <p style="text-align:center;"> {{ msg }}</p>
             {% endfor %}
         {% endif %}
     {% endwith %}
-<style>
+    <style>
 
-    #column_container {
-    width: 440px;
-    margin: 0 auto;
-    }
+        #column_container {
+            width: 440px;
+            margin: 0 auto;
+        }
 
-    .container {
-      padding: 15px;
-      max-width: 500px;
-      margin: auto;
-    }
- </style>
+        .container {
+            padding: 15px;
+            max-width: 500px;
+            margin: auto;
+        }
+    </style>
 
-<h1 style="text-align:center;">Update Course</h1>
-<div class="container">
-    <form action ="#" method = "POST">
+    <h1 style="text-align:center;">Update Course</h1>
+    <div class="container">
+        <form action="#" method="POST">
 
-        <h4>Target:</h4>
+            <h4>Target:</h4>
 
-        <p><input type="text" class="form-control" name = "oldnm" required placeholder="Course Name" pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength="20"/></p>
+            <p><input type="text" class="form-control" name="oldnm" required
+                      placeholder="Course Name" pattern="^(?!^ +$)([a-zA-Z]+)$*"
+                      maxlength="20"/></p>
 
-        <h4>Edit:</h4>
+            <h4>Edit:</h4>
 
-        <p><input type="text" name = "nm" class="form-control" size="15" placeholder="Course Name" pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+            <p><input type="text" name="nm" class="form-control" size="15"
+                      placeholder="Course Name" pattern="^(?!^ +$)([a-zA-Z]+)$*"
+                      maxlength="20"/></p>
 
-        <p><input type="number" name="creds" class="form-control" size="15" placeholder="Credits" min="0" step="1" maxlength="2"/></p>
+            <p><input type="number" name="creds" class="form-control" size="15"
+                      placeholder="Credits" min="0" step="1" maxlength="2"/></p>
 
-        <p><input type="text" name = "type" class="form-control" size="2" placeholder="Type (C, E)" pattern="^(?!^ +$)([A-Z]+)$*" maxlength = "1"/></p>
+            <p><input type="text" name="type" class="form-control" size="2"
+                      placeholder="Type (C, E)" pattern="^(?!^ +$)([A-Z]+)$*"
+                      maxlength="1"/></p>
 
-        <button style="position:relative;" type="submit" name="add" class="btn btn-dark">Add</button>
+            <button style="position:relative;" type="submit" name="add"
+                    class="btn btn-dark">Add
+            </button>
 
-    </form>
-</div>
+        </form>
+    </div>
 
 {% endblock %}
