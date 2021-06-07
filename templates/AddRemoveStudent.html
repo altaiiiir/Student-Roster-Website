@@ -1,19 +1,22 @@
 {% extends "base.html" %}
-{% block title %} Add/Remove {% endblock %}
-
 
 {% block content %}
+<h1 style="text-align:center;">Add/Remove Studeny </h1>
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for msg in messages %}
+<div class="container">
+   <div class="d-flex justify-content-center">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+         {% for msg in messages %}
             <p>{{msg}}</p>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+         {% endfor %}
+      {% endif %}
+      {% endwith %} 
+   </div>
+</div>
 
 <style>
-    add{
+    /* add{
         float: left;
         margin-left: 2.5%;
     }
@@ -27,12 +30,60 @@
         float: right;
         margin-right: 5%;
         margin-top: -11%;
-    }
+    } */
+
+    #column_container {
+   width: 470px;
+   margin: 0 auto;
+   }
+   
+   .container {
+     padding: 5px;
+     max-width: 500px;
+     margin: auto;
+   }
 
 </style>
+<div class="container">
+    <h1>Add Student</h1>
+</div class="row">
+   <div id="column_container" style="display: flex;"> 
+      <div class="col-sm" style="position:relative; ">
+               <form action ="#" method = "POST" class="form-inline" >
+                  <div class="btn-group-vertical">
+                     <p> <input type="text" maxlength = "100" placeholder="First Name" class="form-control" step="1" name="first" required pattern="^(?!^ +$)([a-zA-Z]+)"> </p>
+                     <p> <input type="number" placeholder="SLN" class="form-control" step="1" name="SLN" /></p>
+                     <p> <input type="number" placeholder="Grade" class="form-control" step=".1" name="grade" /></p>
+                     <p><input type="submit" class="btn btn-dark" name="addRemoveStudent" value="Add Grade to Student" /></p>
+                  </div>
+               </form>
+      </div>
+      <div class="col-sm" style="text-align:Left;">
+            <form action ="#" method = "POST" class="form-inline">
+               <div class="btn-group-vertical">
+                  <p> <input type="number" placeholder="Student ID" class="form-control" step="1" name="studentID" /></p>
+                  <p> <input type="number" placeholder="SLN" class="form-control" step="1" name="SLN" /></p>
+                  <p><input type="submit"  class="btn btn-dark" name="addStudent" value="Add Student to Class" /></p>
+                  <p><input type="submit" class="btn btn-dark" name="delete" value="Remove Student from Class " /></p>
+               </div>
+            </form>
+      </div>
+      <div class="col-sm" style="text-align:Left;">
+        <form action ="#" method = "POST" class="form-inline">
+           <div class="btn-group-vertical">
+              <p> <input type="number" placeholder="Student ID" class="form-control" step="1" name="studentID" /></p>
+              <p> <input type="number" placeholder="SLN" class="form-control" step="1" name="SLN" /></p>
+              <p><input type="submit"  class="btn btn-dark" name="addStudent" value="Add Student to Class" /></p>
+              <p><input type="submit" class="btn btn-dark" name="delete" value="Remove Student from Class " /></p>
+           </div>
+        </form>
+  </div>
+   </div>
+</div>
 
-    <add>
-        <h1>Add Student</h1>
+</div> 
+    
+        <!-- <h1>Add Student</h1>
         <form action="#" method = "POST">
                 <p> First name <input type="text" maxlength="100" name=first  required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                 <p> Last name <input type="text"  maxlength="100" name=last required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
@@ -43,7 +94,7 @@
                 <p> DOB <input type="text" maxlength="10" name = dob pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" required></p>
                 <p><input type = "submit" name= "add" value = "Add"> </p>
         </form>
-    </add>
+   
 
     <delete>
         <h1>Remove Student </h1>
@@ -66,6 +117,34 @@
             <p> Enrolled <input type="text"  maxlength="100" name= enrollment></p>
             <p><input type = "submit" name = "update" value = "update"> </p>
         </form>        
-    </update>
+    </update> -->
 
+    <!-- <div class="container">
+   
+    </div class="row">
+       <div id="column_container" style="display: flex;"> 
+          <div class="col-sm" style="position:relative; ">
+                   <form action ="#" method = "POST" class="form-inline" >
+                      <div class="btn-group-vertical">
+                         <p> <input type="number" placeholder="Student ID" class="form-control" step="1" name="studentID" /></p>
+                         <p> <input type="number" placeholder="SLN" class="form-control" step="1" name="SLN" /></p>
+                         <p> <input type="number" placeholder="Grade" class="form-control" step=".1" name="grade" /></p>
+                         <p><input type="submit" class="btn btn-dark" name="addRemoveStudent" value="Add Grade to Student" /></p>
+                      </div>
+                   </form>
+          </div>
+          <div class="col-sm" style="text-align:Left;">
+                <form action ="#" method = "POST" class="form-inline">
+                   <div class="btn-group-vertical">
+                      <p> <input type="number" placeholder="Student ID" class="form-control" step="1" name="studentID" /></p>
+                      <p> <input type="number" placeholder="SLN" class="form-control" step="1" name="SLN" /></p>
+                      <p><input type="submit"  class="btn btn-dark" name="addStudent" value="Add Student to Class" /></p>
+                      <p><input type="submit" class="btn btn-dark" name="delete" value="Remove Student from Class " /></p>
+                   </div>
+                </form>
+          </div>
+       </div>
+    </div>
+    
+    </div>  -->
 {% endblock %}
