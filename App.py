@@ -699,7 +699,7 @@ def addClass():
                 # error flags
                 existsInCatalog = 0  # false
                 roomExists = 0  # false
-                roomHasSpace = 0  # false
+                roomHasSpace = 1  # false
                 roomAvailable = 1  # true
 
                 # checks for room time availability
