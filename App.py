@@ -74,9 +74,6 @@ def login():
     u1 = getattr(users[0], 'username')
     p1 = getattr(users[0], 'password')
     id1 = getattr(users[0], 'id')
-    print (u1)
-    print (p1)
-    print (id1)
     if request.method == 'POST':
         session.pop('user_id', None)
 
