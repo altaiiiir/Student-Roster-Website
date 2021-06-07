@@ -267,10 +267,10 @@ def Transcript():
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
 
-def genderChecker(str):
-    if str.upper() != 'F' or str.upper() != 'M':
-        flash("Unacceptable Gender", "info")
-        return render_template("addRemoveStudent.html")
+# def genderChecker(str):
+#     if str.upper() != 'F' or str.upper() != 'M':
+#         flash("Unacceptable Gender", "info")
+#         return render_template("addRemoveStudent.html")
 
 
 @app.route("/add-remove-student", methods=["POST", "GET"])
@@ -292,7 +292,6 @@ def addRemoveStudent():
             Lname = request.form["last"]
 
             gender = request.form["gender"]
-            genderChecker(gender)
 
             super = request.form["super"]
 
@@ -346,15 +345,9 @@ def addRemoveStudent():
             Fname = request.form["first"]
             Lname = request.form["last"]
             gender = request.form["gender"]
-            if gender.__len__() > 0:
-                genderChecker(gender)
-
             super = request.form["super"]
-
             alias = request.form["alias"]
-
             dob = request.form["dob"]
-
             enr = request.form["enrollment"]
             
             cur.execute("SELECT * FROM STUDENT WHERE ID = %s", [StuID])
