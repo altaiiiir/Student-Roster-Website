@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Transcripts</h1>
-<p>For 5/29/2021</p>
+<h1 style="text-align:center;">Transcripts</h1>
 
 <style>
    table, th, td {
@@ -15,7 +14,7 @@
 </style>
 
 <div class="center">
-   <table style="width:50%" align="left">
+   <table style="width:50%" align="center">
    <tr><th>Student ID</th><th>First Name</th><th>Last Name</th><th>SLN</th><th>Name</th><th>Section</th><th>Final Grade</th></tr>
    {% for thing in things %}
    <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td> <td>{{thing[3]}}</td> <td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td></tr>
