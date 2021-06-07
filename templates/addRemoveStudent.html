@@ -34,12 +34,12 @@
     <add>
         <h1>Add Student</h1>
         <form action="#" method = "POST">
-                <p> First name <input type="text" maxlength="100" name=first></p>
-                <p> Last name <input type="text"  maxlength="100" name=last></p>
+                <p> First name <input type="text" maxlength="100" name=first  required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
+                <p> Last name <input type="text"  maxlength="100" name=last required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                 <p> Student ID <input type="number"  maxlength="100" name=studentID required></p>
                 <p> Gender <input type="text" maxlength="1" name= gender></p>
-                <p> SuperPowers <input type="text"maxlength="100" name =super></p>
-                <p> Alias <input type="text" maxlength="100" name = alias></p>
+                <p> SuperPowers <input type="text"maxlength="100" name =super required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
+                <p> Alias <input type="text" maxlength="100" name = alias required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                 <p> DOB <input type="text" maxlength="10" name = dob></p>
                 <p><input type = "submit" name= "add" value = "Add"> </p>
         </form>

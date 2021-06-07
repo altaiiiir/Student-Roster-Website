@@ -23,20 +23,9 @@ app = Flask(__name__)
 # app = Flask(name)
 app.secret_key = 'asrtarstaursdlarsn'
 
-def StringChecker(str,name):
-    for x in str:
-        if (ord(x) >= 65 or ord(x) <= 95) and \
-            (ord(x) >= 97 or ord(x) <= 122):
-             continue
-        else:
-            flash(name + " should contain letters only","info")
-            return render_template("addRemoveStudent.html")
 
 def genderChecker(str):
-    if str.isspace() or str == "":
-        flash("Cannot be empty")
-        return render_template("addRemoveStudent.html")
-    elif str.upper() != 'F' or str.upper() != 'M':
+    if str.upper() != 'F' or str.upper() != 'M':
         flash("Unacceptable Gender","info")
         return render_template("addRemoveStudent.html")
 
@@ -87,19 +76,15 @@ def addRemoveStudent():
             StudChecker(StuID)
 
             Fname = request.form["first"]
-            StringChecker(Fname,"First name")
             
             Lname = request.form["last"]
-            StringChecker(Lname,"Last name")
-           
+                      
             gender = request.form["gender"]
             genderChecker(gender)
             
             super = request.form["super"]
-            StringChecker(super,"Super abilities")
             
             alias = request.form["alias"]
-            StringChecker(alias,"Alias")
             
             dob = request.form["dob"]
             dobChecker(dob)
@@ -117,34 +102,36 @@ def addRemoveStudent():
             cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[studID])
             studID = cur.fetchall()
             
-            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
+            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',(studID))
            
             # Find the noteID based on studentID, use that to delete notes
-            cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
+            cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
+           
             noteNumb = cur.fetchall()
-            cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
-            
-            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
-            cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
+            if noteNumb.__len__() != 0:
+                cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
+
+            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
+           
+    
+            cur.execute('DELETE FROM STUDENT WHERE ID = %s',(studID))
             return redirect(url_for("home"))
         else:
             StuID = request.form["studentID"]
             notStudChecker(StuID)
+            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[StuID])
+            StuID = cur.fetchall()
 
             Fname = request.form["first"]
-            StringChecker(Fname,"First name")
 
             Lname = request.form["last"]
-            StringChecker(Lname,"Last name")
 
             gender = request.form["gender"]
             genderChecker(gender)
             
             super = request.form["super"]
-            StringChecker(super,"Super abilities")
             
             alias = request.form["alias"]
-            StringChecker(alias,"Alias")
             
             dob = request.form["dob"]
             dobChecker(dob)
@@ -197,14 +184,7 @@ def addRemoveStudent():
                 Gender= %s, SuperPower= %s, DOB= %s, \
                 IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
             con.commit()
-            return redirect(url_for("home"))
-        return render_template("addRemoveStudent.html")
-            # cur.execute('Update Student \
-            # SET FirstName= %s, LastName= %s, Alias= %s, \
-            # Gender= %s, SuperPower= %s, DOB= %s, \
-            # IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
-            #con.commit()
-               
+            return redirect(url_for("home"))               
     else:
         return render_template("addRemoveStudent.html")
 
