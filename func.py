@@ -39,7 +39,7 @@ def viewAllStudents():
     
 def viewStudentNotes():
     cur = con.cursor()
-    query = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+    query = """SELECT Student.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
                                  Note.Note, Note.Date, Note_Type.Name FROM Student_Notes
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
@@ -63,7 +63,7 @@ def viewSpecificStudentNotes(studentID):
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
                    JOIN Student ON (Student_Notes.StudentID = Student.ID)
-                   WHERE student_Notes.studentID = %s;
+                   WHERE student.studentID = %s;
                     """
     cur.execute(query, (ID,))
     rows = cur.fetchall()
