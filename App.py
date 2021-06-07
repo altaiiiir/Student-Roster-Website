@@ -350,7 +350,7 @@ def addRemoveStudent():
             cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s', (studID))
             noteNumb = cur.fetchall()
             if noteNumb.__len__() != 0:
-                cur.execute('DELETE FROM Note WHERE ID = %s', [noteNumb])
+                cur.execute('DELETE FROM Note WHERE ID = %s', (noteNumb))
 
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s', (studID))
             cur.execute('DELETE FROM STUDENT WHERE ID = %s', (studID))
