@@ -506,14 +506,16 @@ def update_course():
             flash("At least one attribute must be changed.")
             return render_template("UpdateCourse.html")
 
+        if name != "":
+            cur.execute('UPDATE Course_Catalog SET Name = %s WHERE Name = %s', (name, oldName))
+            
         if credits != "":
             cur.execute('UPDATE Course_Catalog SET CourseCredits = %s WHERE name = %s', (credits, name))
 
         if type != "":
             cur.execute('UPDATE Course_Catalog SET Type = %s WHERE name = %s', (type, name))
 
-        if name != "":
-            cur.execute('UPDATE Course_Catalog SET Name = %s WHERE Name = %s', (name, oldName))
+        
 
         con.commit()
         return render_template("CourseCatalog.html", things=showCourseCatalogRows())
