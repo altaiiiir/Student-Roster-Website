@@ -23,14 +23,6 @@ app = Flask(__name__)
 # app = Flask(name)
 app.secret_key = 'asrtarstaursdlarsn'
 
-def StringChecker(str,name):
-    for x in str:
-        if (ord(x) >= 65 or ord(x) <= 95) and \
-            (ord(x) >= 97 or ord(x) <= 122):
-             continue
-        else:
-            flash(name + " should contain letters only","info")
-            return render_template("addRemoveStudent.html")
 
 def genderChecker(str):
     if str.upper() != 'F' or str.upper() != 'M':
