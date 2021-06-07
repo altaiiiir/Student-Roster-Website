@@ -1042,15 +1042,17 @@ def modifyStudentNotes():
                 flash("Please enter a valid StudentID", "error")
                 return render_template("ModifyStudentNotes.html", things=studentNotes)
 
-            studentQuery = """select * from student where ID = %s; """
+            studentQuery = """select * from student where StudentID = %s; """
             cur.execute(studentQuery, (theStudentID,))
 
             studentQueryResult = cur.fetchall()
             print(studentQueryResult)
             studentIDExists = 0
             for x in studentQueryResult:
-                curStudID = x[0]
-
+                curStudID = x[1]
+                curStudPKID = x[0]
+                print ("studentID")
+                print (curStudID)
                 print(type(theStudentID))
                 if (str(curStudID) == theStudentID):
                     studentIDExists = 1  # true
@@ -1072,7 +1074,7 @@ def modifyStudentNotes():
                                 Values(%s, %s, %s, %s, %s);"""  # OKAY so apparently I need to insert into Note first and then connect that to Student Notes
             # by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"
             studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s);"""
-
+            
             # print(max, note, currentDate, noteType, adminID )
 
             cur.execute(studentInsert, (max, note, dateObject, noteType,
@@ -1083,7 +1085,7 @@ def modifyStudentNotes():
             theSerial = cur.fetchall()
             serialRightForm = theSerial[0][0]
 
-            cur.execute(studentNotesInsert, (serialRightForm, theStudentID))
+            cur.execute(studentNotesInsert, (serialRightForm, curStudPKID))
             con.commit()
             badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
                                  Note.Note, Note.Date, Note.Type, Note_Type.Name FROM Student_Notes
