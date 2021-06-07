@@ -78,7 +78,7 @@ def addRemoveStudent():
             cur.execute('Update Student \
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
-                IsCurrentlyEnrolled= %s, adminID = 1 WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
+                IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
             con.commit()
                
     else:
