@@ -74,9 +74,6 @@ def login():
     u1 = getattr(users[0], 'username')
     p1 = getattr(users[0], 'password')
     id1 = getattr(users[0], 'id')
-    print (u1)
-    print (p1)
-    print (id1)
     if request.method == 'POST':
         session.pop('user_id', None)
 
@@ -594,10 +591,9 @@ def modifyStudentNotes():
         if 'delete' in request.form:
             print ("DELETE WAS RANNNN")
             theStudentID = request.form["theirID"]
-            note = request.form["notes"]
-            noteType = request.form["noteType"]
+           
             theNoteID = request.form["NoteID"]
-            theDate = request.form["date"]
+           
            
             if (theNoteID.isdecimal() == 0 or theStudentID.isdecimal() == 0):
                 flash("Please enter a valid NoteID and StudentID", "error")
