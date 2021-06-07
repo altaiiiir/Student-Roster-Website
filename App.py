@@ -501,7 +501,7 @@ def update_course():
 
         if name != "":
             cur.execute('UPDATE Course_Catalog SET Name = %s WHERE Name = %s', (name, oldName))
-            
+
         if credits != "":
             cur.execute('UPDATE Course_Catalog SET CourseCredits = %s WHERE name = %s', (credits, name))
 
@@ -921,12 +921,15 @@ def modifyStudentNotes():
             print("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
 
-            doesStudentHaveBoth = """select * from student_notes where studentID = %s; """
+            doesStudentHaveBoth = """select Student_Notes.StudentID, Student_Notes.NoteID from student_notes 
+                                    Join Student ON (Student_Notes.StudentID = Student.ID)
+                                     where student.studentID = %s; """
 
             allRowsStudentNotes = """select * from student_notes """
-            isStudentLinkedWithNote = """select StudentID, Student_notes.NoteID, Note.NoteID from student_notes
+            isStudentLinkedWithNote = """select Student.StudentID, Student_notes.NoteID, Note.NoteID from student_notes
                                          JOIN Note ON (student_notes.noteID = Note.ID)   
-                                         where studentID = %s AND Note.NoteID = %s;  """
+                                         JOIN Student ON (Student_Notes.StudentID = Student.ID)
+                                         where Student.studentID = %s AND Note.NoteID = %s;  """
 
             cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
             linkedwithnotequery = cur.fetchall()
