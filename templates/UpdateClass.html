@@ -5,13 +5,20 @@ Update Courses
 {% endblock %}
 
 {% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p style="text-align:center;"> {{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 <style>
-    
+
     #column_container {
     width: 440px;
     margin: 0 auto;
     }
-    
+
     .container {
       padding: 15px;
       max-width: 500px;
@@ -29,13 +36,13 @@ Update Courses
 
         <h4>Edit:</h4>
 
-        <p><input type="text" name = "name" class="form-control" size="15" placeholder="Class Name" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+        <p><input type="text" name = "name" class="form-control" size="15" placeholder="Class Name" pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
 
-        <p><input type="text" name = "section" class="form-control" size="15" placeholder="Section" required pattern="[A-Z]" maxlength = "1"/></p>
+        <p><input type="text" name = "section" class="form-control" size="15" placeholder="Section" pattern="[A-Z]" maxlength = "1"/></p>
 
-        <p><input type="number" name = "roomID" class="form-control" size="15" placeholder="Room ID" required min="0" step="1" maxlength = "1"/></p>
+        <p><input type="number" name = "roomID" class="form-control" size="15" placeholder="Room ID" min="0" step="1" maxlength = "1"/></p>
 
-        <p><input type="text" name = "instructorName" class="form-control" size="15" placeholder="Instructor Name" required pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
+        <p><input type="text" name = "instructorName" class="form-control" size="15" placeholder="Instructor Name" pattern="^(?!^ +$)([a-zA-Z]+)$**" maxlength = "20"/></p>
 
         <p><input type="time" name = "time" class="form-control" size="15" placeholder="Time" /></p>
 

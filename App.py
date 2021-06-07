@@ -33,13 +33,14 @@ class User:
 users = []
 users.append(User(id=1, username='admin', password='admin'))
 
-
-
 def showCourseInfoRows():
-    cur.execute(
-        'Select * from Course_Info '
-        '   JOIN Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
-        'ORDER BY Course_Catalog.Name')
+    cur.execute('SELECT Course_Info.ID, Course_Info.CourseID, Course_Info.SLN, Course_Info.Section,'
+                ' Course_Info.RoomID, Course_Info.Instructorname, Course_Info.Time, Course_Info.Quarter,'
+                ' Course_Info.Year, COUNT (Transcript) AS butsinseat, Classroom.Capacity'
+                ' FROM Course_INFO '
+                '   LEFT JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) '
+                '   RIGHT JOIN Classroom ON (Course_Info.RoomID = Classroom.ID)'
+                ' GROUP BY Course_Info.ID, Classroom.ID ORDER BY Course_Info.SLN')
     courseInfoRows = cur.fetchall()
     return courseInfoRows
 
@@ -92,11 +93,11 @@ def login():
 
     return render_template('Login.html')
 
-@app.route("/index.html") 
+@app.route("/Index.html")
 def home():
     if not g.user:
         return redirect(url_for('login'))
-    return render_template("index.html")
+    return render_template("Index.html")
 
 @app.route("/view-student")
 def viewStudent():
@@ -390,38 +391,126 @@ def update_course():
     if not g.user:
         return redirect(url_for('login'))
     if request.method == "POST":
-        currSln = request.form["sln"]
-        newCourseName = request.form["name"]
-        newSection = request.form["section"]
-        newRoomID = request.form["roomID"]
-        newInstructorName = request.form["instructorName"]
-        newTime = request.form["time"]
-        newQuarter = request.form["quarter"]
-        newYear = request.form["year"]
+        sln = request.form["sln"]
+        name = request.form["name"]
+        section = request.form["section"]
+        roomid = request.form["roomID"]
+        instructor = request.form["instructorName"]
+        time = request.form["time"]
+        quarter = request.form["quarter"]
+        year = request.form["year"]
 
-        if newCourseName != "":
-            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [newCourseName])
+        # error flags
+        slnExists = 0 # false
+        existsInCatalog = 0  # false
+        roomExists = 0  # false
+        roomHasSpace = 0  # false
+
+        # checks if sln exits
+        cur.execute('SELECT * FROM Course_Info')
+        tempRows = cur.fetchall()
+        for x in tempRows:
+            currSln = x[2]
+            if currSln == int(sln):
+                slnExists = 1
+                break
+
+        # checks for room time availability
+        if roomid != "":
+            if time == "":
+                cur.execute('SELECT * FROM Course_Info WHERE sln = %s', [sln])
+                tempTime = cur.fetchall()
+                time = tempTime[0][6].strftime("%H:%M:%S")
+            cur.execute('SELECT * FROM Course_Info WHERE RoomID = %s', [roomid])
+            tempRows = cur.fetchall()
+            for x in tempRows:
+                curTime = x[6]
+                tempCurTime = curTime.strftime("%H:%M:%S")
+                if tempCurTime == time:
+                    flash("Time conflict within that building.")
+                    return render_template("UpdateClass.html")
+
+        # checks for room space and existence
+        if roomid != "":
+            cur.execute('SELECT * FROM Classroom')
+            tempRows = cur.fetchall()
+            for x in tempRows:
+                curRoom = x[2]
+                curCapacity = x[3]
+                if (int(curRoom) == int(roomid)):
+                    roomExists = 1  # true
+                if (int(curCapacity) >= int(curCapacity + 1)):
+                    roomHasSpace = 1  # true
+
+        # checks for class existance in course
+        if name != "":
+            cur.execute('SELECT * FROM Course_Catalog')
+            tempRows = cur.fetchall()
+            for x in tempRows:
+                curName = x[1]
+                if (curName == name):
+                    existsInCatalog = 1  # true
+                    break
+
+        # checks for duplicate class
+        if name != "" and section != "":
+            cur.execute('Select * from Course_Catalog JOIN Course_Info ON (Course_Catalog.ID = Course_Info.CourseID)')
+            courseRows = cur.fetchall()
+            for r in courseRows:
+                curName = r[1]
+                curSection = r[7]
+                if (curName == name and curSection == section):
+                    flash("You cannot add a class that already exists.")
+                    return render_template("UpdateClass.html")
+
+        if slnExists == 0 and sln != "":
+            flash("You can't update a class that doesn't exist.")
+            return render_template("UpdateClass.html")
+
+        # Case: class not in catalog
+        if existsInCatalog == 0 and name != "":
+            flash("You cannot add a class to a course that doesn't exist.")
+            return render_template("UpdateClass.html")
+
+        # Case: room doesn't exist
+        if roomExists == 0 and roomid != "":
+            flash("You cannot add a class to a room that doesn't exist.")
+            return render_template("UpdateClass.html")
+
+        # Case: room is full
+        if roomHasSpace == 0 and roomid != "":
+            flash("You cannot add a class to a full room.")
+            return render_template("UpdateClass.html")
+
+        # Case: if nothing entered
+        if (name == "" and section == "" and roomid == "" and instructor == ""
+                and time == "" and quarter == "" and year == ""):
+            flash("At least one attribute must be changed.")
+            return render_template("UpdateClass.html")
+
+        if name != "":
+            cur.execute('SELECT ID FROM Course_Catalog WHERE Name = %s', [name])
             tempCourseID = cur.fetchall()
             newCourseID = tempCourseID[0][0]
-            cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, currSln))
+            cur.execute('UPDATE Course_Info SET CourseID = %s WHERE sln = %s', (newCourseID, sln))
 
-        if newSection != "":
-            cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (newSection, currSln))
+        if section != "":
+            cur.execute('UPDATE Course_Info SET Section = %s WHERE sln = %s', (section, sln))
 
-        if newRoomID != "":
-            cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (newRoomID, currSln))
+        if roomid != "":
+            cur.execute('UPDATE Course_Info SET RoomID = %s WHERE sln = %s', (roomid, sln))
 
-        if newInstructorName != "":
-            cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (newInstructorName, currSln))
+        if instructor != "":
+            cur.execute('UPDATE Course_Info SET InstructorName = %s WHERE sln = %s', (instructor, sln))
 
-        if newTime != "":
-            cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (newTime, currSln))
+        if time != "":
+            cur.execute('UPDATE Course_Info SET Time = %s WHERE sln = %s', (time, sln))
 
-        if newQuarter != "":
-            cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (newQuarter, currSln))
+        if quarter != "":
+            cur.execute('UPDATE Course_Info SET Quarter = %s WHERE sln = %s', (quarter, sln))
 
-        if newYear != "":
-            cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (newYear, currSln))
+        if year != "":
+            cur.execute('UPDATE Course_Info SET Year = %s WHERE sln = %s', (year, sln))
 
         con.commit()
         return render_template("CourseInfo.html", things=showCourseInfoRows())
