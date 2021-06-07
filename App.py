@@ -43,7 +43,7 @@ def showCourseInfoRows():
                 ' FROM Course_INFO '
                 '   LEFT JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) '
                 '   RIGHT JOIN Classroom ON (Course_Info.RoomID = Classroom.ID)'
-                    'Join Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
+                'Join Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
                 ' GROUP BY Course_Info.ID, Classroom.ID, Course_Catalog.ID ORDER BY Course_Info.SLN')
     courseInfoRows = cur.fetchall()
     return courseInfoRows
@@ -88,7 +88,7 @@ def login():
     p1 = getattr(users[0], 'password')
     id1 = getattr(users[0], 'id')
     if request.method == 'POST':
-        #session.pop('user_id', None)
+        # session.pop('user_id', None)
 
         username = request.form['username']
         password = request.form['password']
