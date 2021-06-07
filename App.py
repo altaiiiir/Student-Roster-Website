@@ -87,7 +87,7 @@ def login():
     p1 = getattr(users[0], 'password')
     id1 = getattr(users[0], 'id')
     if request.method == 'POST':
-        session.pop('user_id', None)
+        #session.pop('user_id', None)
 
         username = request.form['username']
         password = request.form['password']
