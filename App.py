@@ -103,12 +103,16 @@ def home():
 
 @app.route("/view-student")
 def viewStudent():
+    if not g.user:
+        return redirect(url_for('login'))
     cur.execute('Select * from Student')
     rows = cur.fetchall()
     return render_template("StudentPage.html", things=rows)
 
 @app.route("/transcript-filter", methods=["POST", "GET"])
 def TranscriptFilter():
+   if not g.user:
+        return redirect(url_for('login'))
    if 'filterAll' in request.form:
       try:
          studentID = int(request.form["studentID"])
@@ -157,6 +161,8 @@ def TranscriptFilter():
 
 @app.route("/transcript-add-remove", methods=["POST", "GET"])
 def TranscriptAddRemove():
+   if not g.user:
+        return redirect(url_for('login'))
    if request.method == "POST":
       studentID = request.form["studentID"]
       if studentID == '':
@@ -218,6 +224,8 @@ def TranscriptAddRemove():
 
 @app.route("/transcript", methods=["POST", "GET"])
 def Transcript():
+    if not g.user:
+        return redirect(url_for('login'))
     cur.execute("""SELECT Student.ID, Student.firstName, Student.lastName, Course_info.SLN, Course_Catalog.name, Course_Info.Section, Transcript.FinalGrade
                     FROM Transcript
                         JOIN Course_Info ON (Transcript.ClassID = Course_Info.ID)
@@ -230,6 +238,8 @@ def Transcript():
 
 @app.route("/add-remove-student", methods = ["POST","GET"])
 def addRemoveStudent():
+    if not g.user:
+        return redirect(url_for('login'))
     if request.method == "POST":
         if 'add' in request.form:
             #TODO double check data, protect against sql injections
@@ -263,6 +273,8 @@ def addRemoveStudent():
 
 @app.route("/course-catalog", methods=["POST", "GET"])
 def courses_catalog():
+    if not g.user:
+        return redirect(url_for('login'))
     if request.method == "POST":
         user = request.form["nm"]
         return redirect(url_for("user", usr=user))
@@ -273,10 +285,14 @@ def courses_catalog():
 
 @app.route("/class-info")
 def course_info():
+    if not g.user:
+        return redirect(url_for('login'))
     return render_template("CourseInfo.html", things=showCourseInfoRows())
 
 @app.route("/update-class", methods=["POST", "GET"])
 def update_course():
+    if not g.user:
+        return redirect(url_for('login'))
     if request.method == "POST":
         currSln = request.form["sln"]
         newCourseName = request.form["CourseName"]
@@ -318,6 +334,8 @@ def update_course():
 
 @app.route("/add-course", methods = ["POST", "GET"])
 def add():
+    if not g.user:
+        return redirect(url_for('login'))
     if request.method == "POST":
 
         # check if its an add or remove
@@ -385,6 +403,8 @@ def add():
 
 @app.route("/add-class", methods = ["POST", "GET"])
 def addClass():
+    if not g.user:
+        return redirect(url_for('login'))
     if request.method == "POST":
 
         # check if its an add or remove
@@ -533,6 +553,8 @@ def addClass():
 
 @app.route("/view-student-notes", methods = ["POST", "GET"])
 def viewStudentNotes():
+    if not g.user:
+        return redirect(url_for('login'))
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
         
@@ -560,6 +582,8 @@ def viewStudentNotes():
 
 @app.route("/modify-student-notes", methods=["POST", "GET"])
 def modifyStudentNotes():
+    if not g.user:
+        return redirect(url_for('login'))
     studentNotes = func.viewStudentNotes()
     if request.method == "POST":
         if 'viewNotes' in request.form:
