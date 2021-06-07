@@ -247,7 +247,7 @@ def TranscriptAddRemove():
                         (studentID, int(classID)))
             isConnection = cur.fetchall()
             if isConnection.__len__() == 0:
-                flash("Student doesn't exist.", "info")
+                flash("Student doesn't exist in class.", "info")
                 return render_template("TranscriptAddRemove.html")
             else:
                 if float(grade) < 0.0 or float(grade) > 4.0:
