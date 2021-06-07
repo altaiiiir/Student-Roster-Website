@@ -356,11 +356,7 @@ def addRemoveStudent():
             dob = request.form["dob"]
 
             enr = request.form["enrollment"]
-            if enr.__len__() > 0:
-                if enr.upper() != "T" or enr.upper() != "F":
-                    flash("Enrolled Must be T or F")
-                    return render_template("addRemoveStudent.html")
-
+            
             cur.execute("SELECT * FROM STUDENT WHERE ID = %s", [StuID])
             getStudentQuery = cur.fetchall()
 
@@ -392,8 +388,12 @@ def addRemoveStudent():
             if enr == "":
                 qENR = getStudentQuery[0][8]
             else:
-                qENR = enr
-
+                if enr.upper() == "T" or enr.upper() == "F":
+                    qENR = enr.upper()
+                else:
+                    flash("Enrolled Must be T or F")
+                    return render_template("addRemoveStudent.html")
+            # print(qENR)
             cur.execute('Update Student \
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
