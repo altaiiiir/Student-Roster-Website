@@ -1,45 +1,98 @@
 {% extends "base.html" %}
 {% block title %} student Page{% endblock %}
 {% block content %}
-
-{% with messages = get_flashed_messages() %}
-        {% if messages %}
+        <h1 style = "font-size:2em; text-align: center;">Student Notes</h1>
+      {% with messages = get_flashed_messages() %}
+         {% if messages %}
             {% for msg in messages %}
-                <p> {{msg}}</p>
+               <p style="text-align: center;">{{msg}}</p>
             {% endfor %}
-        {% endif %}
-    {% endwith %}
-<h1> Student Notes </h1>
-<style type="text/css">
-    th
-    {
-        padding:0 20px 0 20px;
-    }
-    td
-    {
-        padding:0 20px 0 20px;
-    }
-    </style>
+         {% endif %}
+      {% endwith %}
 
-<form action="#" method="post">
-    <p> Student ID: </p>
-    <p> <input type="text" name="theirID" /></p>
-      
-    <p> View Behavior Note: </p>  
-    <p><input type="submit" name="viewNotes" value="ViewNotes" /></p> 
-</form>
+      <link href="" rel="stylesheet" type="text/css">
 
-<form action="{{ url_for('modifyStudentNotes') }}" method="post">
-    <p><input type="submit" name="modifyNotes" value="Modify Notes" /></p>
-</form>
+
+<style>
+        
+    #t1 {
+        text-align: center;
+        padding: 50px;
+        width: 440px;
+        margin: auto;
+    }
+    
+    table, th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+    table {
+    border-spacing: 15px;
+    }
+    #tc{
+        padding: 30px;
+    }
+
+    #column_container {
+        text-align: center;
+        width: 440px;
+        margin: 0 auto;
+    }
+    
+    .container {
+    text-align: center;
+    padding: 15px;
+      max-width: 500px;
+      margin: auto;
+      display: flex;
+    justify-content: center;
+    }
+
+    p {
+    text-align: center;
+    }   
+    .col-sm {
+        margin: 0 auto;
+    }
+    .btn-group-vertical{
+        margin: 0 auto;
+    }
+</style>
+
     <!-- to add note we need student ID to delete note we need note id and student ID -->
+    <div class="container">
+    </div class="row">
+        <div id="column_container" style="display: flex;"> 
+            <div class="col-sm" style="text-align:center; "> 
+                    <form action ="#" method = "POST" class="form-inline" >
+                        <div class="btn-group-vertical" style="text-align:center;" >
+                            <p><input type="text" name = "theirID" class="form-control" size="15" placeholder="Student ID" required pattern="^(?!^ +$)([a-zA-Z]+)$*" maxlength = "20"/></p>
+                                                    
+                            <button style="text-align:center;" type="submit" name="viewNotes" class="btn btn-dark">View</button>
+                        </div>
+                    </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
 
 
- <table>
+
+</head>
+<body>
+<div id="tc">
+    <table style="width:50%; text-align: center"; align="center">
+
     <tr><th>Student ID </th>  <th>  Notes ID </th> <th> First Name</th> <th> Last Name</th> <th> Note</th> <th> Date </th> <th>  Note Type </th> </tr>
     {% for thing in things %}
     <tr><td>{{thing[0]}}</td> <td>{{thing[1]}}</td> <td>{{thing[2]}}</td><td>{{thing[3]}}</td><td>{{thing[4]}}</td> <td>{{thing[5]}}</td> <td>{{thing[6]}}</td> </tr>
     {% endfor %}
  </table>
+</div>
 
 {% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
