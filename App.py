@@ -1,6 +1,6 @@
 from re import split
 import psycopg2
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, g
 
 import func
 from datetime import timedelta, datetime
@@ -20,6 +20,19 @@ password = "2fD9vPoMU6HAfMM"
 
 #cursor
 cur = con.cursor()
+
+class User:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
+users = []
+users.append(User(id=1, username='admin', password='admin'))
+
 
 
 def showCourseInfoRows():
@@ -45,8 +58,47 @@ app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-@app.route("/") 
+@app.before_request
+def before_request():
+    g.user = None
+
+    if 'user_id' in session:
+        user = [x for x in users if x.id == session['user_id']][0]
+        g.user = user
+
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    session.pop('user_id', None)
+    print (users)
+    u1 = getattr(users[0], 'username')
+    p1 = getattr(users[0], 'password')
+    id1 = getattr(users[0], 'id')
+    print (u1)
+    print (p1)
+    print (id1)
+    if request.method == 'POST':
+        session.pop('user_id', None)
+
+        username = request.form['username']
+        password = request.form['password']
+        if (username == "" or password == ""):
+            flash("Enter valid username and password", "error")
+            return render_template('login.html')
+        
+        if (u1 != username or p1 != password):
+            flash("Enter valid username and password", "error")
+            return redirect(url_for('login'))
+        
+        session['user_id'] = id1
+        return redirect(url_for('home'))
+
+    return render_template('login.html')
+
+@app.route("/index.html") 
 def home():
+    if not g.user:
+        return redirect(url_for('login'))
     return render_template("index.html")
 
 @app.route("/view-student")
