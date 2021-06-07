@@ -51,12 +51,12 @@ def addRemoveStudent():
                 Values(%s,%s,%s,%s,%s,%s,%s,TRUE,1)',(int(StuID),Fname,Lname,alias,gender,super,dob))
             con.commit()
             return redirect(url_for("home"))
-        elif 'delete' in request.form:
+        elif 'Remove' in request.form:
             try:
-                # studID = int(request.form["studID"])
-                # cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",(studID))
-                # studID = cur.fetchall()
-                # print("message = " + studID)
+                studID = int(request.form["studID"])
+                cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",(studID))
+                studID = cur.fetchall()
+                print("message = " + studID)
                 # cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
                 # # Find the noteID based on studentID, use that to delete notes
                 # # cur.execute('DELETE FROM Notes WHERE Student_Notes.StudentID = %s',[studID])
