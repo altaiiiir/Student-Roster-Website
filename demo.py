@@ -97,9 +97,8 @@ def addRemoveStudent():
                 cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
 
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',(studID))
-           
-    
             cur.execute('DELETE FROM STUDENT WHERE ID = %s',(studID))
+            con.commit()
             return redirect(url_for("home"))
         else:
             StuID = request.form["studentID"]
@@ -115,9 +114,7 @@ def addRemoveStudent():
             StuID = StuID[0][0]
 
             Fname = request.form["first"]
-
             Lname = request.form["last"]
-
             gender = request.form["gender"]
             if gender.__len__() > 0:           
                 genderChecker(gender)
@@ -136,17 +133,16 @@ def addRemoveStudent():
         
             cur.execute("SELECT * FROM STUDENT WHERE ID = %s",[StuID])
             getStudentQuery = cur.fetchall()
-            print(getStudentQuery)
+            # print(getStudentQuery)
             #[(19, 24, 'first', 'last', 'gff', 'M', 'gayaf', datetime.date(2005, 4, 8), True, 1)]
             if Fname == "":
                 qFirst = getStudentQuery[0][2]
             else:
                 qFirst = Fname
-            
             if Lname == "":
                 qLast = getStudentQuery[0][3]
             else:
-                qLast = Fname
+                qLast = Lname
             if alias == "":
                 qAlias = getStudentQuery[0][4]
             else:
@@ -168,7 +164,7 @@ def addRemoveStudent():
                 qENR = getStudentQuery[0][8]
             else:
                 qENR = enr
-
+            
             cur.execute('Update Student \
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
