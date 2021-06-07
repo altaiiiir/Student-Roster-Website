@@ -13,6 +13,8 @@ password = "2fD9vPoMU6HAfMM"
 cur = con.cursor()
 
 app = Flask(__name__)
+# app = Flask(name)
+app.secret_key = 'asrtarstaursdlarsn'
 
 def StringChecker(str,name):
     for x in str:
@@ -20,13 +22,16 @@ def StringChecker(str,name):
             (ord(x) >= 97 or ord(x) <= 122):
              continue
         else:
-            flash(name + " should contain letters only")
+            flash(name + " should contain letters only","info")
+            return render_template("addRemoveStudent.html")
 
 def genderChecker(str):
-    if str.isSpace() or str == "":
-        flash("Cannor be empty")
+    if str.isspace() or str == "":
+        flash("Cannot be empty")
+        return render_template("addRemoveStudent.html")
     elif str.upper() != 'F' or str.upper() != 'M':
-        flash("Unacceptable Gender")
+        flash("Unacceptable Gender","info")
+        return render_template("addRemoveStudent.html")
 
 def dobChecker(str):
     try: 
@@ -34,18 +39,21 @@ def dobChecker(str):
         DOB = str.split("/")
     except:
         flash("Invalid DOB")
+        return render_template("addRemoveStudent.html")
 
 def StudChecker(str):
-    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",(str))
-    exists= fetchall()
+    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
+    exists= cur.fetchall()
     if exists:
         flash("Student already exists")
+        return render_template("addRemoveStudent.html")
 
 def notStudChecker(str):
-    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",(str))
-    exists= fetchall()
+    cur.execute("SELECT EXISTS (SELECT STUDENTID FROM STUDENT WHERE STUDENTID = %s)",[str])
+    exists= cur.fetchall()
     if not exists:
         flash("Student doesn't exist")
+        return render_template("addRemoveStudent.html")
 
 @app.route("/") 
 def home():
@@ -99,18 +107,18 @@ def addRemoveStudent():
             studID = int(request.form["studID"])
             notStudChecker(studID)
           
-            # cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[studID])
-            # studID = cur.fetchall()
+            cur.execute("SELECT ID FROM STUDENT WHERE STUDENTID = %s",[studID])
+            studID = cur.fetchall()
             
-            # cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
+            cur.execute('DELETE FROM Transcript WHERE Transcript.StudentID = %s',[studID])
            
-            # # Find the noteID based on studentID, use that to delete notes
-            # cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
-            # noteNumb = cur.fetchall()
-            # cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
+            # Find the noteID based on studentID, use that to delete notes
+            cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
+            noteNumb = cur.fetchall()
+            cur.execute('DELETE FROM Note WHERE ID = %s',[noteNumb])
             
-            # cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
-            # cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
+            cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s',[studID])
+            cur.execute('DELETE FROM STUDENT WHERE ID = %s',[studID])
             return redirect(url_for("home"))
         else:
             StuID = request.form["studentID"]
@@ -137,9 +145,10 @@ def addRemoveStudent():
             enr = request.form["enrollment"]
             if enr.upper() != "T" or enr.upper() != "F":
                 flash("Must be T or F")
+                return render_template("addRemoveStudent.html")
             if (StuID == ""):
                 flash("Enter studentID", "error")
-                render_template("addRemoveStudent.html")
+                return render_template("addRemoveStudent.html")
 
             studentQuery = """select * from Student where student.ID = %s """ 
             cur.execute(studentQuery, (StuID,))
