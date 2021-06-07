@@ -1,5 +1,12 @@
 import psycopg2, datetime
-from flask import Flask, redirect, url_for, render_template, request, flash
+from re import split
+from flask import Flask, redirect, url_for, render_template, request, session, flash, g
+
+from datetime import timedelta, datetime
+import datetime
+from datetime import date
+
+
 
 #connect to the local host db
 con = psycopg2.connect (
@@ -166,7 +173,7 @@ def addRemoveStudent():
             if gender == "":
                 qGender = getStudentQuery[0][2] 
             else:
-                qGender = gender;
+                qGender = gender
             if super == "":
                 qSuper = getStudentQuery[0][3]
             else:
@@ -191,6 +198,12 @@ def addRemoveStudent():
                 IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(qFirst,qLast,qAlias,qGender,qSuper,qDOB,qENR,int(StuID)))
             con.commit()
             return redirect(url_for("home"))
+        return render_template("addRemoveStudent.html")
+            # cur.execute('Update Student \
+            # SET FirstName= %s, LastName= %s, Alias= %s, \
+            # Gender= %s, SuperPower= %s, DOB= %s, \
+            # IsCurrentlyEnrolled= %s WHERE StudentID = %s' ,(Fname,Lname,alias,gender,super,dob,enr,int(StuID)))
+            #con.commit()
                
     else:
         return render_template("addRemoveStudent.html")
