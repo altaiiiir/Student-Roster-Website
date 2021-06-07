@@ -37,13 +37,14 @@ users.append(User(id=1, username='admin', password='admin'))
 
 
 def showCourseInfoRows():
-    cur.execute('SELECT Course_Info.ID, Course_Info.CourseID, Course_Info.SLN, Course_Info.Section,'
+    cur.execute('SELECT Course_Info.ID, Course_Info.SLN, Course_Catalog.name, Course_Info.Section,  '
                 ' Course_Info.RoomID, Course_Info.Instructorname, Course_Info.Time, Course_Info.Quarter,'
                 ' Course_Info.Year, COUNT (Transcript) AS butsinseat, Classroom.Capacity'
                 ' FROM Course_INFO '
                 '   LEFT JOIN Transcript ON (Course_Info.ID = Transcript.ClassID) '
                 '   RIGHT JOIN Classroom ON (Course_Info.RoomID = Classroom.ID)'
-                ' GROUP BY Course_Info.ID, Classroom.ID ORDER BY Course_Info.SLN')
+                    'Join Course_Catalog ON (Course_Info.CourseID = Course_Catalog.ID)'
+                ' GROUP BY Course_Info.ID, Classroom.ID, Course_Catalog.ID ORDER BY Course_Info.SLN')
     courseInfoRows = cur.fetchall()
     return courseInfoRows
 
