@@ -404,7 +404,6 @@ def addRemoveStudent():
     else:
         return render_template("addRemoveStudent.html")
 
-
 @app.route("/course-catalog", methods=["POST", "GET"])
 def courses_catalog():
     if not g.user:
