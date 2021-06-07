@@ -54,7 +54,7 @@
                               placeholder="Last name" maxlength="100" name=last
                               required pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="text" class="form-control"
-                              placeholder="Gender" maxlength="1" name=gender>
+                              placeholder="Gender (Any Letter)" maxlength="1" name=gender pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
                               placeholder="SuperPowers" maxlength="100"
@@ -63,7 +63,7 @@
                     <p><input type="text" class="form-control"
                               placeholder="Alias" maxlength="100" name=alias
                               pattern="^(?!^ +$)([a-zA-Z]+)"></p>
-                    <p><input type="text" class="form-control" placeholder="DOB"
+                    <p><input type="text" class="form-control" placeholder="DOB (MM/DD/YY)"
                               maxlength="10" name=dob
                               pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"
                               required></p>
@@ -95,26 +95,26 @@
                               name=studentID required></p>
                     <p><input type="text" class="form-control"
                               placeholder="First name" maxlength="100"
-                              name=first></p>
+                              name=first pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="text" class="form-control"
-                              placeholder="Last name" maxlength="100" name=last>
+                              placeholder="Last name" maxlength="100" name=last pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
-                              placeholder="Gender" maxlength="1" name=gender>
+                              placeholder="Gender (Any Letter)" maxlength="1" name=gender pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
                     <p><input type="text" class="form-control"
                               placeholder="SuperPowers" maxlength="100"
-                              name=super></p>
+                              name=super pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="text" class="form-control"
-                              placeholder="Alias" maxlength="100" name=alias>
+                              placeholder="Alias" maxlength="100" name=alias pattern="^(?!^ +$)([a-zA-Z]+)">
                     </p>
-                    <p><input type="number" class="form-control"
-                              placeholder="DOB" maxlength="10" name=dob
+                    <p><input type="text" class="form-control"
+                              placeholder="DOB (MM/DD/YY)" maxlength="10" name=dob
                               pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d">
                     </p>
                     <p><input type="text" class="form-control"
-                              placeholder="Enrolled" maxlength="100"
-                              name=enrollment></p>
+                              placeholder="Enrolled (T or F)" maxlength="1"
+                              name=enrollment pattern="^(?!^ +$)([a-zA-Z]+)"></p>
                     <p><input type="submit" class="btn btn-dark" name="update"
                               value="Update" style="margin-left: 75px;"></p>
                 </div>

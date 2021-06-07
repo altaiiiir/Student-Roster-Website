@@ -117,7 +117,7 @@ def home():
 def viewStudent():
     if not g.user:
         return redirect(url_for('login'))
-    cur.execute('Select * from Student ORDER BY Student.StudentID')
+    cur.execute('Select * from Student ORDER BY Student.StudentID ASC')
     rows = cur.fetchall()
     return render_template("StudentPage.html", things=rows)
 
@@ -294,10 +294,10 @@ def Transcript():
     return render_template("Transcripts.html", things=updatedTranscriptRows)
 
 
-def genderChecker(str):
-    if str.upper() != 'F' or str.upper() != 'M':
-        flash("Unacceptable Gender", "info")
-        return render_template("addRemoveStudent.html")
+# def genderChecker(str):
+#     if str.upper() != 'F' or str.upper() != 'M':
+#         flash("Unacceptable Gender", "info")
+#         return render_template("addRemoveStudent.html")
 
 
 @app.route("/add-remove-student", methods=["POST", "GET"])
@@ -319,7 +319,6 @@ def addRemoveStudent():
             Lname = request.form["last"]
 
             gender = request.form["gender"]
-            genderChecker(gender)
 
             super = request.form["super"]
 
@@ -373,21 +372,11 @@ def addRemoveStudent():
             Fname = request.form["first"]
             Lname = request.form["last"]
             gender = request.form["gender"]
-            if gender.__len__() > 0:
-                genderChecker(gender)
-
             super = request.form["super"]
-
             alias = request.form["alias"]
-
             dob = request.form["dob"]
-
             enr = request.form["enrollment"]
-            if enr.__len__() > 0:
-                if enr.upper() != "T" or enr.upper() != "F":
-                    flash("Enrolled Must be T or F")
-                    return render_template("addRemoveStudent.html")
-
+            
             cur.execute("SELECT * FROM STUDENT WHERE ID = %s", [StuID])
             getStudentQuery = cur.fetchall()
 
@@ -419,8 +408,12 @@ def addRemoveStudent():
             if enr == "":
                 qENR = getStudentQuery[0][8]
             else:
-                qENR = enr
-
+                if enr.upper() == "T" or enr.upper() == "F":
+                    qENR = enr.upper()
+                else:
+                    flash("Enrolled Must be T or F")
+                    return render_template("addRemoveStudent.html")
+            # print(qENR)
             cur.execute('Update Student \
                 SET FirstName= %s, LastName= %s, Alias= %s, \
                 Gender= %s, SuperPower= %s, DOB= %s, \
