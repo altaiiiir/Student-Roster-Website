@@ -921,17 +921,25 @@ def modifyStudentNotes():
             print("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
 
-            doesStudentHaveBoth = """select Student_Notes.StudentID, Student_Notes.NoteID from student_notes 
+            doesStudentHaveBoth = """select Student.StudentID, Student_Notes.NoteID from student_notes 
                                     Join Student ON (Student_Notes.StudentID = Student.ID)
                                      where student.studentID = %s; """
 
             allRowsStudentNotes = """select * from student_notes """
-            isStudentLinkedWithNote = """select Student.StudentID, Student_notes.NoteID, Note.NoteID from student_notes
+            isStudentLinkedWithNote = """select Student.ID, Student_notes.NoteID, Note.NoteID from student_notes
                                          JOIN Note ON (student_notes.noteID = Note.ID)   
                                          JOIN Student ON (Student_Notes.StudentID = Student.ID)
-                                         where Student.studentID = %s AND Note.NoteID = %s;  """
+                                         where Student.ID = %s AND Note.NoteID = %s;  """
 
-            cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
+            studentQuery = """select * from student where StudentID = %s; """
+            
+            
+            cur.execute(studentQuery, (theStudentID,))
+            studentID = cur.fetchall()
+            print(studentID)
+            studentID = studentID[0]
+            print (studentID)
+            cur.execute(isStudentLinkedWithNote, (studentID, theNoteID))
             linkedwithnotequery = cur.fetchall()
 
             linkedstud = 0
