@@ -350,7 +350,7 @@ def addRemoveStudent():
             cur.execute('SELECT NOTEID FROM Student_Notes WHERE Student_Notes.StudentID = %s', (studID))
             noteNumb = cur.fetchall()
             if noteNumb.__len__() != 0:
-                cur.execute('DELETE FROM Note WHERE ID = %s', (noteNumb))
+                cur.execute('DELETE FROM Note WHERE ID = %s', [noteNumb])
 
             cur.execute('DELETE FROM Student_Notes WHERE Student_Notes.StudentID = %s', (studID))
             cur.execute('DELETE FROM STUDENT WHERE ID = %s', (studID))
@@ -921,25 +921,17 @@ def modifyStudentNotes():
             print("after first if")
             doesNoteExist = """ select * from Note where NoteID = %s; """
 
-            doesStudentHaveBoth = """select Student.StudentID, Student_Notes.NoteID from student_notes 
+            doesStudentHaveBoth = """select Student_Notes.StudentID, Student_Notes.NoteID from student_notes 
                                     Join Student ON (Student_Notes.StudentID = Student.ID)
                                      where student.studentID = %s; """
 
             allRowsStudentNotes = """select * from student_notes """
-            isStudentLinkedWithNote = """select Student.ID, Student_notes.NoteID, Note.NoteID from student_notes
+            isStudentLinkedWithNote = """select Student.StudentID, Student_notes.NoteID, Note.NoteID from student_notes
                                          JOIN Note ON (student_notes.noteID = Note.ID)   
                                          JOIN Student ON (Student_Notes.StudentID = Student.ID)
-                                         where Student.ID = %s AND Note.NoteID = %s;  """
+                                         where Student.studentID = %s AND Note.NoteID = %s;  """
 
-            studentQuery = """select * from student where StudentID = %s; """
-            
-            
-            cur.execute(studentQuery, (theStudentID,))
-            studentID = cur.fetchall()
-            print(studentID)
-            studentID = studentID[0]
-            print (studentID)
-            cur.execute(isStudentLinkedWithNote, (studentID, theNoteID))
+            cur.execute(isStudentLinkedWithNote, (theStudentID, theNoteID))
             linkedwithnotequery = cur.fetchall()
 
             linkedstud = 0
@@ -1050,17 +1042,15 @@ def modifyStudentNotes():
                 flash("Please enter a valid StudentID", "error")
                 return render_template("ModifyStudentNotes.html", things=studentNotes)
 
-            studentQuery = """select * from student where StudentID = %s; """
+            studentQuery = """select * from student where ID = %s; """
             cur.execute(studentQuery, (theStudentID,))
 
             studentQueryResult = cur.fetchall()
             print(studentQueryResult)
             studentIDExists = 0
             for x in studentQueryResult:
-                curStudID = x[1]
-                curStudPKID = x[0]
-                print ("studentID")
-                print (curStudID)
+                curStudID = x[0]
+
                 print(type(theStudentID))
                 if (str(curStudID) == theStudentID):
                     studentIDExists = 1  # true
@@ -1082,7 +1072,7 @@ def modifyStudentNotes():
                                 Values(%s, %s, %s, %s, %s);"""  # OKAY so apparently I need to insert into Note first and then connect that to Student Notes
             # by creating the note and then saying "insert into student_Notes where the Student_Notes.NoteID == Note.ID (the note that I just created in the Note table"
             studentNotesInsert = """INSERT INTO Student_Notes (NoteID, StudentID) Values (%s, %s);"""
-            
+
             # print(max, note, currentDate, noteType, adminID )
 
             cur.execute(studentInsert, (max, note, dateObject, noteType,
@@ -1093,7 +1083,7 @@ def modifyStudentNotes():
             theSerial = cur.fetchall()
             serialRightForm = theSerial[0][0]
 
-            cur.execute(studentNotesInsert, (serialRightForm, curStudPKID))
+            cur.execute(studentNotesInsert, (serialRightForm, theStudentID))
             con.commit()
             badquery = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
                                  Note.Note, Note.Date, Note.Type, Note_Type.Name FROM Student_Notes

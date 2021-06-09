@@ -58,7 +58,7 @@ def viewStudentNotes():
 def viewSpecificStudentNotes(studentID):
     cur = con.cursor()
     ID=int(studentID)
-    query = """SELECT Student.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
+    query = """SELECT Student_Notes.StudentID, Note.NoteID, Student.FirstName, Student.LastName,
                                  Note.Note, Note.Date, Note_Type.Name FROM Student_Notes
                    JOIN Note ON (Student_Notes.NoteID = Note.ID)
                    JOIN Note_Type ON (Note.Type = Note_Type.Type)
